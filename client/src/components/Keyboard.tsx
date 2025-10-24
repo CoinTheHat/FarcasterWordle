@@ -53,9 +53,9 @@ export function Keyboard({ onKeyPress, onEnter, onDelete, letterStates, colorBli
   };
 
   return (
-    <div className="w-full max-w-md mx-auto px-2 pb-4 bg-card/40 backdrop-blur-md rounded-2xl p-4 border border-card-border shadow-xl" data-testid="keyboard">
+    <div className="w-full max-w-md mx-auto px-2 pb-2 md:pb-4 bg-card/40 backdrop-blur-md rounded-2xl p-3 md:p-4 border border-card-border shadow-xl" data-testid="keyboard">
       {KEYBOARD_ROWS.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex gap-1.5 justify-center mb-2">
+        <div key={rowIndex} className="flex gap-1 md:gap-1.5 justify-center mb-1.5 md:mb-2">
           {row.map((key) => {
             const isAction = key === "ENTER" || key === "DELETE";
             
@@ -65,8 +65,8 @@ export function Keyboard({ onKeyPress, onEnter, onDelete, letterStates, colorBli
                 onClick={() => handleKeyClick(key)}
                 disabled={disabled}
                 className={cn(
-                  "h-12 font-semibold text-sm rounded-lg transition-all duration-150",
-                  isAction ? "min-w-16 px-2" : "min-w-8 w-8 md:w-10 px-1",
+                  "h-11 md:h-12 font-semibold text-xs md:text-sm rounded-lg transition-all duration-150",
+                  isAction ? "min-w-14 md:min-w-16 px-1.5 md:px-2" : "min-w-7 w-7 md:min-w-8 md:w-10 px-0.5 md:px-1",
                   !isAction && getKeyClasses(key),
                   isAction && "bg-card/90 backdrop-blur-sm text-card-foreground hover:bg-card shadow-lg border border-card-border"
                 )}

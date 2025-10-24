@@ -35,10 +35,10 @@ export function Board({ guesses, currentGuess, feedback, colorBlindMode, reveali
   });
 
   return (
-    <div className="bg-card/60 backdrop-blur-md border border-card-border rounded-2xl p-6 shadow-2xl max-w-sm mx-auto" data-testid="game-board">
-      <div className="flex flex-col gap-2">
+    <div className="bg-card/60 backdrop-blur-md border border-card-border rounded-2xl p-3 md:p-6 shadow-2xl max-w-sm mx-auto" data-testid="game-board">
+      <div className="flex flex-col gap-1.5 md:gap-2">
         {rows.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex gap-2 justify-center">
+          <div key={rowIndex} className="flex gap-1.5 md:gap-2 justify-center">
             {row.letters.map((letter, colIndex) => (
               <Tile
                 key={`${rowIndex}-${colIndex}`}
