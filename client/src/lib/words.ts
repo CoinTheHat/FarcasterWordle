@@ -50,11 +50,12 @@ export const ALLOWED_GUESSES = [
 ];
 
 export function normalizeGuess(guess: string): string {
-  return guess.toUpperCase().trim();
+  // Use Turkish locale for proper uppercase conversion (i → İ)
+  return guess.toLocaleUpperCase('tr-TR').trim();
 }
 
 export function isValidGuess(guess: string): boolean {
   const normalized = normalizeGuess(guess);
-  // Accept any 5-letter word with A-Z characters
-  return normalized.length === 5 && /^[A-Z]{5}$/.test(normalized);
+  // Accept any 5-letter word with A-Z and Turkish characters (Ç, Ğ, İ, Ö, Ş, Ü)
+  return normalized.length === 5 && /^[A-ZÇĞİÖŞÜ]{5}$/.test(normalized);
 }

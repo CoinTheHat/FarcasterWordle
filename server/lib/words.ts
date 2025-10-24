@@ -109,11 +109,12 @@ export function getWordOfTheDay(yyyymmdd: string, language: Language = "en"): st
 }
 
 export function isValidGuess(guess: string, language: Language = 'en'): boolean {
-  const normalized = guess.toUpperCase().trim();
+  // Use Turkish locale for proper uppercase conversion (i → İ)
+  const normalized = guess.toLocaleUpperCase('tr-TR').trim();
   
-  // Accept ANY 5-letter word (A-Z only)
+  // Accept ANY 5-letter word (A-Z and Turkish characters: Ç, Ğ, İ, Ö, Ş, Ü)
   // The feedback system will handle coloring based on the solution
-  if (normalized.length !== 5 || !/^[A-Z]{5}$/.test(normalized)) {
+  if (normalized.length !== 5 || !/^[A-ZÇĞİÖŞÜ]{5}$/.test(normalized)) {
     return false;
   }
   

@@ -13,9 +13,9 @@ interface KeyboardProps {
 }
 
 const KEYBOARD_ROWS = [
-  ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
-  ["A", "S", "D", "F", "G", "H", "J", "K", "L"],
-  ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "DELETE"],
+  ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "Ğ", "Ü"],
+  ["A", "S", "D", "F", "G", "H", "J", "K", "L", "Ş", "İ"],
+  ["ENTER", "Z", "X", "C", "V", "B", "N", "M", "Ö", "Ç", "DELETE"],
 ];
 
 export function Keyboard({ onKeyPress, onEnter, onDelete, letterStates, colorBlindMode, disabled }: KeyboardProps) {

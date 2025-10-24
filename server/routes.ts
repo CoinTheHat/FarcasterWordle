@@ -156,7 +156,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
-    const normalized = guess.toUpperCase().trim();
+    // Use Turkish locale for proper uppercase conversion (i → İ)
+    const normalized = guess.toLocaleUpperCase('tr-TR').trim();
 
     const activeGame = activeGames.get(sessionId);
 
@@ -165,9 +166,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
-    // Accept any 5-letter word (format validation only)
-    if (normalized.length !== 5 || !/^[A-Z]{5}$/.test(normalized)) {
-      res.status(400).json({ error: "Must be 5 letters (A-Z)" });
+    // Accept any 5-letter word with Turkish characters (Ç, Ğ, İ, Ö, Ş, Ü)
+    if (normalized.length !== 5 || !/^[A-ZÇĞİÖŞÜ]{5}$/.test(normalized)) {
+      res.status(400).json({ error: "Must be 5 letters (A-Z or Turkish characters)" });
       return;
     }
 
