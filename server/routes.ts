@@ -11,7 +11,7 @@ import {
   getWeeklyLeaderboard,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo } from "./lib/date";
-import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateScore, getRandomWord } from "./lib/words";
+import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateScore, getRandomWord, type Language } from "./lib/words";
 import { randomBytes } from "crypto";
 
 const MAX_ATTEMPTS = 6;
@@ -20,6 +20,7 @@ interface ActiveGame {
   fid: number;
   sessionId: string;
   solution: string;
+  language: Language;
   guesses: string[];
   attemptsUsed: number;
   totalScore: number;
@@ -96,7 +97,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/start-game", requireAuth, (req: AuthRequest, res: Response) => {
     const fid = req.fid!;
+    const { language = "en" } = req.body;
     const today = getTodayDateString();
+    
+    if (language !== "en" && language !== "tr") {
+      res.status(400).json({ error: "Invalid language. Must be 'en' or 'tr'" });
+      return;
+    }
     
     const todayResult = getDailyResult(fid, today);
     if (todayResult) {
@@ -111,12 +118,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
 
     const sessionId = generateSessionId();
-    const solution = getRandomWord();
+    const solution = getRandomWord(language as Language);
     
     const activeGame: ActiveGame = {
       fid,
       sessionId,
       solution,
+      language: language as Language,
       guesses: [],
       attemptsUsed: 0,
       totalScore: 0,

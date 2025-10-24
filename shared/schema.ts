@@ -33,6 +33,7 @@ export type Streak = z.infer<typeof streakSchema>;
 
 export type TileFeedback = "correct" | "present" | "absent" | "empty";
 export type GameStatus = "playing" | "won" | "lost";
+export type Language = "en" | "tr";
 
 export interface GameState {
   guesses: string[];

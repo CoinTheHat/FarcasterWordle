@@ -34,10 +34,11 @@ export interface StartGameResponse {
   maxAttempts: number;
 }
 
-export async function startGame(): Promise<StartGameResponse> {
+export async function startGame(language: string = "en"): Promise<StartGameResponse> {
   const response = await fetch("/api/start-game", {
     method: "POST",
     headers: getHeaders(),
+    body: JSON.stringify({ language }),
   });
   
   if (!response.ok) {

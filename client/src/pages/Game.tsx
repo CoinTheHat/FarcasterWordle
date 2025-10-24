@@ -3,11 +3,12 @@ import { useAccount, useConnect, useSendTransaction } from "wagmi";
 import { Header } from "@/components/Header";
 import { Board } from "@/components/Board";
 import { GameOverModal, StatsModal, SettingsModal, HelpModal } from "@/components/Modals";
+import { LanguageModal } from "@/components/LanguageModal";
 import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
 import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame } from "@/lib/api";
 import { getFormattedDate } from "@/lib/date";
 import { normalizeGuess, isValidGuess } from "@/lib/words";
-import type { TileFeedback, GameStatus, UserStats } from "@shared/schema";
+import type { TileFeedback, GameStatus, UserStats, Language } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Wallet } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,10 @@ export default function Game() {
   const [fid, setFid] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [language, setLanguage] = useState<Language>(() => {
+    return (localStorage.getItem("wordcast-language") as Language) || null;
+  });
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
   
   const [stats, setStats] = useState<UserStats | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -55,6 +60,12 @@ export default function Game() {
       setFid(fcContext.fid || 12345);
       setApiFid(fcContext.fid || 12345);
       
+      if (!language) {
+        setShowLanguageModal(true);
+        setIsLoading(false);
+        return;
+      }
+      
       try {
         const userStats = await fetchUserStats();
         setStats(userStats);
@@ -62,7 +73,7 @@ export default function Game() {
         if (userStats.remainingAttempts === 0) {
           setGameCompleted(true);
         } else {
-          const gameSession = await startGame();
+          const gameSession = await startGame(language);
           setSessionId(gameSession.sessionId);
         }
       } catch (err) {
@@ -74,7 +85,7 @@ export default function Game() {
     }
 
     init();
-  }, []);
+  }, [language]);
 
   useEffect(() => {
     if (!isConnected && connectors.length > 0) {
@@ -165,7 +176,7 @@ export default function Game() {
       }
 
       try {
-        const gameSession = await startGame();
+        const gameSession = await startGame(language!);
         setSessionId(gameSession.sessionId);
         setGuesses([]);
         setFeedback([]);
@@ -382,6 +393,12 @@ export default function Game() {
     }
   };
 
+  const handleLanguageSelect = useCallback((selectedLanguage: Language) => {
+    setLanguage(selectedLanguage);
+    localStorage.setItem("wordcast-language", selectedLanguage);
+    setShowLanguageModal(false);
+  }, []);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -545,6 +562,11 @@ export default function Game() {
       <HelpModal
         isOpen={showHelp}
         onClose={() => setShowHelp(false)}
+      />
+
+      <LanguageModal
+        isOpen={showLanguageModal}
+        onSelect={handleLanguageSelect}
       />
     </div>
   );

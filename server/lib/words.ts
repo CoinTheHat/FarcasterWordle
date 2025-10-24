@@ -1,7 +1,9 @@
 import { createHash } from "crypto";
 import { WORD_SALT } from "../env";
 
-export const TARGET_WORDS = [
+export type Language = "en" | "tr";
+
+export const TARGET_WORDS_EN = [
   "BADGE", "CHAIN", "FRAME", "WARPCAST", "MOXIE", "BUILD", "STAKE", "GRANT",
   "NOBLE", "POWER", "SHARE", "TRUST", "VALUE", "WORTH", "YIELD", "SPACE",
   "CASTE", "REACT", "BASED", "BREAD", "CLEAR", "DRAFT", "EQUAL", "FRESH",
@@ -19,8 +21,29 @@ export const TARGET_WORDS = [
   "CRANE", "DUTCH", "ENTRY", "FALSE", "GENRE", "HORSE", "INDEX", "JUMBO"
 ];
 
-export const ALLOWED_GUESSES = [
-  ...TARGET_WORDS,
+export const TARGET_WORDS_TR = [
+  "ARABA", "BAHCE", "CANTA", "DENIZ", "EVREN", "FINCAN", "GUNES", "HABER",
+  "INSAN", "JAPON", "KALEM", "LIMON", "MEYVE", "NEHIR", "ORMAN", "PERDE",
+  "RESIM", "SEHIR", "TABLO", "UMUT", "VAKIT", "YARIN", "ZAMAN", "AGAC",
+  "BALIK", "CILEK", "DUNYA", "EKMEK", "FIDAN", "GUZEL", "HUZUR", "ISIK",
+  "KANAT", "LIMAN", "MIRAS", "NAZAR", "ONUR", "PERUK", "ROMAN", "SANAT",
+  "TAVAN", "UZAK", "VATAN", "YALIN", "ZEMIN", "AKIL", "BADEM", "CEVIZ",
+  "DUVAR", "EKRAN", "FIRAT", "GOCUK", "HAYAT", "IZGARA", "KAHVE", "LEVHA",
+  "MUTLU", "NOKTA", "OTUZ", "PAKET", "RUZGAR", "SEKER", "TAKIM", "UZMAN",
+  "VICIK", "YEMEK", "ZEKICE", "ASKER", "BAYRAK", "CUMLE", "DALGA", "EKIP",
+  "FASIL", "GOREV", "HAMAL", "ILHAM", "KABUK", "LAMBA", "MISIR", "NEFES",
+  "OKUMA", "PINAR", "RAFTA", "SALON", "TAVUK", "UZGUN", "VIRAJ", "YATAK",
+  "ZIRVE", "ARMUT", "BAHAR", "CIMRI", "DOVER", "ESRAR", "FORUM", "GIRIT",
+  "HAPIS", "IZMIR", "KAPAK", "LISAN", "MACERA", "NISAN", "OSMAN", "PASIF"
+];
+
+export const TARGET_WORDS: Record<Language, string[]> = {
+  en: TARGET_WORDS_EN,
+  tr: TARGET_WORDS_TR,
+};
+
+export const ALLOWED_GUESSES_EN = [
+  ...TARGET_WORDS_EN,
   "ABOUT", "ABOVE", "ABUSE", "ACTOR", "ACUTE", "ADMIT", "ADOPT", "ADULT",
   "AFTER", "AGAIN", "AGENT", "AGREE", "AHEAD", "ALARM", "ALBUM", "ALERT",
   "ALIEN", "ALIGN", "ALIVE", "ALLOW", "ALONE", "ALONG", "ALTER", "ANGEL",
@@ -52,13 +75,34 @@ export const ALLOWED_GUESSES = [
   "IDEAL", "IMAGE", "INDEX", "INNER", "INPUT", "ISSUE", "JAPAN", "JIMMY"
 ];
 
-export function getWordOfTheDay(yyyymmdd: string): string {
+export const ALLOWED_GUESSES_TR = [
+  ...TARGET_WORDS_TR,
+  "ACEMI", "ACIKIZ", "ACILIS", "ADRES", "AFACAN", "AGACI", "AHALI", "AHBAP",
+  "AHLAK", "AHRET", "AIDAT", "AJANS", "AKLIN", "AKSAM", "AKSIYON", "AKTIF",
+  "ALBAY", "ALCAK", "ALFABE", "ALICI", "ALINTI", "ALKOL", "AMBAR", "AMIR",
+  "ANANE", "ANCAK", "ANKET", "ANLIK", "ANLAM", "ANSIZ", "ANTIK", "ARADA",
+  "ARACI", "ARAZI", "ARIFE", "ARKAC", "ASAGI", "ASAMA", "ASAYIS", "ASIIR",
+  "ASTAR", "ATAMA", "ATLET", "ATLAS", "AVANS", "AVARE", "AYINC", "AYRAC",
+  "AZAMI", "BABAC", "BAGAJ", "BAGIM", "BAKAC", "BAKIC", "BALCI", "BALKA",
+  "BANKO", "BASIN", "BASIT", "BASMA", "BATAC", "BATIK", "BAZEN", "BEKAR",
+  "BEKCI", "BENIZ", "BERAT", "BEYAN", "BEYAZ", "BICAK", "BIDON", "BILGE",
+  "BILIN", "BILIM", "BIRAZ", "BIREY", "BIRIM", "BOCAK", "BOHEM", "BOYLU",
+  "BONUS", "BORAC", "BORSA", "BOSUN", "BOZUK", "BUCUR", "BUDUN", "BUGUN"
+];
+
+export const ALLOWED_GUESSES: Record<Language, string[]> = {
+  en: ALLOWED_GUESSES_EN,
+  tr: ALLOWED_GUESSES_TR,
+};
+
+export function getWordOfTheDay(yyyymmdd: string, language: Language = "en"): string {
+  const words = TARGET_WORDS[language];
   const hash = createHash("sha256")
-    .update(WORD_SALT + yyyymmdd)
+    .update(WORD_SALT + yyyymmdd + language)
     .digest("hex");
   
-  const index = parseInt(hash.substring(0, 8), 16) % TARGET_WORDS.length;
-  return TARGET_WORDS[index];
+  const index = parseInt(hash.substring(0, 8), 16) % words.length;
+  return words[index];
 }
 
 export function isValidGuess(guess: string): boolean {
@@ -107,7 +151,8 @@ export function calculateScore(feedback: ("correct" | "present" | "absent")[], a
   return Math.round(baseScore * multiplier);
 }
 
-export function getRandomWord(): string {
-  const randomIndex = Math.floor(Math.random() * TARGET_WORDS.length);
-  return TARGET_WORDS[randomIndex];
+export function getRandomWord(language: Language = "en"): string {
+  const words = TARGET_WORDS[language];
+  const randomIndex = Math.floor(Math.random() * words.length);
+  return words[randomIndex];
 }
