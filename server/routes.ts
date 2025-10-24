@@ -67,6 +67,10 @@ function requireAuth(req: AuthRequest, res: Response, next: () => void) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  app.get("/.well-known/farcaster.json", (_req, res) => {
+    res.redirect(307, "https://api.farcaster.xyz/miniapps/hosted-manifest/019a177b-f4e8-441a-3d4b-845ed29fe535");
+  });
+
   app.get("/api/me", requireAuth, (req: AuthRequest, res: Response) => {
     const fid = req.fid!;
     const today = getTodayDateString();
