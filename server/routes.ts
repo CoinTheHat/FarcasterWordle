@@ -9,7 +9,7 @@ import {
   getBoardStats,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay } from "./lib/date";
-import { getWordOfTheDay, isValidGuess, calculateFeedback } from "./lib/words";
+import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateScore } from "./lib/words";
 
 const MAX_ATTEMPTS = 6;
 
@@ -18,6 +18,7 @@ interface ActiveGame {
   date: string;
   guesses: string[];
   attemptsUsed: number;
+  totalScore: number;
 }
 
 const activeGames = new Map<string, ActiveGame>();
@@ -115,6 +116,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         date: today,
         guesses: [],
         attemptsUsed: 0,
+        totalScore: 0,
       };
       activeGames.set(gameKey, activeGame);
     }
@@ -128,6 +130,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     activeGame.attemptsUsed++;
 
     const feedback = calculateFeedback(normalized, solution);
+    const roundScore = calculateScore(feedback, activeGame.attemptsUsed);
+    activeGame.totalScore += roundScore;
+    
     const won = normalized === solution;
     const gameOver = won || activeGame.attemptsUsed >= MAX_ATTEMPTS;
 
@@ -161,6 +166,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       remainingAttempts: MAX_ATTEMPTS - activeGame.attemptsUsed,
       gameOver,
       solution: gameOver ? solution : undefined,
+      roundScore,
+      totalScore: activeGame.totalScore,
     });
   });
 

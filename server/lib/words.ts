@@ -94,3 +94,15 @@ export function calculateFeedback(guess: string, solution: string): ("correct" |
 
   return feedback;
 }
+
+export function calculateScore(feedback: ("correct" | "present" | "absent")[], attemptsUsed: number): number {
+  const correctCount = feedback.filter(f => f === "correct").length;
+  const presentCount = feedback.filter(f => f === "present").length;
+  
+  const baseScore = (correctCount * 2) + (presentCount * 1);
+  
+  const multipliers = [5, 4, 3, 2, 1.5, 1];
+  const multiplier = multipliers[attemptsUsed - 1] || 1;
+  
+  return Math.round(baseScore * multiplier);
+}

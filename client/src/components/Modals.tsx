@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Share2, TrendingUp, Trophy, Flame } from "lucide-react";
+import { Share2, TrendingUp, Trophy, Flame, Loader2 } from "lucide-react";
 
 interface GameOverModalProps {
   isOpen: boolean;
@@ -17,7 +17,11 @@ interface GameOverModalProps {
   solution: string;
   streak: number;
   maxStreak: number;
+  totalScore?: number;
+  walletConnected?: boolean;
+  isSavingScore?: boolean;
   onShare: () => void;
+  onSaveScore?: () => void;
 }
 
 export function GameOverModal({
@@ -28,23 +32,36 @@ export function GameOverModal({
   solution,
   streak,
   maxStreak,
+  totalScore = 0,
+  walletConnected = false,
+  isSavingScore = false,
   onShare,
+  onSaveScore,
 }: GameOverModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-sm" data-testid="modal-gameover">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">
-            {won ? "🎉 Congratulations!" : "Game Over"}
+            {won ? "🎉 Congratulations!" : "😔 Game Over"}
           </DialogTitle>
-          <DialogDescription className="text-center">
+          <DialogDescription className="text-center text-base">
             {won
               ? `You solved it in ${attempts} ${attempts === 1 ? "try" : "tries"}!`
-              : `The word was: ${solution}`}
+              : "Better luck tomorrow!"}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
+          {!won && solution && (
+            <div className="bg-muted/50 backdrop-blur-sm border border-border rounded-lg p-4 text-center">
+              <p className="text-sm text-muted-foreground mb-2">The word was:</p>
+              <p className="text-3xl font-bold tracking-widest text-primary" data-testid="text-solution">
+                {solution.toUpperCase()}
+              </p>
+            </div>
+          )}
+
           <div className="grid grid-cols-3 gap-4">
             <div className="flex flex-col items-center gap-2">
               <div className="flex items-center gap-1 text-muted-foreground">
@@ -59,10 +76,10 @@ export function GameOverModal({
             <div className="flex flex-col items-center gap-2">
               <div className="flex items-center gap-1 text-muted-foreground">
                 <Trophy className="w-4 h-4" />
-                <span className="text-xs uppercase font-medium">Max</span>
+                <span className="text-xs uppercase font-medium">Score</span>
               </div>
-              <div className="text-3xl font-bold" data-testid="text-max-streak">
-                {maxStreak}
+              <div className="text-3xl font-bold text-primary" data-testid="text-total-score">
+                {totalScore}
               </div>
             </div>
 
@@ -77,14 +94,38 @@ export function GameOverModal({
             </div>
           </div>
 
-          <Button
-            className="w-full h-12 text-base font-semibold gap-2"
-            onClick={onShare}
-            data-testid="button-share"
-          >
-            <Share2 className="w-5 h-5" />
-            Share Result
-          </Button>
+          <div className="space-y-3">
+            <Button
+              className="w-full h-12 text-base font-semibold gap-2"
+              onClick={onShare}
+              data-testid="button-share"
+            >
+              <Share2 className="w-5 h-5" />
+              Share Result
+            </Button>
+
+            {walletConnected && onSaveScore && totalScore > 0 && (
+              <Button
+                className="w-full h-12 text-base font-semibold gap-2"
+                onClick={onSaveScore}
+                disabled={isSavingScore}
+                variant="outline"
+                data-testid="button-save-score"
+              >
+                {isSavingScore ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Trophy className="w-5 h-5" />
+                    Save Score to Blockchain
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
 
           {!won && (
             <p className="text-sm text-center text-muted-foreground">

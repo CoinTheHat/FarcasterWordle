@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useAccount, useConnect, useSendTransaction } from "wagmi";
 import { Header } from "@/components/Header";
 import { Board } from "@/components/Board";
 import { Keyboard } from "@/components/Keyboard";
@@ -13,6 +14,10 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
 export default function Game() {
+  const { address, isConnected } = useAccount();
+  const { connect, connectors } = useConnect();
+  const { sendTransaction, isPending: isSendingTx } = useSendTransaction();
+  
   const [fid, setFid] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +30,8 @@ export default function Game() {
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const [solution, setSolution] = useState("");
   const [revealingRow, setRevealingRow] = useState<number | undefined>();
+  const [totalScore, setTotalScore] = useState(0);
+  const [lastRoundScore, setLastRoundScore] = useState(0);
   
   const [showGameOver, setShowGameOver] = useState(false);
   const [showStats, setShowStats] = useState(false);
@@ -67,6 +74,47 @@ export default function Game() {
 
     init();
   }, []);
+
+  useEffect(() => {
+    if (!isConnected && connectors.length > 0) {
+      connect({ connector: connectors[0] });
+    }
+  }, [isConnected, connectors, connect]);
+
+  const handleSaveScore = useCallback(async () => {
+    if (!isConnected || !address) {
+      toast({
+        title: "Wallet not connected",
+        description: "Please connect your wallet first",
+        variant: "destructive",
+        duration: 2000,
+      });
+      return;
+    }
+
+    try {
+      const scoreHex = `0x${totalScore.toString(16).padStart(64, '0')}`;
+      
+      await sendTransaction({
+        to: address as `0x${string}`,
+        value: BigInt(0),
+        data: scoreHex as `0x${string}`,
+      });
+
+      toast({
+        title: "Score saved!",
+        description: `Score ${totalScore} recorded on blockchain`,
+        duration: 3000,
+      });
+    } catch (err) {
+      toast({
+        title: "Failed to save score",
+        description: err instanceof Error ? err.message : "Transaction failed",
+        variant: "destructive",
+        duration: 2000,
+      });
+    }
+  }, [isConnected, address, totalScore, sendTransaction, toast]);
 
   const updateLetterStates = useCallback((guess: string, fb: TileFeedback[]) => {
     setLetterStates((prev) => {
@@ -133,6 +181,8 @@ export default function Game() {
       setGuesses(newGuesses);
       setFeedback(newFeedback);
       setCurrentGuess("");
+      setLastRoundScore(response.roundScore || 0);
+      setTotalScore(response.totalScore || 0);
       
       const rowIndex = newGuesses.length - 1;
       setRevealingRow(rowIndex);
@@ -283,6 +333,7 @@ export default function Game() {
         streak={stats.streak}
         maxStreak={stats.maxStreak}
         todayDate={getFormattedDate()}
+        totalScore={totalScore}
         onSettingsClick={() => setShowSettings(true)}
         onStatsClick={() => setShowStats(true)}
         onHelpClick={() => setShowHelp(true)}
@@ -337,7 +388,11 @@ export default function Game() {
         solution={solution}
         streak={stats.streak}
         maxStreak={stats.maxStreak}
+        totalScore={totalScore}
+        walletConnected={isConnected}
+        isSavingScore={isSendingTx}
         onShare={handleShare}
+        onSaveScore={handleSaveScore}
       />
 
       <StatsModal

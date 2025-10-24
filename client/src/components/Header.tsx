@@ -6,6 +6,7 @@ interface HeaderProps {
   streak: number;
   maxStreak: number;
   todayDate: string;
+  totalScore?: number;
   onSettingsClick: () => void;
   onStatsClick: () => void;
   onHelpClick: () => void;
@@ -13,7 +14,7 @@ interface HeaderProps {
   hintUsed?: boolean;
 }
 
-export function Header({ streak, maxStreak, todayDate, onSettingsClick, onStatsClick, onHelpClick, onHintClick, hintUsed = false }: HeaderProps) {
+export function Header({ streak, maxStreak, todayDate, totalScore = 0, onSettingsClick, onStatsClick, onHelpClick, onHintClick, hintUsed = false }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center justify-between px-4 max-w-2xl mx-auto">
@@ -44,9 +45,19 @@ export function Header({ streak, maxStreak, todayDate, onSettingsClick, onStatsC
           <h1 className="text-2xl font-bold tracking-tight" data-testid="text-title">
             WORDCAST
           </h1>
-          <p className="text-xs text-muted-foreground" data-testid="text-date">
-            {todayDate}
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-xs text-muted-foreground" data-testid="text-date">
+              {todayDate}
+            </p>
+            {totalScore > 0 && (
+              <>
+                <span className="text-xs text-muted-foreground">•</span>
+                <p className="text-xs font-semibold text-primary" data-testid="text-score">
+                  {totalScore} pts
+                </p>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-2">

@@ -10,6 +10,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**October 24, 2025 - Scoring System & Wallet Integration**
+- Added scoring system: Green tiles +2 points, Yellow tiles +1 point
+- Row multipliers: 1st row 5x, 2nd row 4x, 3rd row 3x, 4th row 2x, 5th row 1.5x, 6th row 1x
+- Header displays total score during gameplay
+- GameOver modal shows final score and displays solution when player loses
+- Integrated Wagmi + Farcaster wallet connector for blockchain transactions
+- Auto-connect wallet on app load using Farcaster Mini-App connector
+- "Save Score to Blockchain" button in GameOver modal
+- Transaction sends score as hex-encoded data to user's own address on Base network
+
 **October 24, 2025 - Word Validation Update**
 - Changed validation to accept ANY 5-letter word (A-Z characters)
 - Removed restriction to ALLOWED_GUESSES word list

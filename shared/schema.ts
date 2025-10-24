@@ -65,6 +65,8 @@ export interface GuessResponse {
   remainingAttempts: number;
   gameOver?: boolean;
   solution?: string;
+  roundScore?: number;
+  totalScore?: number;
 }
 
 export interface BoardStats {
