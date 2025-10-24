@@ -1,13 +1,26 @@
 {
   "name": "WordCast",
-  "version": "1",
+  "subtitle": "Daily word puzzle with blockchain scores",
+  "description": "Play daily Wordle-style word puzzles, compete on global leaderboards, earn points with strategic guessing, and save your scores to the blockchain. Track your streak and challenge friends!",
   "iconUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%238B5CF6'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white'%3E🎮%3C/text%3E%3C/svg%3E",
-  "homeUrl": "https://wordcast.replit.app",
+  "homeUrl": "https://your-replit-url.replit.app/",
   "splashImageUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%238B5CF6'/%3E%3Ctext x='600' y='350' font-size='120' text-anchor='middle' fill='white' font-weight='bold'%3EWordCast%3C/text%3E%3C/svg%3E",
   "splashBackgroundColor": "#8B5CF6",
   "primaryCategory": "games",
-  "tags": ["game", "puzzle", "wordle", "daily", "blockchain", "leaderboard"],
-  "subtitle": "Daily word puzzle game with leaderboards",
-  "description": "Play daily Wordle-style word puzzles, compete on leaderboards, earn points with strategic guessing, and save your scores to the blockchain. Track your streak and challenge friends!",
-  "webhookUrl": ""
+  "tags": ["game", "puzzle", "wordle", "daily", "blockchain", "leaderboard", "farcaster"],
+  "ogTitle": "WordCast - Daily Word Puzzle",
+  "ogDescription": "Play daily word puzzles, compete on leaderboards, and save scores to blockchain on Farcaster.",
+  "ogImageUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%238B5CF6'/%3E%3Ctext x='600' y='350' font-size='120' text-anchor='middle' fill='white' font-weight='bold'%3EWordCast%3C/text%3E%3C/svg%3E",
+  "tagline": "Guess the word, climb the leaderboard.",
+  "noindex": false,
+  "contactEmail": "your-email@example.com",
+  "developer": {
+    "name": "Your Name",
+    "url": "https://your-replit-url.replit.app/"
+  },
+  "accountAssociation": {
+    "header": "PLACEHOLDER_HEADER",
+    "payload": "PLACEHOLDER_PAYLOAD",
+    "signature": "PLACEHOLDER_SIGNATURE"
+  }
 }
