@@ -10,6 +10,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**October 24, 2025 - Multi-Language Support (Turkish/English)**
+- Added full multi-language support with Turkish and English word lists
+- Language selection modal appears on first app launch
+- Language switcher button in header (Globe icon, top left) for easy switching
+- Language preference stored in localStorage
+- Backend validates guesses against language-specific word lists
+- Fixed critical validation bug: isValidGuess now uses Set.has() for proper word validation
+- Each language has separate TARGET_WORDS and ALLOWED_GUESSES word lists
+- Session-based games include language context for proper validation
+
 **October 24, 2025 - Session Persistence & Idempotent TX Handling**
 - Fixed "Transaction failed - Session not found" error after TX confirmation
 - Added `completed` flag to ActiveGame interface to track TX completion status
@@ -88,12 +98,14 @@ Preferred communication style: Simple, everyday language.
 **State Management**
 - TanStack Query (React Query) for server state management and caching
 - Local React state for game board and UI interactions
-- LocalStorage for persisting user preferences (color-blind mode)
+- LocalStorage for persisting user preferences (color-blind mode, language)
 
 **Game Logic**
 - Client-side game state (current guess, letter states, feedback visualization)
 - Server validation for all guess submissions to prevent cheating
-- Deterministic word selection using salted hash of date string
+- Session-based random word selection (replaced daily fixed words)
+- Multi-language support (Turkish/English) with language-specific word validation
+- Language preference persisted in localStorage
 - Timezone handling via Luxon (Europe/Istanbul UTC+3)
 
 ### Backend Architecture
@@ -109,13 +121,17 @@ Preferred communication style: Simple, everyday language.
 - In-memory Map for active game sessions (guesses, attempts)
 
 **Anti-Cheat & Validation**
-- Server-side word validation against allowed guess list
+- Server-side word validation against language-specific allowed guess lists
+- Language context stored in ActiveGame session for proper validation
+- Set-based word lookups (O(1) performance) for both English and Turkish
 - Server-side feedback calculation for each guess
-- Enforcement of 6-attempt limit per user per day
-- One completed game per date per user constraint
+- Enforcement of 6-attempt limit per session
+- Session-based game management with completed flag for idempotent TX handling
 
 **Business Logic**
-- Daily word selection: salted hash of YYYYMMDD date string
+- Session-based random word selection per language
+- Language-specific word lists: TARGET_WORDS_EN and TARGET_WORDS_TR
+- Allowed guess lists: ALLOWED_GUESSES_EN_SET and ALLOWED_GUESSES_TR_SET
 - Streak calculation: consecutive day detection with timezone awareness
 - Max streak tracking across user lifetime
 - Profile management with created_at and last_seen_at timestamps
@@ -186,12 +202,27 @@ Preferred communication style: Simple, everyday language.
 - Creates profile if first visit
 - Updates last_seen_at timestamp
 
+**POST /api/start-game**
+- Accepts language parameter ('en' or 'tr')
+- Generates random word from language-specific list
+- Creates ActiveGame session with language context
+- Returns sessionId and maxAttempts
+- Cleans up completed sessions for same user
+
 **POST /api/guess**
-- Accepts guess string in request body
-- Validates guess against allowed word list
+- Accepts guess string and sessionId in request body
+- Retrieves ActiveGame to get language context
+- Validates guess against language-specific allowed word list
 - Returns feedback array and game status
-- Updates streaks on game completion
-- Enforces 6-attempt maximum
+- Calculates round score and total score
+- Enforces 6-attempt maximum per session
+
+**POST /api/complete-game**
+- Accepts sessionId and txHash
+- Validates transaction hash format
+- Marks session as completed (idempotent)
+- Updates daily_results and streaks
+- Returns final game statistics
 
 **GET /api/board**
 - Optional date parameter for historical data
