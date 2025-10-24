@@ -10,6 +10,18 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**October 24, 2025 - Session-Based Game System with Security Fixes**
+- Implemented session-based random word system (replaces daily fixed words)
+- Backend endpoints: /api/start-game, /api/guess, /api/complete-game
+- TX hash validation: Regex check for proper Ethereum hash format (0x + 64 hex chars)
+- Improved error messages: "Game session not found or expired. Please start a new game."
+- Auto-restart after TX failure: User can immediately replay with new random word
+- Complete state reset on TX error: guesses, feedback, scores, hintUsed, etc.
+- GameOverModal warning: Shows alert if user doesn't save score (won't count for leaderboard)
+- Replay support: User can cancel TX and play again with different word
+- Security: Backend validates TX hash format before persisting to daily_results
+- UX: Clear toast messages explain what happened during TX cancellation/failure
+
 **October 24, 2025 - Leaderboard & Mobile Responsive**
 - Added daily and weekly leaderboards with rankings
 - Leaderboard displays top 100 players with scores, attempts, and wins

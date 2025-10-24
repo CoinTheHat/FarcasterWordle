@@ -163,6 +163,7 @@ export default function Game() {
         setTotalScore(0);
         setLastRoundScore(0);
         setSolution("");
+        setHintUsed(false);
       } catch (restartErr) {
         console.error("Failed to restart game:", restartErr);
         toast({
