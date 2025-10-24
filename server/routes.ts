@@ -144,7 +144,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const activeGame = activeGames.get(sessionId);
 
     if (!activeGame) {
-      res.status(400).json({ error: "Game session not found" });
+      res.status(400).json({ error: "Game session not found or expired. Please start a new game." });
       return;
     }
 
@@ -268,7 +268,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const activeGame = activeGames.get(sessionId);
     
     if (!activeGame) {
-      res.status(400).json({ error: "Game session not found" });
+      res.status(400).json({ error: "Game session not found or expired. Please start a new game." });
       return;
     }
     
