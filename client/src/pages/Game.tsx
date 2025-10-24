@@ -5,7 +5,7 @@ import { Keyboard } from "@/components/Keyboard";
 import { GameOverModal, StatsModal, SettingsModal, HelpModal } from "@/components/Modals";
 import { GuardScreen } from "@/components/GuardScreen";
 import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
-import { submitGuess, fetchUserStats, setFid as setApiFid } from "@/lib/api";
+import { submitGuess, fetchUserStats, setFid as setApiFid, fetchHint } from "@/lib/api";
 import { getFormattedDate } from "@/lib/date";
 import { normalizeGuess, isValidGuess } from "@/lib/words";
 import type { TileFeedback, GameStatus, UserStats } from "@shared/schema";
@@ -33,6 +33,7 @@ export default function Game() {
   const [colorBlindMode, setColorBlindMode] = useState(() => {
     return localStorage.getItem("colorBlindMode") === "true";
   });
+  const [hintUsed, setHintUsed] = useState(false);
   
   const { toast } = useToast();
 
@@ -229,6 +230,27 @@ export default function Game() {
     localStorage.setItem("colorBlindMode", enabled.toString());
   };
 
+  const handleHintClick = async () => {
+    if (hintUsed || gameStatus !== "playing") return;
+    
+    try {
+      const hintData = await fetchHint();
+      setHintUsed(true);
+      
+      toast({
+        title: "💡 Hint Revealed!",
+        description: `Position ${hintData.position + 1}: Letter "${hintData.letter}"`,
+        duration: 5000,
+      });
+    } catch (err) {
+      toast({
+        title: "Failed to get hint",
+        description: err instanceof Error ? err.message : "Try again",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -251,7 +273,7 @@ export default function Game() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950">
       <Header
         streak={stats.streak}
         maxStreak={stats.maxStreak}
@@ -259,10 +281,28 @@ export default function Game() {
         onSettingsClick={() => setShowSettings(true)}
         onStatsClick={() => setShowStats(true)}
         onHelpClick={() => setShowHelp(true)}
+        onHintClick={handleHintClick}
+        hintUsed={hintUsed}
       />
 
       <main className="flex-1 flex flex-col items-center justify-between py-8 px-4">
         <div className="w-full max-w-2xl flex-1 flex flex-col justify-center">
+          {/* Stats Badge */}
+          <div className="grid grid-cols-3 gap-4 mb-8 px-4">
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-3xl font-bold text-primary" data-testid="stat-streak">{stats.streak}</div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wider">Current Streak</div>
+            </div>
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-3xl font-bold text-primary" data-testid="stat-max-streak">{stats.maxStreak}</div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wider">Max Streak</div>
+            </div>
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-3xl font-bold text-primary" data-testid="stat-remaining">{stats.remainingAttempts}</div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wider">Remaining</div>
+            </div>
+          </div>
+          
           <Board
             guesses={guesses}
             currentGuess={currentGuess}

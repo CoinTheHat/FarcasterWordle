@@ -23,14 +23,14 @@ export function Keyboard({ onKeyPress, onEnter, onDelete, letterStates, colorBli
     const state = letterStates.get(key);
     
     if (!state || state === "empty") {
-      return "bg-muted text-muted-foreground hover:bg-muted";
+      return "bg-card/80 backdrop-blur-sm text-card-foreground hover:bg-card shadow-md";
     }
 
     const stateClasses = {
-      correct: "bg-primary text-primary-foreground hover:bg-primary",
-      present: "bg-[hsl(48_96%_53%)] text-foreground dark:text-background hover:bg-[hsl(48_96%_53%)]",
-      absent: "bg-secondary text-secondary-foreground hover:bg-secondary opacity-60",
-      empty: "bg-muted text-muted-foreground hover:bg-muted",
+      correct: "bg-primary text-primary-foreground hover:bg-primary shadow-lg shadow-primary/30",
+      present: "bg-[hsl(45_100%_55%)] text-gray-900 dark:text-gray-900 hover:bg-[hsl(45_100%_55%)] shadow-md shadow-yellow-500/30",
+      absent: "bg-secondary text-secondary-foreground hover:bg-secondary opacity-50",
+      empty: "bg-card/80 backdrop-blur-sm text-card-foreground hover:bg-card shadow-md",
     };
 
     return cn(
@@ -53,9 +53,9 @@ export function Keyboard({ onKeyPress, onEnter, onDelete, letterStates, colorBli
   };
 
   return (
-    <div className="w-full max-w-md mx-auto px-2 pb-4" data-testid="keyboard">
+    <div className="w-full max-w-md mx-auto px-2 pb-4 bg-card/40 backdrop-blur-md rounded-2xl p-4 border border-card-border shadow-xl" data-testid="keyboard">
       {KEYBOARD_ROWS.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex gap-1 justify-center mb-2">
+        <div key={rowIndex} className="flex gap-1.5 justify-center mb-2">
           {row.map((key) => {
             const isAction = key === "ENTER" || key === "DELETE";
             
@@ -65,10 +65,10 @@ export function Keyboard({ onKeyPress, onEnter, onDelete, letterStates, colorBli
                 onClick={() => handleKeyClick(key)}
                 disabled={disabled}
                 className={cn(
-                  "h-12 font-semibold text-sm rounded-md transition-all",
+                  "h-12 font-semibold text-sm rounded-lg transition-all duration-150",
                   isAction ? "min-w-16 px-2" : "min-w-8 w-8 md:w-10 px-1",
                   !isAction && getKeyClasses(key),
-                  isAction && "bg-accent text-accent-foreground hover:bg-accent"
+                  isAction && "bg-card/90 backdrop-blur-sm text-card-foreground hover:bg-card shadow-lg border border-card-border"
                 )}
                 data-testid={`key-${key.toLowerCase()}`}
               >

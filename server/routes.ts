@@ -164,6 +164,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  app.get("/api/hint", requireAuth, (req: AuthRequest, res: Response) => {
+    const today = getTodayDateString();
+    const solution = getWordOfTheDay(today);
+    
+    const randomPosition = Math.floor(Math.random() * 5);
+    const letter = solution[randomPosition];
+    
+    res.json({
+      position: randomPosition,
+      letter,
+      hint: `The letter at position ${randomPosition + 1} is "${letter}"`
+    });
+  });
+
   app.get("/api/board", (req: Request, res: Response) => {
     const date = (req.query.date as string) || getTodayDateString();
     const stats = getBoardStats(date);

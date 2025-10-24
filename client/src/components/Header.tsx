@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Settings, TrendingUp, HelpCircle } from "lucide-react";
+import { Settings, TrendingUp, HelpCircle, Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface HeaderProps {
@@ -9,21 +9,36 @@ interface HeaderProps {
   onSettingsClick: () => void;
   onStatsClick: () => void;
   onHelpClick: () => void;
+  onHintClick: () => void;
+  hintUsed?: boolean;
 }
 
-export function Header({ streak, maxStreak, todayDate, onSettingsClick, onStatsClick, onHelpClick }: HeaderProps) {
+export function Header({ streak, maxStreak, todayDate, onSettingsClick, onStatsClick, onHelpClick, onHintClick, hintUsed = false }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center justify-between px-4 max-w-2xl mx-auto">
-        <Button
-          size="icon"
-          variant="ghost"
-          onClick={onHelpClick}
-          data-testid="button-help"
-          className="w-10 h-10"
-        >
-          <HelpCircle className="w-5 h-5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={onHelpClick}
+            data-testid="button-help"
+            className="w-10 h-10"
+          >
+            <HelpCircle className="w-5 h-5" />
+          </Button>
+          
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={onHintClick}
+            data-testid="button-hint"
+            className="w-10 h-10"
+            disabled={hintUsed}
+          >
+            <Lightbulb className={`w-5 h-5 ${hintUsed ? 'text-yellow-500' : ''}`} />
+          </Button>
+        </div>
 
         <div className="flex flex-col items-center">
           <h1 className="text-2xl font-bold tracking-tight" data-testid="text-title">

@@ -62,3 +62,21 @@ export async function checkVersion(): Promise<{ version: string }> {
   }
   return response.json();
 }
+
+export interface HintResponse {
+  position: number;
+  letter: string;
+  hint: string;
+}
+
+export async function fetchHint(): Promise<HintResponse> {
+  const response = await fetch("/api/hint", {
+    headers: getHeaders(),
+  });
+  
+  if (!response.ok) {
+    throw new Error("Failed to fetch hint");
+  }
+  
+  return response.json();
+}

@@ -25,8 +25,8 @@ export function Tile({ letter, feedback, position, isRevealing, colorBlindMode }
     }
 
     const feedbackClasses = {
-      correct: "bg-primary border-primary text-primary-foreground",
-      present: "bg-[hsl(48_96%_53%)] border-[hsl(48_96%_45%)] text-foreground dark:text-background",
+      correct: "bg-primary border-primary text-primary-foreground shadow-lg shadow-primary/20",
+      present: "bg-[hsl(45_100%_55%)] border-[hsl(45_100%_48%)] text-gray-900 dark:text-gray-900 shadow-md shadow-yellow-500/20",
       absent: "bg-muted border-muted-border text-muted-foreground",
       empty: "border-border bg-background text-foreground",
     };
