@@ -18,7 +18,12 @@ export const dailyResults = pgTable("daily_results", {
   won: boolean("won").notNull(),
   score: integer("score").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-});
+}, (table) => ({
+  uniqueFidDate: {
+    columns: [table.fid, table.yyyymmdd],
+    isUnique: true,
+  },
+}));
 
 export const streaks = pgTable("streaks", {
   fid: integer("fid").primaryKey(),

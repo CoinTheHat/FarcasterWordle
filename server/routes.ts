@@ -281,27 +281,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       activeGame.won = won;
       
       // CRITICAL FIX: Save game result immediately when game ends
-      // This prevents unlimited replays after refresh
-      // Save result to DB immediately (before TX)
-      await createDailyResult(fid, today, activeGame.attemptsUsed, won, activeGame.totalScore);
-      
-      // Update streak
-      const streak = await getOrCreateStreak(fid);
-      let newCurrentStreak = streak.currentStreak;
-      let newMaxStreak = streak.maxStreak;
+      // Use try-catch to handle unique constraint violations gracefully
+      try {
+        await createDailyResult(fid, today, activeGame.attemptsUsed, won, activeGame.totalScore);
+        
+        // Update streak
+        const streak = await getOrCreateStreak(fid);
+        let newCurrentStreak = streak.currentStreak;
+        let newMaxStreak = streak.maxStreak;
 
-      if (won) {
-        if (isConsecutiveDay(streak.lastPlayedYyyymmdd, today)) {
-          newCurrentStreak = streak.currentStreak + 1;
+        if (won) {
+          if (isConsecutiveDay(streak.lastPlayedYyyymmdd, today)) {
+            newCurrentStreak = streak.currentStreak + 1;
+          } else {
+            newCurrentStreak = 1;
+          }
+          newMaxStreak = Math.max(newMaxStreak, newCurrentStreak);
         } else {
-          newCurrentStreak = 1;
+          newCurrentStreak = 0;
         }
-        newMaxStreak = Math.max(newMaxStreak, newCurrentStreak);
-      } else {
-        newCurrentStreak = 0;
-      }
 
-      await updateStreak(fid, newCurrentStreak, newMaxStreak, today);
+        await updateStreak(fid, newCurrentStreak, newMaxStreak, today);
+      } catch (error: any) {
+        // If unique constraint violation, game was already saved (race condition)
+        // This is fine - just continue
+        if (error?.code !== '23505') {
+          throw error;
+        }
+      }
       
       // CRITICAL FIX: Mark session as completed to prevent stale session reuse
       activeGame.completed = true;
