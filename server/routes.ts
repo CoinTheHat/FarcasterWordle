@@ -160,22 +160,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (game.completed) {
           // Clean up completed sessions
           activeGames.delete(sid);
-        } else {
-          // Found active session - reuse it
+        } else if (!existingSession) {
+          // Found active session - reuse it (only set first match)
           existingSession = game;
           existingSessionId = sid;
         }
       }
     });
 
-    // If active session exists, validate it's for today before reusing
+    // If active session exists, validate it's for today AND same language before reusing
     if (existingSession && existingSessionId) {
       // CRITICAL FIX: Check if session is from today
       // If session is stale (from previous day), delete it and create new one
       const sessionDate = existingSession.createdAt ? existingSession.createdAt.substring(0, 10).replace(/-/g, '') : '';
       
-      if (sessionDate === today) {
-        // Session is from today, safe to reuse
+      if (sessionDate === today && existingSession.language === language) {
+        // Session is from today and same language, safe to reuse
         res.json({
           sessionId: existingSessionId,
           maxAttempts: MAX_ATTEMPTS,
@@ -183,7 +183,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
         return;
       } else {
-        // Stale session from previous day, delete and create new
+        // Stale session or different language, delete and create new
         activeGames.delete(existingSessionId);
       }
     }

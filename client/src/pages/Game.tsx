@@ -412,6 +412,18 @@ export default function Game() {
   };
 
   const handleLanguageSelect = useCallback((selectedLanguage: Language) => {
+    // Clear game state when changing language
+    setSessionId(null);
+    setGuesses([]);
+    setFeedback([]);
+    setLetterStates(new Map());
+    setGameStatus("playing");
+    setSolution("");
+    setTotalScore(0);
+    setLastRoundScore(0);
+    setGameCompleted(false);
+    setHintUsed(false);
+    
     setLanguage(selectedLanguage);
     localStorage.setItem("wordcast-language", selectedLanguage);
     setShowLanguageModal(false);
