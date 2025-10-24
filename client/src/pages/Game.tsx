@@ -4,7 +4,6 @@ import { Header } from "@/components/Header";
 import { Board } from "@/components/Board";
 import { Keyboard } from "@/components/Keyboard";
 import { GameOverModal, StatsModal, SettingsModal, HelpModal } from "@/components/Modals";
-import { GuardScreen } from "@/components/GuardScreen";
 import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
 import { submitGuess, fetchUserStats, setFid as setApiFid, fetchHint } from "@/lib/api";
 import { getFormattedDate } from "@/lib/date";
@@ -48,14 +47,8 @@ export default function Game() {
     async function init() {
       const fcContext = await initializeFarcaster();
       
-      if (!fcContext.fid) {
-        setError(fcContext.error || "Not in Farcaster");
-        setIsLoading(false);
-        return;
-      }
-
-      setFid(fcContext.fid);
-      setApiFid(fcContext.fid);
+      setFid(fcContext.fid || 12345);
+      setApiFid(fcContext.fid || 12345);
       
       try {
         const userStats = await fetchUserStats();
@@ -315,8 +308,15 @@ export default function Game() {
     );
   }
 
-  if (error || !fid) {
-    return <GuardScreen />;
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="bg-card border border-card-border rounded-lg p-6 max-w-md text-center">
+          <div className="text-destructive text-lg font-semibold mb-2">Error</div>
+          <div className="text-muted-foreground">{error}</div>
+        </div>
+      </div>
+    );
   }
 
   if (!stats) {
