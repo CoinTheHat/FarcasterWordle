@@ -325,4 +325,67 @@
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
   }
+
+  /* Color-blind mode patterns */
+  .pattern-diagonal {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 4px,
+      rgba(0, 0, 0, 0.15) 4px,
+      rgba(0, 0, 0, 0.15) 8px
+    );
+  }
+
+  .dark .pattern-diagonal {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 4px,
+      rgba(255, 255, 255, 0.2) 4px,
+      rgba(255, 255, 255, 0.2) 8px
+    );
+  }
+
+  .pattern-diagonal-sm {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.1) 2px,
+      rgba(0, 0, 0, 0.1) 4px
+    );
+  }
+
+  .dark .pattern-diagonal-sm {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.15) 2px,
+      rgba(255, 255, 255, 0.15) 4px
+    );
+  }
+
+  .pattern-dots {
+    background-image: radial-gradient(
+      circle,
+      rgba(0, 0, 0, 0.1) 1px,
+      transparent 1px
+    );
+    background-size: 6px 6px;
+  }
+
+  .dark .pattern-dots {
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.15) 1px,
+      transparent 1px
+    );
+    background-size: 6px 6px;
+  }
+
+  .pattern-solid {
+    /* No pattern needed for correct - solid color is enough */
+  }
 }
