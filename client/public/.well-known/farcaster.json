@@ -19,9 +19,9 @@
     "url": "https://farcaster-wordle.replit.app/"
   },
   "accountAssociation": {
-    "header": "eyJmaWQiOjUxNTExNiwidHlwZSI6ImF1dGgiLCJrZXkiOiIweGExRGEwNTJiNjBjMTU3ZDc3NjQ5MTE4MWQ2NkU1MzYxRmMyNGIxQkMifQ",
+    "header": "eyJmaWQiOjUxNTExNiwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweEVBMzI1YzUxOTg1MDlENUE1MGIyNjNDNjI4MDNBMjk5MzQyM0ZENTAifQ",
     "payload": "eyJkb21haW4iOiJmYXJjYXN0ZXItd29yZGxlLnJlcGxpdC5hcHAifQ",
-    "signature": "IogODvHJlPqzbQQJNweOECXNV4ESZpe7KbOztaOFepg6mqoHEDnzsvtgypfngaZ8xeT9cYoKu+CrUjFEeQm0xxw="
+    "signature": "6NTOiW3a9nHqDbENr1HUjrodNU/tRu4/hRzpcpUXjFIokIgwiHwUpbYxNytMES4T9/kTykPlOuHmUDoH4FFGnRw="
   },
   "baseBuilder": {
     "ownerAddress": "0x1eC3DC64d41C7f28B17DF84915528173E7911c6E"
