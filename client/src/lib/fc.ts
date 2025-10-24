@@ -7,6 +7,16 @@ export interface FarcasterContext {
 }
 
 export async function initializeFarcaster(): Promise<FarcasterContext> {
+  // In development, use mock FID for testing
+  if (import.meta.env.DEV) {
+    console.log("Development mode: using mock Farcaster FID");
+    return {
+      fid: 12345,
+      isReady: true,
+      error: null,
+    };
+  }
+
   try {
     const context = await sdk.context;
     
