@@ -346,17 +346,21 @@ export default function Game() {
       <main className="flex-1 flex flex-col items-center justify-between py-8 px-4">
         <div className="w-full max-w-2xl flex-1 flex flex-col justify-center">
           {/* Stats Badge */}
-          <div className="grid grid-cols-3 gap-4 mb-8 px-4">
-            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-4 text-center shadow-lg hover-elevate transition-all">
-              <div className="text-3xl font-bold text-primary" data-testid="stat-streak">{stats.streak}</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8 px-4">
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-3 md:p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-2xl md:text-3xl font-bold text-primary" data-testid="stat-streak">{stats.streak}</div>
               <div className="text-xs text-muted-foreground uppercase tracking-wider">Current Streak</div>
             </div>
-            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-4 text-center shadow-lg hover-elevate transition-all">
-              <div className="text-3xl font-bold text-primary" data-testid="stat-max-streak">{stats.maxStreak}</div>
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-3 md:p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-2xl md:text-3xl font-bold text-primary" data-testid="stat-max-streak">{stats.maxStreak}</div>
               <div className="text-xs text-muted-foreground uppercase tracking-wider">Max Streak</div>
             </div>
-            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-4 text-center shadow-lg hover-elevate transition-all">
-              <div className="text-3xl font-bold text-primary" data-testid="stat-remaining">{stats.remainingAttempts}</div>
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-3 md:p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-2xl md:text-3xl font-bold text-amber-500" data-testid="stat-score">{totalScore}</div>
+              <div className="text-xs text-muted-foreground uppercase tracking-wider">Score</div>
+            </div>
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-3 md:p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-2xl md:text-3xl font-bold text-primary" data-testid="stat-remaining">{stats.remainingAttempts}</div>
               <div className="text-xs text-muted-foreground uppercase tracking-wider">Remaining</div>
             </div>
           </div>

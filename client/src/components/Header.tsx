@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy, Wallet } from "lucide-react";
+import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy, Wallet, Home } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link, useLocation } from "wouter";
 
@@ -77,7 +77,7 @@ export function Header({
                 data-testid="button-back-home"
                 className="w-10 h-10"
               >
-                <HelpCircle className="w-5 h-5" />
+                <Home className="w-5 h-5" />
               </Button>
             </Link>
           )}
