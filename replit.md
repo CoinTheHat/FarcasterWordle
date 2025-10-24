@@ -21,6 +21,8 @@ Preferred communication style: Simple, everyday language.
 - Replay support: User can cancel TX and play again with different word
 - Security: Backend validates TX hash format before persisting to daily_results
 - UX: Clear toast messages explain what happened during TX cancellation/failure
+- Fixed splash screen: Removed visible color codes, clean professional design
+- Wagmi integration: Using @farcaster/miniapp-wagmi-connector for proper wallet support
 
 **October 24, 2025 - Leaderboard & Mobile Responsive**
 - Added daily and weekly leaderboards with rankings
