@@ -94,10 +94,6 @@ export function Header({
               <p className="text-xs text-muted-foreground" data-testid="text-date">
                 {todayDate}
               </p>
-              <span className="text-xs text-muted-foreground">•</span>
-              <p className="text-xs text-muted-foreground" data-testid="text-word-count">
-                120 words
-              </p>
               {showScore && totalScore > 0 && (
                 <>
                   <span className="text-xs text-muted-foreground">•</span>

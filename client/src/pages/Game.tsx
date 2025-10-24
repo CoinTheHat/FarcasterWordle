@@ -145,7 +145,7 @@ export default function Game() {
       if (currentGuess.length > 0 && currentGuess.length < 5) {
         toast({
           title: "Not enough letters",
-          description: "Please enter a 5-letter word",
+          description: `Need ${5 - currentGuess.length} more letter${5 - currentGuess.length === 1 ? '' : 's'}`,
           variant: "destructive",
           duration: 2000,
         });
