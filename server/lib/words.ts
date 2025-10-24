@@ -105,10 +105,15 @@ export function getWordOfTheDay(yyyymmdd: string, language: Language = "en"): st
   return words[index];
 }
 
-export function isValidGuess(guess: string): boolean {
+export function isValidGuess(guess: string, language: Language = 'en'): boolean {
   const normalized = guess.toUpperCase().trim();
-  // Accept any 5-letter word with A-Z characters
-  return normalized.length === 5 && /^[A-Z]{5}$/.test(normalized);
+  
+  if (normalized.length !== 5 || !/^[A-Z]{5}$/.test(normalized)) {
+    return false;
+  }
+  
+  const allowedGuesses = language === 'tr' ? ALLOWED_GUESSES_TR : ALLOWED_GUESSES_EN;
+  return allowedGuesses.has(normalized);
 }
 
 export function calculateFeedback(guess: string, solution: string): ("correct" | "present" | "absent")[] {

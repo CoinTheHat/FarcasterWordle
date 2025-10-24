@@ -157,15 +157,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     const normalized = guess.toUpperCase().trim();
 
-    if (!isValidGuess(normalized)) {
-      res.status(400).json({ error: "Not a valid word" });
-      return;
-    }
-
     const activeGame = activeGames.get(sessionId);
 
     if (!activeGame) {
       res.status(400).json({ error: "Game session not found or expired. Please start a new game." });
+      return;
+    }
+
+    if (!isValidGuess(normalized, activeGame.language)) {
+      res.status(400).json({ error: "Not a valid word" });
       return;
     }
 

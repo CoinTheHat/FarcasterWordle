@@ -60,15 +60,15 @@ export default function Game() {
       setFid(fcContext.fid || 12345);
       setApiFid(fcContext.fid || 12345);
       
-      if (!language) {
-        setShowLanguageModal(true);
-        setIsLoading(false);
-        return;
-      }
-      
       try {
         const userStats = await fetchUserStats();
         setStats(userStats);
+        
+        if (!language) {
+          setShowLanguageModal(true);
+          setIsLoading(false);
+          return;
+        }
         
         if (userStats.remainingAttempts === 0) {
           setGameCompleted(true);
@@ -436,10 +436,12 @@ export default function Game() {
         totalScore={totalScore}
         walletConnected={isConnected}
         walletAddress={address}
+        currentLanguage={language || undefined}
         onSettingsClick={() => setShowSettings(true)}
         onStatsClick={() => setShowStats(true)}
         onHelpClick={() => setShowHelp(true)}
         onHintClick={handleHintClick}
+        onLanguageClick={() => setShowLanguageModal(true)}
         hintUsed={hintUsed}
       />
 

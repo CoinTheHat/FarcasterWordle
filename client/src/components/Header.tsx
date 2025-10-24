@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy, Wallet, Home } from "lucide-react";
+import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy, Wallet, Home, Globe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link, useLocation } from "wouter";
+import type { Language } from "@shared/schema";
 
 interface HeaderProps {
   streak?: number;
@@ -11,10 +12,12 @@ interface HeaderProps {
   showScore?: boolean;
   walletConnected?: boolean;
   walletAddress?: string;
+  currentLanguage?: Language;
   onSettingsClick?: () => void;
   onStatsClick?: () => void;
   onHelpClick?: () => void;
   onHintClick?: () => void;
+  onLanguageClick?: () => void;
   hintUsed?: boolean;
 }
 
@@ -26,10 +29,12 @@ export function Header({
   showScore = true,
   walletConnected = false,
   walletAddress,
+  currentLanguage,
   onSettingsClick, 
   onStatsClick, 
   onHelpClick, 
   onHintClick, 
+  onLanguageClick,
   hintUsed = false 
 }: HeaderProps) {
   const [location] = useLocation();
@@ -44,6 +49,19 @@ export function Header({
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center justify-between px-4 max-w-2xl mx-auto">
         <div className="flex items-center gap-2">
+          {onLanguageClick && currentLanguage && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onLanguageClick}
+              data-testid="button-language"
+              className="h-10 px-3 gap-1.5"
+            >
+              <Globe className="w-4 h-4" />
+              <span className="font-semibold">{currentLanguage.toUpperCase()}</span>
+            </Button>
+          )}
+          
           {isGame && onHelpClick && (
             <>
               <Button
