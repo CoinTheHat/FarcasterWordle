@@ -20,6 +20,7 @@ interface GameOverModalProps {
   totalScore?: number;
   walletConnected?: boolean;
   isSavingScore?: boolean;
+  gameCompleted?: boolean;
   onShare: () => void;
   onSaveScore?: () => void;
 }
@@ -35,6 +36,7 @@ export function GameOverModal({
   totalScore = 0,
   walletConnected = false,
   isSavingScore = false,
+  gameCompleted = false,
   onShare,
   onSaveScore,
 }: GameOverModalProps) {
@@ -95,35 +97,54 @@ export function GameOverModal({
           </div>
 
           <div className="space-y-3">
+            {!gameCompleted && walletConnected && onSaveScore && totalScore > 0 && (
+              <>
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 text-center">
+                  <p className="text-sm text-amber-600 dark:text-amber-400 font-medium">
+                    ⚠️ Save to blockchain to count for leaderboards & streaks!
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Without saving, you can play again with a new word
+                  </p>
+                </div>
+                <Button
+                  className="w-full h-12 text-base font-semibold gap-2"
+                  onClick={onSaveScore}
+                  disabled={isSavingScore}
+                  variant="default"
+                  data-testid="button-save-score"
+                >
+                  {isSavingScore ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Trophy className="w-5 h-5" />
+                      Save Score to Blockchain
+                    </>
+                  )}
+                </Button>
+              </>
+            )}
+
             <Button
               className="w-full h-12 text-base font-semibold gap-2"
               onClick={onShare}
+              variant={gameCompleted ? "default" : "outline"}
               data-testid="button-share"
             >
               <Share2 className="w-5 h-5" />
               Share Result
             </Button>
 
-            {walletConnected && onSaveScore && totalScore > 0 && (
-              <Button
-                className="w-full h-12 text-base font-semibold gap-2"
-                onClick={onSaveScore}
-                disabled={isSavingScore}
-                variant="outline"
-                data-testid="button-save-score"
-              >
-                {isSavingScore ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Trophy className="w-5 h-5" />
-                    Save Score to Blockchain
-                  </>
-                )}
-              </Button>
+            {gameCompleted && (
+              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 text-center">
+                <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+                  ✅ Score saved to blockchain! Come back tomorrow for a new word.
+                </p>
+              </div>
             )}
           </div>
 

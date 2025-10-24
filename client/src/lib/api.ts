@@ -29,16 +29,56 @@ export async function fetchUserStats(): Promise<UserStats> {
   return response.json();
 }
 
-export async function submitGuess(guess: string): Promise<GuessResponse> {
+export interface StartGameResponse {
+  sessionId: string;
+  maxAttempts: number;
+}
+
+export async function startGame(): Promise<StartGameResponse> {
+  const response = await fetch("/api/start-game", {
+    method: "POST",
+    headers: getHeaders(),
+  });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: "Failed to start game" }));
+    throw new Error(error.error || error.message || "Failed to start game");
+  }
+  
+  return response.json();
+}
+
+export async function submitGuess(guess: string, sessionId: string): Promise<GuessResponse> {
   const response = await fetch("/api/guess", {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify({ guess }),
+    body: JSON.stringify({ guess, sessionId }),
   });
   
   if (!response.ok) {
     const error = await response.json().catch(() => ({ message: "Failed to submit guess" }));
     throw new Error(error.error || error.message || "Failed to submit guess");
+  }
+  
+  return response.json();
+}
+
+export interface CompleteGameResponse {
+  success: boolean;
+  streak: number;
+  maxStreak: number;
+}
+
+export async function completeGame(sessionId: string, txHash: string): Promise<CompleteGameResponse> {
+  const response = await fetch("/api/complete-game", {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ sessionId, txHash }),
+  });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: "Failed to complete game" }));
+    throw new Error(error.error || error.message || "Failed to complete game");
   }
   
   return response.json();
@@ -69,8 +109,8 @@ export interface HintResponse {
   hint: string;
 }
 
-export async function fetchHint(): Promise<HintResponse> {
-  const response = await fetch("/api/hint", {
+export async function fetchHint(sessionId: string): Promise<HintResponse> {
+  const response = await fetch(`/api/hint?sessionId=${sessionId}`, {
     headers: getHeaders(),
   });
   

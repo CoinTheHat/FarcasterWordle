@@ -5,7 +5,7 @@ import { Board } from "@/components/Board";
 import { Keyboard } from "@/components/Keyboard";
 import { GameOverModal, StatsModal, SettingsModal, HelpModal } from "@/components/Modals";
 import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
-import { submitGuess, fetchUserStats, setFid as setApiFid, fetchHint } from "@/lib/api";
+import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame } from "@/lib/api";
 import { getFormattedDate } from "@/lib/date";
 import { normalizeGuess, isValidGuess } from "@/lib/words";
 import type { TileFeedback, GameStatus, UserStats } from "@shared/schema";
@@ -22,6 +22,7 @@ export default function Game() {
   const [error, setError] = useState<string | null>(null);
   
   const [stats, setStats] = useState<UserStats | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [guesses, setGuesses] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState("");
   const [feedback, setFeedback] = useState<TileFeedback[][]>([]);
@@ -31,6 +32,7 @@ export default function Game() {
   const [revealingRow, setRevealingRow] = useState<number | undefined>();
   const [totalScore, setTotalScore] = useState(0);
   const [lastRoundScore, setLastRoundScore] = useState(0);
+  const [gameCompleted, setGameCompleted] = useState(false);
   
   const [showGameOver, setShowGameOver] = useState(false);
   const [showStats, setShowStats] = useState(false);
@@ -55,7 +57,12 @@ export default function Game() {
         setStats(userStats);
         
         if (userStats.remainingAttempts === 0) {
-          setGameStatus("lost");
+          setGameStatus("completed");
+          setGameCompleted(true);
+          setShowGameOver(true);
+        } else {
+          const gameSession = await startGame();
+          setSessionId(gameSession.sessionId);
         }
       } catch (err) {
         console.error("Failed to load stats:", err);
@@ -75,6 +82,16 @@ export default function Game() {
   }, [isConnected, connectors, connect]);
 
   const handleSaveScore = useCallback(async () => {
+    if (!sessionId) {
+      toast({
+        title: "No active game",
+        description: "Please start a game first",
+        variant: "destructive",
+        duration: 2000,
+      });
+      return;
+    }
+
     if (!isConnected || !address) {
       toast({
         title: "Wallet not connected",
@@ -94,21 +111,46 @@ export default function Game() {
         data: scoreHex as `0x${string}`,
       });
 
+      const result = await completeGame(sessionId, hash);
+
+      setGameCompleted(true);
+      setStats(prev => prev ? {
+        ...prev,
+        streak: result.streak,
+        maxStreak: result.maxStreak,
+        remainingAttempts: 0,
+      } : null);
+
       toast({
         title: "Score saved!",
-        description: `Score ${totalScore} recorded on blockchain`,
+        description: `Score ${totalScore} recorded on blockchain. Streak: ${result.streak}`,
         duration: 3000,
       });
     } catch (err) {
       console.error("Blockchain save error:", err);
-      toast({
-        title: "Failed to save score",
-        description: err instanceof Error ? err.message : "Transaction failed",
-        variant: "destructive",
-        duration: 2000,
-      });
+      
+      const isUserRejection = err instanceof Error && 
+        (err.message.includes("User rejected") || 
+         err.message.includes("User denied") ||
+         err.message.includes("rejected"));
+
+      if (isUserRejection) {
+        toast({
+          title: "Transaction cancelled",
+          description: "⚠️ Without saving to blockchain, your score won't count for leaderboards or streaks. You can play again with a new word!",
+          variant: "destructive",
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Failed to save score",
+          description: err instanceof Error ? err.message : "Transaction failed",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
     }
-  }, [isConnected, address, totalScore, sendTransactionAsync, toast]);
+  }, [sessionId, isConnected, address, totalScore, sendTransactionAsync, toast]);
 
   const updateLetterStates = useCallback((guess: string, fb: TileFeedback[]) => {
     setLetterStates((prev) => {
@@ -154,6 +196,16 @@ export default function Game() {
       return;
     }
 
+    if (!sessionId) {
+      toast({
+        title: "No active game",
+        description: "Please refresh the page",
+        variant: "destructive",
+        duration: 2000,
+      });
+      return;
+    }
+
     const normalized = normalizeGuess(currentGuess);
     
     if (!isValidGuess(normalized)) {
@@ -167,7 +219,7 @@ export default function Game() {
     }
 
     try {
-      const response = await submitGuess(normalized);
+      const response = await submitGuess(normalized, sessionId);
       
       const newGuesses = [...guesses, normalized];
       const newFeedback = [...feedback, response.feedback];
@@ -191,35 +243,13 @@ export default function Game() {
         setSolution(normalized);
         setTimeout(() => {
           setShowGameOver(true);
-          if (stats) {
-            setStats({
-              ...stats,
-              streak: stats.streak + 1,
-              maxStreak: Math.max(stats.maxStreak, stats.streak + 1),
-              remainingAttempts: response.remainingAttempts,
-            });
-          }
         }, 1000);
       } else if (response.gameOver) {
         setGameStatus("lost");
         setSolution(response.solution || "");
         setTimeout(() => {
           setShowGameOver(true);
-          if (stats) {
-            setStats({
-              ...stats,
-              streak: 0,
-              remainingAttempts: response.remainingAttempts,
-            });
-          }
         }, 1000);
-      } else {
-        if (stats) {
-          setStats({
-            ...stats,
-            remainingAttempts: response.remainingAttempts,
-          });
-        }
       }
     } catch (err) {
       toast({
@@ -229,7 +259,7 @@ export default function Game() {
         duration: 2000,
       });
     }
-  }, [gameStatus, currentGuess, guesses, feedback, stats, toast, updateLetterStates]);
+  }, [gameStatus, currentGuess, sessionId, guesses, feedback, toast, updateLetterStates]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -280,10 +310,10 @@ export default function Game() {
   };
 
   const handleHintClick = async () => {
-    if (hintUsed || gameStatus !== "playing") return;
+    if (hintUsed || gameStatus !== "playing" || !sessionId) return;
     
     try {
-      const hintData = await fetchHint();
+      const hintData = await fetchHint(sessionId);
       setHintUsed(true);
       
       toast({
@@ -424,6 +454,7 @@ export default function Game() {
         totalScore={totalScore}
         walletConnected={isConnected}
         isSavingScore={isSendingTx}
+        gameCompleted={gameCompleted}
         onShare={handleShare}
         onSaveScore={handleSaveScore}
       />
