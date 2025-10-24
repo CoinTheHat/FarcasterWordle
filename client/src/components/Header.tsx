@@ -57,7 +57,7 @@ export function Header({
               data-testid="button-language"
               className="h-8 w-8 md:h-10 md:w-auto md:px-3 md:gap-1.5"
             >
-              <Globe className="w-4 h-4" />
+              <span className="text-base">{currentLanguage === 'tr' ? '🇹🇷' : '🇬🇧'}</span>
               <span className="hidden md:inline font-semibold">{currentLanguage.toUpperCase()}</span>
             </Button>
           )}
