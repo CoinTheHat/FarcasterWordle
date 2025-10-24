@@ -109,11 +109,10 @@ export function getWordOfTheDay(yyyymmdd: string, language: Language = "en"): st
 }
 
 export function normalizeGuess(guess: string, language: Language = 'en'): string {
-  // Use Turkish locale only for Turkish language to handle i → İ properly
-  // Use standard uppercase for English to avoid İ issues
-  if (language === 'tr') {
-    return guess.toLocaleUpperCase('tr-TR').trim();
-  }
+  // For Turkish: Use standard toUpperCase() instead of toLocaleUpperCase('tr-TR')
+  // This treats both "i" and "ı" the same way (both become "I")
+  // This fixes the confusion where "garip" and "garıp" would be treated differently
+  // Our word list uses "I" (dotless) consistently for both letters
   return guess.toUpperCase().trim();
 }
 
