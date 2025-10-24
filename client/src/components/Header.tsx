@@ -11,6 +11,7 @@ interface HeaderProps {
   showScore?: boolean;
   walletConnected?: boolean;
   walletAddress?: string;
+  burnerBalance?: string;
   onSettingsClick?: () => void;
   onStatsClick?: () => void;
   onHelpClick?: () => void;
@@ -26,6 +27,7 @@ export function Header({
   showScore = true,
   walletConnected = false,
   walletAddress,
+  burnerBalance,
   onSettingsClick, 
   onStatsClick, 
   onHelpClick, 
@@ -107,6 +109,12 @@ export function Header({
         </div>
 
         <div className="flex items-center gap-2">
+          {burnerBalance && parseFloat(burnerBalance) > 0 && (
+            <Badge variant="outline" className="flex items-center gap-1 text-xs" data-testid="badge-burner">
+              ⚡ {parseFloat(burnerBalance).toFixed(4)} ETH
+            </Badge>
+          )}
+          
           {walletConnected && walletAddress && (
             <Badge variant="secondary" className="hidden md:flex items-center gap-1" data-testid="badge-wallet">
               <Wallet className="w-3 h-3" />
