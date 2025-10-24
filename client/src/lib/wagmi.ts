@@ -5,7 +5,8 @@ import { farcasterMiniApp as miniAppConnector } from '@farcaster/miniapp-wagmi-c
 export const wagmiConfig = createConfig({
   chains: [base],
   transports: {
-    [base.id]: http(),
+    [base.id]: http('https://mainnet.base.org'),
   },
   connectors: [miniAppConnector()],
+  ssr: false,
 });

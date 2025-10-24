@@ -104,14 +104,18 @@ export default function Game() {
 
     setIsSavingScore(true);
     try {
+      console.log("Preparing transaction:", { address, totalScore, sessionId });
       const scoreHex = `0x${totalScore.toString(16).padStart(64, '0')}`;
+      console.log("Score hex:", scoreHex);
       
       const hash = await sendTransactionAsync({
         to: address as `0x${string}`,
         value: BigInt(0),
         data: scoreHex as `0x${string}`,
+        chainId: 8453, // Base mainnet
       });
 
+      console.log("Transaction hash:", hash);
       const result = await completeGame(sessionId, hash);
 
       setGameCompleted(true);
@@ -129,12 +133,19 @@ export default function Game() {
       });
     } catch (err) {
       console.error("Blockchain save error:", err);
+      console.error("Error details:", {
+        message: err instanceof Error ? err.message : 'Unknown error',
+        name: err instanceof Error ? err.name : 'Unknown',
+        stack: err instanceof Error ? err.stack : 'No stack',
+        raw: err
+      });
       
-      const isUserRejection = err instanceof Error && 
-        (err.message.includes("User rejected") || 
-         err.message.includes("User denied") ||
-         err.message.includes("rejected") ||
-         err.message.includes("cancelled"));
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      const isUserRejection = errorMessage.includes("User rejected") || 
+         errorMessage.includes("User denied") ||
+         errorMessage.includes("rejected") ||
+         errorMessage.includes("cancelled") ||
+         errorMessage.includes("user rejected");
 
       if (isUserRejection) {
         toast({
@@ -145,10 +156,10 @@ export default function Game() {
         });
       } else {
         toast({
-          title: "Failed to save score",
-          description: err instanceof Error ? err.message : "Transaction failed. Starting a new game!",
+          title: "Transaction failed",
+          description: errorMessage.length > 100 ? "Network error. Please try again." : errorMessage,
           variant: "destructive",
-          duration: 3000,
+          duration: 4000,
         });
       }
 
