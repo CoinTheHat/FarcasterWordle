@@ -215,6 +215,8 @@ interface SettingsModalProps {
   onClose: () => void;
   colorBlindMode: boolean;
   onColorBlindToggle: (enabled: boolean) => void;
+  currentUsername: string | null;
+  onUsernameUpdate: (username: string) => Promise<void>;
 }
 
 export function SettingsModal({
@@ -222,7 +224,41 @@ export function SettingsModal({
   onClose,
   colorBlindMode,
   onColorBlindToggle,
+  currentUsername,
+  onUsernameUpdate,
 }: SettingsModalProps) {
+  const [username, setUsername] = React.useState(currentUsername || "");
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [success, setSuccess] = React.useState(false);
+
+  React.useEffect(() => {
+    setUsername(currentUsername || "");
+    setError(null);
+    setSuccess(false);
+  }, [currentUsername, isOpen]);
+
+  const handleSaveUsername = async () => {
+    if (!username.trim()) {
+      setError("Username cannot be empty");
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      await onUsernameUpdate(username.trim());
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err: any) {
+      setError(err.message || "Failed to update username");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-sm" data-testid="modal-settings">
@@ -232,6 +268,44 @@ export function SettingsModal({
         </DialogHeader>
 
         <div className="space-y-4 py-4">
+          <div className="space-y-3 p-4 rounded-lg border">
+            <div className="flex flex-col gap-1">
+              <span className="font-medium">Username</span>
+              <span className="text-sm text-muted-foreground">
+                Display name for leaderboard (letters, numbers, -, _)
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter username"
+                maxLength={20}
+                className="flex-1 h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                data-testid="input-username"
+              />
+              <Button
+                onClick={handleSaveUsername}
+                disabled={isSaving || !username.trim()}
+                size="sm"
+                data-testid="button-save-username"
+              >
+                {isSaving ? "Saving..." : "Save"}
+              </Button>
+            </div>
+            {error && (
+              <p className="text-sm text-red-500" data-testid="text-username-error">
+                {error}
+              </p>
+            )}
+            {success && (
+              <p className="text-sm text-green-600 dark:text-green-400" data-testid="text-username-success">
+                ✓ Username updated successfully
+              </p>
+            )}
+          </div>
+
           <div className="flex items-center justify-between p-4 rounded-lg border">
             <div className="flex flex-col gap-1">
               <span className="font-medium">Color Blind Mode</span>

@@ -46,11 +46,13 @@ export interface GameState {
 
 export interface UserStats {
   fid: number;
+  username: string | null;
   streak: number;
   maxStreak: number;
   lastPlayed: string | null;
   today: string;
   remainingAttempts: number;
+  hasCompletedToday?: boolean;
 }
 
 export const guessRequestSchema = z.object({
@@ -80,6 +82,7 @@ export interface BoardStats {
 
 export interface LeaderboardEntry {
   fid: number;
+  username: string | null;
   score: number;
   attempts: number;
   won: number;

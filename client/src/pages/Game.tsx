@@ -5,7 +5,7 @@ import { Board } from "@/components/Board";
 import { GameOverModal, StatsModal, SettingsModal, HelpModal } from "@/components/Modals";
 import { LanguageModal } from "@/components/LanguageModal";
 import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
-import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame } from "@/lib/api";
+import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame, updateUsername as apiUpdateUsername } from "@/lib/api";
 import { getFormattedDate } from "@/lib/date";
 import { normalizeGuess, isValidGuess } from "@/lib/words";
 import type { TileFeedback, GameStatus, UserStats, Language } from "@shared/schema";
@@ -404,6 +404,16 @@ export default function Game() {
     setShowLanguageModal(false);
   }, []);
 
+  const handleUsernameUpdate = useCallback(async (username: string) => {
+    try {
+      await apiUpdateUsername(username);
+      const updatedStats = await fetchUserStats();
+      setStats(updatedStats);
+    } catch (err: any) {
+      throw new Error(err.message || "Failed to update username");
+    }
+  }, []);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950">
@@ -571,6 +581,8 @@ export default function Game() {
         onClose={() => setShowSettings(false)}
         colorBlindMode={colorBlindMode}
         onColorBlindToggle={handleColorBlindToggle}
+        currentUsername={stats.username}
+        onUsernameUpdate={handleUsernameUpdate}
       />
 
       <HelpModal

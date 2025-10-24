@@ -121,3 +121,23 @@ export async function fetchHint(sessionId: string): Promise<HintResponse> {
   
   return response.json();
 }
+
+export interface UpdateUsernameResponse {
+  success: boolean;
+  username: string;
+}
+
+export async function updateUsername(username: string): Promise<UpdateUsernameResponse> {
+  const response = await fetch("/api/update-username", {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ username }),
+  });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: "Failed to update username" }));
+    throw new Error(error.error || "Failed to update username");
+  }
+  
+  return response.json();
+}

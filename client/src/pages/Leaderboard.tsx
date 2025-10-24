@@ -91,8 +91,8 @@ export default function Leaderboard() {
                         </div>
                         
                         <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-sm md:text-base truncate" data-testid={`text-fid-${entry.rank}`}>
-                            Player {entry.fid}
+                          <div className="font-semibold text-sm md:text-base truncate" data-testid={`text-username-${entry.rank}`}>
+                            {entry.username || `Player ${entry.fid}`}
                           </div>
                           <div className="text-xs md:text-sm text-muted-foreground">
                             {period === "best-scores" ? "Best Score" : entry.won > 0 ? `${entry.won} win${entry.won > 1 ? 's' : ''}` : 'No wins'}
