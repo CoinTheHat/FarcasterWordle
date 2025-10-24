@@ -90,9 +90,13 @@ export function Header({
             </h1>
           </Link>
           {todayDate && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap justify-center">
               <p className="text-xs text-muted-foreground" data-testid="text-date">
                 {todayDate}
+              </p>
+              <span className="text-xs text-muted-foreground">•</span>
+              <p className="text-xs text-muted-foreground" data-testid="text-word-count">
+                120 words
               </p>
               {showScore && totalScore > 0 && (
                 <>
