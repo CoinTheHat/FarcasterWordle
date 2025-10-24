@@ -47,18 +47,18 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center justify-between px-4 max-w-2xl mx-auto">
-        <div className="flex items-center gap-2">
+      <div className="flex h-14 md:h-16 items-center justify-between px-2 md:px-4 max-w-2xl mx-auto gap-1 md:gap-2">
+        <div className="flex items-center gap-0.5 md:gap-2">
           {onLanguageClick && currentLanguage && (
             <Button
-              size="sm"
+              size="icon"
               variant="outline"
               onClick={onLanguageClick}
               data-testid="button-language"
-              className="h-10 px-3 gap-1.5"
+              className="h-8 w-8 md:h-10 md:w-auto md:px-3 md:gap-1.5"
             >
               <Globe className="w-4 h-4" />
-              <span className="font-semibold">{currentLanguage.toUpperCase()}</span>
+              <span className="hidden md:inline font-semibold">{currentLanguage.toUpperCase()}</span>
             </Button>
           )}
           
@@ -69,9 +69,9 @@ export function Header({
                 variant="ghost"
                 onClick={onHelpClick}
                 data-testid="button-help"
-                className="w-10 h-10"
+                className="h-8 w-8 md:w-10 md:h-10"
               >
-                <HelpCircle className="w-5 h-5" />
+                <HelpCircle className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
               
               <Button
@@ -79,10 +79,10 @@ export function Header({
                 variant="ghost"
                 onClick={onHintClick}
                 data-testid="button-hint"
-                className="w-10 h-10"
+                className="h-8 w-8 md:w-10 md:h-10"
                 disabled={hintUsed}
               >
-                <Lightbulb className={`w-5 h-5 ${hintUsed ? 'text-yellow-500' : ''}`} />
+                <Lightbulb className={`w-4 h-4 md:w-5 md:h-5 ${hintUsed ? 'text-yellow-500' : ''}`} />
               </Button>
             </>
           )}
@@ -93,29 +93,29 @@ export function Header({
                 size="icon"
                 variant="ghost"
                 data-testid="button-back-home"
-                className="w-10 h-10"
+                className="h-8 w-8 md:w-10 md:h-10"
               >
-                <Home className="w-5 h-5" />
+                <Home className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
             </Link>
           )}
         </div>
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center flex-1 min-w-0">
           <Link href="/">
-            <h1 className="text-2xl font-bold tracking-tight cursor-pointer hover:text-primary transition-colors" data-testid="text-title">
+            <h1 className="text-lg md:text-2xl font-bold tracking-tight cursor-pointer hover:text-primary transition-colors whitespace-nowrap" data-testid="text-title">
               WORDCAST
             </h1>
           </Link>
           {todayDate && (
-            <div className="flex items-center gap-2 flex-wrap justify-center">
-              <p className="text-xs text-muted-foreground" data-testid="text-date">
+            <div className="flex items-center gap-1 md:gap-2 flex-wrap justify-center">
+              <p className="text-[10px] md:text-xs text-muted-foreground whitespace-nowrap" data-testid="text-date">
                 {todayDate}
               </p>
               {showScore && totalScore > 0 && (
                 <>
-                  <span className="text-xs text-muted-foreground">•</span>
-                  <p className="text-xs font-semibold text-primary" data-testid="text-score">
+                  <span className="text-[10px] md:text-xs text-muted-foreground">•</span>
+                  <p className="text-[10px] md:text-xs font-semibold text-primary whitespace-nowrap" data-testid="text-score">
                     {totalScore} pts
                   </p>
                 </>
@@ -124,7 +124,7 @@ export function Header({
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-0.5 md:gap-2">
           {walletConnected && walletAddress && (
             <Badge variant="secondary" className="hidden md:flex items-center gap-1" data-testid="badge-wallet">
               <Wallet className="w-3 h-3" />
@@ -137,9 +137,9 @@ export function Header({
               size="icon"
               variant={isLeaderboard ? "default" : "ghost"}
               data-testid="button-leaderboard"
-              className="w-10 h-10"
+              className="h-8 w-8 md:w-10 md:h-10"
             >
-              <Trophy className="w-5 h-5" />
+              <Trophy className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           </Link>
           
@@ -149,12 +149,12 @@ export function Header({
               variant="ghost"
               onClick={onStatsClick}
               data-testid="button-stats"
-              className="w-10 h-10 relative"
+              className="h-8 w-8 md:w-10 md:h-10 relative"
             >
-              <TrendingUp className="w-5 h-5" />
+              <TrendingUp className="w-4 h-4 md:w-5 md:h-5" />
               {streak > 0 && (
                 <Badge
-                  className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                  className="absolute -top-0.5 -right-0.5 md:-top-1 md:-right-1 h-4 w-4 md:h-5 md:w-5 flex items-center justify-center p-0 text-[10px] md:text-xs"
                   data-testid="badge-streak"
                 >
                   {streak}
@@ -169,9 +169,9 @@ export function Header({
               variant="ghost"
               onClick={onSettingsClick}
               data-testid="button-settings"
-              className="w-10 h-10"
+              className="h-8 w-8 md:w-10 md:h-10"
             >
-              <Settings className="w-5 h-5" />
+              <Settings className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           )}
         </div>

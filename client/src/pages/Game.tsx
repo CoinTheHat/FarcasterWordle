@@ -484,9 +484,9 @@ export default function Game() {
         <div className="w-full max-w-2xl flex-1 flex flex-col justify-center">
           {/* Wallet Status */}
           {!isConnected && connectors.length > 0 && (
-            <div className="mb-2 md:mb-3 mx-4">
-              <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-3 text-center shadow-lg">
-                <div className="flex items-center justify-center gap-2 text-xs md:text-sm text-muted-foreground mb-2">
+            <div className="mb-2 md:mb-3 mx-2 md:mx-4">
+              <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-2 md:p-3 text-center shadow-lg">
+                <div className="flex items-center justify-center gap-1.5 md:gap-2 text-[10px] md:text-sm text-muted-foreground mb-1.5 md:mb-2">
                   <Wallet className="w-3 h-3 md:w-4 md:h-4" />
                   <span>Connecting wallet...</span>
                 </div>
@@ -498,33 +498,33 @@ export default function Game() {
           )}
           
           {isConnected && address && (
-            <div className="mb-2 md:mb-3 mx-4">
-              <div className="bg-card/80 backdrop-blur-sm border border-green-500/20 rounded-lg p-3 text-center shadow-lg">
-                <div className="flex items-center justify-center gap-2 text-xs md:text-sm text-green-600 dark:text-green-400">
+            <div className="mb-2 md:mb-3 mx-2 md:mx-4">
+              <div className="bg-card/80 backdrop-blur-sm border border-green-500/20 rounded-lg p-2 md:p-3 text-center shadow-lg">
+                <div className="flex items-center justify-center gap-1.5 md:gap-2 text-[10px] md:text-sm text-green-600 dark:text-green-400">
                   <Wallet className="w-3 h-3 md:w-4 md:h-4" />
-                  <span>Wallet Connected: {address.slice(0, 6)}...{address.slice(-4)}</span>
+                  <span className="truncate">Wallet: {address.slice(0, 6)}...{address.slice(-4)}</span>
                 </div>
               </div>
             </div>
           )}
           
           {/* Stats Badge */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-2 md:mb-3 px-4">
-            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-2 md:p-4 text-center shadow-lg hover-elevate transition-all">
-              <div className="text-xl md:text-3xl font-bold text-primary" data-testid="stat-streak">{stats.streak}</div>
-              <div className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider">Streak</div>
+          <div className="grid grid-cols-4 gap-1.5 md:gap-4 mb-2 md:mb-3 px-2 md:px-4">
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-1.5 md:p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-lg md:text-3xl font-bold text-primary" data-testid="stat-streak">{stats.streak}</div>
+              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">Streak</div>
             </div>
-            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-2 md:p-4 text-center shadow-lg hover-elevate transition-all">
-              <div className="text-xl md:text-3xl font-bold text-primary" data-testid="stat-max-streak">{stats.maxStreak}</div>
-              <div className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider">Max</div>
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-1.5 md:p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-lg md:text-3xl font-bold text-primary" data-testid="stat-max-streak">{stats.maxStreak}</div>
+              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">Max</div>
             </div>
-            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-2 md:p-4 text-center shadow-lg hover-elevate transition-all">
-              <div className="text-xl md:text-3xl font-bold text-amber-500" data-testid="stat-score">{totalScore}</div>
-              <div className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider">Score</div>
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-1.5 md:p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-lg md:text-3xl font-bold text-amber-500" data-testid="stat-score">{totalScore}</div>
+              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">Score</div>
             </div>
-            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-2 md:p-4 text-center shadow-lg hover-elevate transition-all">
-              <div className="text-xl md:text-3xl font-bold text-primary" data-testid="stat-remaining">{stats.remainingAttempts}</div>
-              <div className="text-[10px] md:text-xs text-muted-foreground uppercase tracking-wider">Left</div>
+            <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-1.5 md:p-4 text-center shadow-lg hover-elevate transition-all">
+              <div className="text-lg md:text-3xl font-bold text-primary" data-testid="stat-remaining">{stats.remainingAttempts}</div>
+              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">Left</div>
             </div>
           </div>
           
@@ -537,18 +537,18 @@ export default function Game() {
           />
         </div>
 
-        <div className="w-full max-w-2xl px-4 pb-4">
-          <div className="flex gap-2 items-center">
+        <div className="w-full max-w-2xl px-2 md:px-4 pb-4">
+          <div className="flex gap-1.5 md:gap-2 items-center">
             <Input
               ref={inputRef}
               type="text"
               value={currentGuess}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Type your guess..."
+              placeholder="Type..."
               disabled={gameStatus !== "playing" || gameCompleted}
               maxLength={5}
-              className="text-center text-2xl font-bold uppercase tracking-widest h-14"
+              className="text-center text-xl md:text-2xl font-bold uppercase tracking-widest h-12 md:h-14"
               data-testid="input-guess"
               autoFocus
             />
@@ -556,7 +556,7 @@ export default function Game() {
               onClick={handleEnter}
               disabled={gameStatus !== "playing" || currentGuess.length !== 5 || gameCompleted}
               size="lg"
-              className="h-14 px-8"
+              className="h-12 md:h-14 px-4 md:px-8 text-sm md:text-base"
               data-testid="button-submit"
             >
               Submit
