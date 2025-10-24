@@ -14,7 +14,7 @@ export function Tile({ letter, feedback, position, isRevealing, colorBlindMode }
   const hasLetter = letter.length > 0;
 
   const getTileClasses = () => {
-    const base = "w-14 h-14 md:w-16 md:h-16 border-2 rounded-sm flex items-center justify-center font-mono text-3xl font-bold uppercase transition-all duration-200";
+    const base = "w-12 h-12 md:w-14 md:h-14 border-2 rounded-sm flex items-center justify-center font-mono text-2xl md:text-3xl font-bold uppercase transition-all duration-200";
     
     if (isEmpty && !hasLetter) {
       return cn(base, "border-border bg-background text-foreground");
