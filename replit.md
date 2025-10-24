@@ -10,6 +10,14 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**October 24, 2025 - Session Persistence & Idempotent TX Handling**
+- Fixed "Transaction failed - Session not found" error after TX confirmation
+- Added `completed` flag to ActiveGame interface to track TX completion status
+- Implemented idempotent `/api/complete-game` endpoint: duplicate TX requests return cached response
+- Session cleanup on new game start: removes completed sessions for same user to prevent memory leaks
+- Session no longer deleted on successful TX → enables retry on network errors
+- Better error recovery: network failures during TX confirmation won't lose game session
+
 **October 24, 2025 - Mobile Optimization & Error Handling Fixes**
 - Fixed "Saving..." button stuck state: Added isSavingScore state management with proper reset in finally block
 - Improved TX error handling: Added "cancelled" detection to user rejection logic

@@ -25,6 +25,8 @@ interface ActiveGame {
   totalScore: number;
   won: boolean | null;
   createdAt: string;
+  completed: boolean;
+  completedAt?: string;
 }
 
 const activeGames = new Map<string, ActiveGame>();
@@ -102,6 +104,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
+    activeGames.forEach((game, sid) => {
+      if (game.fid === fid && game.completed) {
+        activeGames.delete(sid);
+      }
+    });
+
     const sessionId = generateSessionId();
     const solution = getRandomWord();
     
@@ -114,6 +122,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       totalScore: 0,
       won: null,
       createdAt: new Date().toISOString(),
+      completed: false,
     };
     
     activeGames.set(sessionId, activeGame);
@@ -233,6 +242,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
+    if (activeGame.completed) {
+      const streak = getOrCreateStreak(fid);
+      res.json({
+        success: true,
+        streak: streak.currentStreak,
+        maxStreak: streak.maxStreak,
+        message: "Score already saved (idempotent)",
+      });
+      return;
+    }
+
     createDailyResult(fid, today, activeGame.attemptsUsed, activeGame.won, activeGame.totalScore);
 
     const streak = getOrCreateStreak(fid);
@@ -252,7 +272,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     updateStreak(fid, newCurrentStreak, newMaxStreak, today);
 
-    activeGames.delete(sessionId);
+    activeGame.completed = true;
+    activeGame.completedAt = new Date().toISOString();
 
     res.json({
       success: true,
