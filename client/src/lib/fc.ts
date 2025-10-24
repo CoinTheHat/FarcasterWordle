@@ -7,11 +7,14 @@ export interface FarcasterContext {
 }
 
 export async function initializeFarcaster(): Promise<FarcasterContext> {
-  // In development, use mock FID for testing
+  // In development, use real FID from env or mock FID for testing
   if (import.meta.env.DEV) {
-    console.log("Development mode: using mock Farcaster FID");
+    const devFid = import.meta.env.VITE_DEV_FID 
+      ? parseInt(import.meta.env.VITE_DEV_FID, 10) 
+      : 12345;
+    console.log("Development mode: using FID", devFid);
     return {
-      fid: 12345,
+      fid: devFid,
       isReady: true,
       error: null,
     };
