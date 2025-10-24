@@ -1,36 +1,59 @@
+import { pgTable, integer, text, timestamp, serial, boolean } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const profiles = {
-  fid: z.number(),
-  createdAt: z.string(),
-  lastSeenAt: z.string(),
-};
+// Database Tables
+export const profiles = pgTable("profiles", {
+  fid: integer("fid").primaryKey(),
+  username: text("username"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  lastSeenAt: timestamp("last_seen_at").notNull().defaultNow(),
+});
 
-export const dailyResults = {
-  id: z.number(),
-  fid: z.number(),
-  yyyymmdd: z.string(),
-  attempts: z.number(),
-  won: z.number(),
-  createdAt: z.string(),
-};
+export const dailyResults = pgTable("daily_results", {
+  id: serial("id").primaryKey(),
+  fid: integer("fid").notNull(),
+  yyyymmdd: text("yyyymmdd").notNull(),
+  attempts: integer("attempts").notNull(),
+  won: boolean("won").notNull(),
+  score: integer("score").notNull().default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
 
-export const streaks = {
-  fid: z.number(),
-  currentStreak: z.number(),
-  maxStreak: z.number(),
-  lastPlayedYyyymmdd: z.string().nullable(),
-  updatedAt: z.string(),
-};
+export const streaks = pgTable("streaks", {
+  fid: integer("fid").primaryKey(),
+  currentStreak: integer("current_streak").notNull().default(0),
+  maxStreak: integer("max_streak").notNull().default(0),
+  lastPlayedYyyymmdd: text("last_played_yyyymmdd"),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
 
-export const profileSchema = z.object(profiles);
-export const dailyResultSchema = z.object(dailyResults);
-export const streakSchema = z.object(streaks);
+// Insert Schemas
+export const insertProfileSchema = createInsertSchema(profiles).omit({
+  createdAt: true,
+  lastSeenAt: true,
+});
 
-export type Profile = z.infer<typeof profileSchema>;
-export type DailyResult = z.infer<typeof dailyResultSchema>;
-export type Streak = z.infer<typeof streakSchema>;
+export const insertDailyResultSchema = createInsertSchema(dailyResults).omit({
+  id: true,
+  createdAt: true,
+});
 
+export const insertStreakSchema = createInsertSchema(streaks).omit({
+  updatedAt: true,
+});
+
+// Types
+export type Profile = typeof profiles.$inferSelect;
+export type InsertProfile = z.infer<typeof insertProfileSchema>;
+
+export type DailyResult = typeof dailyResults.$inferSelect;
+export type InsertDailyResult = z.infer<typeof insertDailyResultSchema>;
+
+export type Streak = typeof streaks.$inferSelect;
+export type InsertStreak = z.infer<typeof insertStreakSchema>;
+
+// Game Types
 export type TileFeedback = "correct" | "present" | "absent" | "empty";
 export type GameStatus = "playing" | "won" | "lost";
 export type Language = "en" | "tr";
@@ -90,7 +113,7 @@ export interface LeaderboardEntry {
 }
 
 export interface LeaderboardResponse {
-  period: "daily" | "weekly";
+  period: "daily" | "weekly" | "all-time";
   date?: string;
   startDate?: string;
   endDate?: string;

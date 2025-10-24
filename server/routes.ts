@@ -76,13 +76,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.redirect(307, "https://api.farcaster.xyz/miniapps/hosted-manifest/019a177b-f4e8-441a-3d4b-845ed29fe535");
   });
 
-  app.get("/api/me", requireAuth, (req: AuthRequest, res: Response) => {
+  app.get("/api/me", requireAuth, async (req: AuthRequest, res: Response) => {
     const fid = req.fid!;
     const today = getTodayDateString();
 
-    const profile = getOrCreateProfile(fid);
-    const streak = getOrCreateStreak(fid);
-    const todayResult = getDailyResult(fid, today);
+    const profile = await getOrCreateProfile(fid);
+    const streak = await getOrCreateStreak(fid);
+    const todayResult = await getDailyResult(fid, today);
 
     const remainingAttempts = todayResult ? 0 : MAX_ATTEMPTS;
 
@@ -98,7 +98,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.post("/api/update-username", requireAuth, (req: AuthRequest, res: Response) => {
+  app.post("/api/update-username", requireAuth, async (req: AuthRequest, res: Response) => {
     const fid = req.fid!;
     const { username } = req.body;
 
@@ -125,7 +125,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
-    updateUsername(fid, trimmedUsername);
+    await updateUsername(fid, trimmedUsername);
 
     res.json({
       success: true,
@@ -133,7 +133,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.post("/api/start-game", requireAuth, (req: AuthRequest, res: Response) => {
+  app.post("/api/start-game", requireAuth, async (req: AuthRequest, res: Response) => {
     const fid = req.fid!;
     const { language = "en" } = req.body;
     const today = getTodayDateString();
@@ -144,7 +144,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     // CRITICAL FIX: Block if user already has today's result
-    const todayResult = getDailyResult(fid, today);
+    const todayResult = await getDailyResult(fid, today);
     if (todayResult) {
       res.status(400).json({ error: "Already completed today's game" });
       return;
@@ -212,7 +212,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.post("/api/guess", requireAuth, (req: AuthRequest, res: Response) => {
+  app.post("/api/guess", requireAuth, async (req: AuthRequest, res: Response) => {
     const fid = req.fid!;
     const { guess, sessionId } = req.body;
 
@@ -266,7 +266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     // CRITICAL FIX: Check if result already saved (multi-session protection)
     const today = getTodayDateString();
-    const existingResult = getDailyResult(fid, today);
+    const existingResult = await getDailyResult(fid, today);
     
     if (existingResult) {
       // User already completed today's game in another session
@@ -283,10 +283,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // CRITICAL FIX: Save game result immediately when game ends
       // This prevents unlimited replays after refresh
       // Save result to DB immediately (before TX)
-      createDailyResult(fid, today, activeGame.attemptsUsed, won, activeGame.totalScore);
+      await createDailyResult(fid, today, activeGame.attemptsUsed, won, activeGame.totalScore);
       
       // Update streak
-      const streak = getOrCreateStreak(fid);
+      const streak = await getOrCreateStreak(fid);
       let newCurrentStreak = streak.currentStreak;
       let newMaxStreak = streak.maxStreak;
 
@@ -301,7 +301,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         newCurrentStreak = 0;
       }
 
-      updateStreak(fid, newCurrentStreak, newMaxStreak, today);
+      await updateStreak(fid, newCurrentStreak, newMaxStreak, today);
       
       // CRITICAL FIX: Mark session as completed to prevent stale session reuse
       activeGame.completed = true;
@@ -320,7 +320,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.post("/api/complete-game", requireAuth, (req: AuthRequest, res: Response) => {
+  app.post("/api/complete-game", requireAuth, async (req: AuthRequest, res: Response) => {
     const fid = req.fid!;
     const { sessionId, txHash } = req.body;
 
@@ -358,7 +358,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     const today = getTodayDateString();
-    const todayResult = getDailyResult(fid, today);
+    const todayResult = await getDailyResult(fid, today);
 
     // Result is now saved during /api/guess when game ends
     // This endpoint just marks TX as completed
@@ -369,7 +369,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     if (activeGame.completed) {
       // Idempotent: already marked as completed
-      const streak = getOrCreateStreak(fid);
+      const streak = await getOrCreateStreak(fid);
       res.json({
         success: true,
         streak: streak.currentStreak,
@@ -380,7 +380,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     // Mark session as completed (TX successful)
-    const streak = getOrCreateStreak(fid);
+    const streak = await getOrCreateStreak(fid);
     activeGame.completed = true;
     activeGame.completedAt = new Date().toISOString();
 
@@ -417,9 +417,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.get("/api/board", (req: Request, res: Response) => {
+  app.get("/api/board", async (req: Request, res: Response) => {
     const date = (req.query.date as string) || getTodayDateString();
-    const stats = getBoardStats(date);
+    const stats = await getBoardStats(date);
 
     res.json({
       date,
@@ -430,11 +430,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.get("/api/leaderboard/daily", (req: Request, res: Response) => {
+  app.get("/api/leaderboard/daily", async (req: Request, res: Response) => {
     const date = (req.query.date as string) || getTodayDateString();
     const limit = parseInt(req.query.limit as string) || 100;
     
-    const leaderboard = getDailyLeaderboard(date, limit);
+    const leaderboard = await getDailyLeaderboard(date, limit);
     
     res.json({
       period: "daily",
@@ -443,13 +443,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.get("/api/leaderboard/weekly", (req: Request, res: Response) => {
+  app.get("/api/leaderboard/weekly", async (req: Request, res: Response) => {
     const today = getTodayDateString();
     const startDate = getDateStringDaysAgo(6);
     
     const limit = parseInt(req.query.limit as string) || 100;
     
-    const leaderboard = getWeeklyLeaderboard(startDate, today, limit);
+    const leaderboard = await getWeeklyLeaderboard(startDate, today, limit);
     
     res.json({
       period: "weekly",
@@ -459,10 +459,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  app.get("/api/leaderboard/best-scores", (req: Request, res: Response) => {
+  app.get("/api/leaderboard/best-scores", async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 100;
     
-    const leaderboard = getBestScoresLeaderboard(limit);
+    const leaderboard = await getBestScoresLeaderboard(limit);
     
     res.json({
       period: "all-time",
