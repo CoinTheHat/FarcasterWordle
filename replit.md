@@ -16,6 +16,12 @@ Preferred communication style: Simple, everyday language.
   - Blue → Purple → Pink gradient with dark mode support
   - Pulse animation for visual appeal
   - Full app name instead of abbreviation
+- Generated new app icon and splash images
+  - Professional "WordCast" logo on purple gradient background
+  - Replaced "WC" abbreviation with full app name
+  - Updated favicon, icon.png, and splash.png in public folder
+  - Added PWA manifest.json for installable app support
+  - Apple touch icon support for iOS devices
 - Fixed Leaderboard Display Issues:
   - Fixed Weekly Leaderboard: Now shows MAX score per user (not SUM)
     - Previously: User plays 3 games → scores added (50+40+30=120)
