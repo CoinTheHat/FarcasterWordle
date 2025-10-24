@@ -1,0 +1,115 @@
+İşte Replit AI’ye verebileceğin, **Wordle çalışma mantığını** net ve uygulanabilir biçimde anlatan **tek seferlik prompt** (Türkçe):
+
+---
+
+## Prompt: “Wordle Oyun Mantığı (Kurallar + Mantık + Kenar Durumlar)”
+
+Aşağıdaki kurallara göre bir **Wordle** türevi oyunun çekirdek mantığını uygula. Odak oyun mekaniği ve doğrulama akışıdır.
+
+### 1) Temel Kurallar
+
+* Hedef: **5 harfli tek bir kelimeyi** tahmin etmek.
+* Oyuncunun günlük **en fazla 6 tahmini** vardır.
+* Her tahminde, her harf için geri bildirim üret:
+
+  * `correct` = Harf **doğru** ve **doğru pozisyonda** (klasik Wordle’da “yeşil”).
+  * `present` = Harf **kelimede var** ama **farklı pozisyonda** (“sarı”).
+  * `absent` = Harf **kelimede yok** (“gri”).
+
+### 2) Girdi Doğrulama
+
+* Tahmin **tam 5 harf** olmalı; yalnızca `[A-Z]` (veya Türkçe için izin verilen harf seti) kabul et.
+* Tahmin, **izinli kelimeler** listesinde olmalı (örn. `ALLOWED_GUESSES`).
+* Büyük/küçük harf farkını normalize et (hepsini büyük harfe çevir).
+
+### 3) Geri Bildirim Algoritması (Çift Geçişli, Fazla Harfleri Yönet)
+
+**Amaç:** Kelimedeki **harf adetlerini** doğru yönetmek (örneğin hedef `APPLE`, tahmin `PAPAL` gibi durumlarda).
+
+1. **Geçiş-1 (correct’leri sabitle):**
+
+   * Her pozisyonda `guess[i] === target[i]` ise o harfi `correct` olarak işaretle.
+   * Hedef kelime için **kalan harf sayacı** tut (correct işaretlenen pozisyonlardaki harf adetlerini düş).
+2. **Geçiş-2 (present/absent dağıt):**
+
+   * Correct olmayan pozisyonlar için:
+
+     * `guess[i]` harfi kalan sayaçta **> 0** ise `present`, ardından o harfin sayaçtan 1 düş.
+     * Aksi halde `absent`.
+
+> Bu sayede hedefte bir harf 2 kez geçiyor, tahminde 3 kez varsa, yalnızca iki tanesi (`correct`/`present`) olarak işaretlenir, fazlası `absent` kalır.
+
+### 4) Günlük Kelime (Opsiyonel “Wordle-like” Davranış)
+
+* Günün kelimesi **deterministik** seçilsin:
+
+  * Giriş: `YYYYMMDD` + opsiyonel `WORD_SALT`.
+  * Çıkış: `TARGET_WORDS[(hash(WORD_SALT + YYYYMMDD) % TARGET_WORDS.length)]`.
+* Gün **00:00**’da (istenen saat dilimine göre) değişsin.
+
+### 5) Klavye Durumu
+
+* Ekran klavyesinde harflerin durumu birleşik mantıkla güncellenir:
+
+  * `correct` > `present` > `absent` öncelik sırası.
+  * Bir harf daha önce `correct` olduysa, daha sonra `present/absent` ile **aşağı** düşme.
+
+### 6) Oyun Sonu
+
+* Oyuncu hedefi 6 tahminden önce bulursa: **kazandı** (`won = true`).
+* 6. tahminde de bilemezse: **kaybetti** (`won = false`) ve hedef kelimeyi göster.
+* Sonuç ekranında: **deneme sayısı**, **tahmin ızgarası** (emoji/kare ile) ve **paylaş** özelliği (metin kopyalama) göster.
+
+### 7) Çıktı Şekilleri (Örnekler)
+
+**Geri bildirim örneği (JSON):**
+
+```json
+{
+  "target": "APPLE",
+  "guess": "PAPAL",
+  "feedback": ["present","correct","present","absent","present"]
+}
+```
+
+**Birden çok tahminin tablo çıktısı:**
+
+* `CRANE` → `absent,present,absent,absent,correct`
+* `AMPLE` → `correct,correct,absent,correct,correct` (kazanır)
+
+### 8) Kenar Durumlar
+
+* **Tekrarlanan harfler**: Yukarıdaki çift geçişli sayaç algoritmasıyla çöz.
+* **Geçersiz tahmin**: 5 harf değilse veya izinli listede yoksa, **deneme hakkı düşmeden** hata ver.
+* **Boş giriş**: İşleme alma; kullanıcıya “5 harf gir” uyarısı.
+* **Harf seti**: UI klavyesi ve doğrulama aynı harf setini kullanmalı (EN/TR farkı varsa seçime bağla).
+
+### 9) Test Senaryoları
+
+* Target = `APPLE`
+
+  * Guess = `APPLY` → `correct,correct,correct,correct,absent`
+  * Guess = `PAPAL` → `present,correct,present,absent,present`
+  * Guess = `ALPHA` → `correct,present,absent,present,absent`
+* Target = `LEVEL`
+
+  * Guess = `LEVER` → `correct,correct,correct,correct,absent`
+  * Guess = `LEMON` → `correct,correct,absent,absent,absent`
+* Uzun/kısa/alfabe dışı tahminler → reddedilmeli.
+
+### 10) Basit API Sözleşmesi (İstersen)
+
+* `POST /guess { guess: string }` → `{ feedback: string[], attemptsUsed: number, won: boolean }`
+* Sunucu, günün hedefini kendisi hesaplar ve aynı **algoritmayla** geri bildirim üretir.
+
+### 11) Kabul Kriterleri
+
+* 5 harfli tahminler doğru biçimde `correct/present/absent` olarak işaretlenir.
+* Harf adetleri ve tekrar eden harfler **doğru** yönetilir.
+* 6 denemede hedef bulunursa kazanır; aksi halde kaybeder.
+* Geçersiz giriş denemeye sayılmaz; net hata mesajı verilir.
+* (Opsiyonel) Günlük hedef deterministik değişir.
+
+---
+
+Bu prompt’u aynen ver; Replit AI bu mantığa göre oyunun çekirdeğini doğru uygulasın.
