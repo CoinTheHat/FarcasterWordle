@@ -63,7 +63,8 @@ export function getWordOfTheDay(yyyymmdd: string): string {
 
 export function isValidGuess(guess: string): boolean {
   const normalized = guess.toUpperCase().trim();
-  return normalized.length === 5 && ALLOWED_GUESSES.includes(normalized);
+  // Accept any 5-letter word with A-Z characters
+  return normalized.length === 5 && /^[A-Z]{5}$/.test(normalized);
 }
 
 export function calculateFeedback(guess: string, solution: string): ("correct" | "present" | "absent")[] {

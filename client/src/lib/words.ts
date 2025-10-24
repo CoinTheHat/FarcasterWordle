@@ -55,5 +55,6 @@ export function normalizeGuess(guess: string): string {
 
 export function isValidGuess(guess: string): boolean {
   const normalized = normalizeGuess(guess);
-  return normalized.length === 5 && ALLOWED_GUESSES.includes(normalized);
+  // Accept any 5-letter word with A-Z characters
+  return normalized.length === 5 && /^[A-Z]{5}$/.test(normalized);
 }
