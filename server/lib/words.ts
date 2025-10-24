@@ -90,6 +90,9 @@ export const ALLOWED_GUESSES_TR = [
   "BONUS", "BORAC", "BORSA", "BOSUN", "BOZUK", "BUCUR", "BUDUN", "BUGUN"
 ];
 
+const ALLOWED_GUESSES_EN_SET = new Set(ALLOWED_GUESSES_EN);
+const ALLOWED_GUESSES_TR_SET = new Set(ALLOWED_GUESSES_TR);
+
 export const ALLOWED_GUESSES: Record<Language, string[]> = {
   en: ALLOWED_GUESSES_EN,
   tr: ALLOWED_GUESSES_TR,
@@ -112,7 +115,7 @@ export function isValidGuess(guess: string, language: Language = 'en'): boolean 
     return false;
   }
   
-  const allowedGuesses = language === 'tr' ? ALLOWED_GUESSES_TR : ALLOWED_GUESSES_EN;
+  const allowedGuesses = language === 'tr' ? ALLOWED_GUESSES_TR_SET : ALLOWED_GUESSES_EN_SET;
   return allowedGuesses.has(normalized);
 }
 
