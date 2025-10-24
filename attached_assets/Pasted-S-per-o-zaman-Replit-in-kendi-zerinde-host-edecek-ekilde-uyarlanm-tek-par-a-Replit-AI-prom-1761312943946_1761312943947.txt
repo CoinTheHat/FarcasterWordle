@@ -1,0 +1,159 @@
+Süper—o zaman Replit’in **kendi üzerinde** host edecek şekilde uyarlanmış **tek parça Replit AI prompt**’u aşağıya bırakıyorum. Bunu aynen Replit AI’ye yapıştır; Vercel kısımları çıkarıldı, backend **Express** ile tek süreçte çalışıyor, streak’ler **fid’e göre** tutuluyor ve tüm günlük sınırlar **Europe/Istanbul** saat dilimine göre işliyor.
+
+---
+
+## Replit AI Prompt (kopyala-yapıştır)
+
+**Goal:**
+Build a production-ready **Wordle-style daily word mini-game** as a **Farcaster Mini-App**, hosted **entirely on Replit** (no Vercel).
+Tech: **TypeScript + React + Vite** (frontend), **Node.js + Express** (backend). Styling: **TailwindCSS**. Minimal deps.
+Persist streaks **by Farcaster account (fid)** (device-independent). All day boundaries in **Europe/Istanbul (UTC+3)**.
+
+**Key Features & Rules**
+
+1. Gameplay
+
+* Daily one target word (5 letters, English), max 6 guesses.
+* Tile feedback: `"correct" | "present" | "absent"`.
+* On-screen keyboard with per-letter status.
+* End modal (win/lose) + “Share to Farcaster” button to cast a message (fallback if not in mini-app).
+
+2. Daily Word Logic
+
+* Deterministic word of the day from salted hash of **YYYYMMDD in Europe/Istanbul**.
+* Use `WORD_SALT` (server-only secret).
+* Word changes at **00:00 Europe/Istanbul**.
+
+3. Farcaster Mini-App Integration
+
+* Use `@farcaster/miniapp-sdk`.
+* On load, resolve **fid**; if absent, show guard screen (“Open inside Farcaster Mini-App”).
+* All progress (streaks, maxStreak, lastPlayed, attempts) persists **by fid** on backend.
+
+4. Persistence (Account-based)
+
+* Backend: **Express** app under `/server`.
+* Prefer **SQLite** file (e.g., `data/app.db`) for persistence on Replit; create with better-sqlite3 or sqlite3.
+* Tables:
+
+  * `profiles(fid INTEGER PRIMARY KEY, created_at TEXT, last_seen_at TEXT)`
+  * `daily_results(id INTEGER PRIMARY KEY AUTOINCREMENT, fid INTEGER, yyyymmdd TEXT, attempts INTEGER, won INTEGER, created_at TEXT)`
+  * `streaks(fid INTEGER PRIMARY KEY, current_streak INTEGER, max_streak INTEGER, last_played_yyyymmdd TEXT, updated_at TEXT)`
+* Business rules:
+
+  * Max **one completed game per date** per fid; server enforces attempt count (≤6).
+  * Win on consecutive day → `current_streak++`; gap → reset to 0; always update `max_streak`.
+  * All date math uses **Europe/Istanbul** (server-side authoritative).
+
+5. Anti-Cheat / Validation
+
+* Guess validation **only on server**:
+
+  * Compute today’s solution from date + `WORD_SALT`.
+  * Validate guess is 5 letters `[A-Z]`, in allowed list.
+  * Return feedback array and remaining attempts.
+  * Enforce rate limits per fid/day (basic in-DB counters).
+
+6. API (Express)
+
+* `GET /api/me` → `{ fid, streak, maxStreak, lastPlayed, today, remainingAttempts }`
+* `POST /api/guess` body `{ guess: string }` → `{ feedback: ("correct"|"present"|"absent")[], attemptsUsed, won, remainingAttempts }`
+* `GET /api/board?date=YYYYMMDD` → optional anonymized stats.
+
+7. Share / Cast
+
+* If inside Farcaster Mini-App: trigger cast or deep-link with text like
+  `Solved Daily Word in X/6! 🔠 #WordCast`
+* Else: copy-to-clipboard fallback.
+
+8. UI/UX
+
+* Clean, mobile-first. Header shows **today (Europe/Istanbul)**, streak badge, settings.
+* Keyboard fixed bottom.
+* Color-blind toggle (shapes/patterns on tiles).
+* Subtle flip/scale animations on reveal.
+
+9. Timezone
+
+* Use `luxon` (with IANA tz) or `temporal` polyfill; centralize helpers under `src/lib/date.ts`.
+* Daily cutoff = **00:00 Europe/Istanbul** both client hints and server authority.
+
+10. Caching / Versioning
+
+* Serve `/` with `Cache-Control: no-store`.
+* Serve built assets (`/dist`) with hashed filenames and long cache.
+* Provide `/version.json`; client checks periodically and prompts soft reload when version changes.
+
+11. Project Structure
+
+```
+/src
+  /components
+    Board.tsx
+    Keyboard.tsx
+    Tile.tsx
+    Header.tsx
+    Modals.tsx
+  /lib
+    date.ts      // Europe/Istanbul helpers
+    words.ts     // word lists + hashing selector
+    api.ts       // client fetch helpers
+    fc.ts        // Farcaster mini-app helpers (get fid, canCast, cast)
+  App.tsx
+  main.tsx
+/index.html
+/tailwind.config.js
+/replit.nix OR .replit           // Replit build/run config
+/server
+  index.ts       // Express app, static serve + API routes
+  db.ts          // SQLite init + queries
+  env.ts         // load secrets (WORD_SALT, etc.)
+  routes
+    me.ts
+    guess.ts
+    board.ts
+/data
+  app.db         // SQLite persistent file
+```
+
+12. Build/Run on Replit
+
+* Single process: Express serves API **and** static frontend.
+* Scripts:
+
+  * `dev`: concurrently run `vite` (watch) and `ts-node-dev` for server
+  * `build`: `vite build`
+  * `start`: `node server/index.js` (compiled) or `ts-node server/index.ts`
+* Ensure Replit exposes the **web server port** (use `process.env.PORT || 3000`).
+* Add a small `postbuild` step to copy `dist` and let Express serve `dist` statics.
+
+13. Environment Variables (Replit Secrets)
+
+* `WORD_SALT` (server only)
+* Optional DB path override: `DB_PATH` (default `./data/app.db`)
+* (If you later prefer external DB) `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE` — **not required for now**.
+
+14. Word Lists
+
+* Two arrays: `TARGET_WORDS` (solutions), `ALLOWED_GUESSES` (valid).
+* Selector: `index = hash(WORD_SALT + YYYYMMDD_EU_IST) % TARGET_WORDS.length`.
+
+15. Acceptance Criteria
+
+* App resolves **fid** inside Farcaster mini-app; shows streak.
+* Server enforces max 6 guesses/day/fid and single result per day.
+* Correct feedback and streak updates across devices (same fid).
+* Daily rollover at **00:00 Europe/Istanbul** works.
+* Share button works (cast if available, otherwise copy).
+* Clean, typed code; small components; clear README.
+
+**Deliverables**
+
+* Full repo with code, minimal tests for `words.ts` (hash/index), `date.ts` (tz cutoff), and `/api/guess` guard logic.
+* `README.md`: Replit run, secrets, schema auto-migrate, troubleshooting.
+
+**Please implement now, targeting Replit’s built-in hosting (single Node process with Express), no Vercel.**
+
+---
+
+İstersen çıktıdan sonra `.replit` / `replit.nix` ayarlarına son bir dokunuş ve **cache-bust + soft reload** kontrolünü birlikte optimize ederiz.
