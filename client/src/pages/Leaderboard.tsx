@@ -8,7 +8,7 @@ import { Trophy, Medal, Award, Flame } from "lucide-react";
 import type { LeaderboardResponse } from "@shared/schema";
 
 export default function Leaderboard() {
-  const [period, setPeriod] = useState<"daily" | "weekly">("daily");
+  const [period, setPeriod] = useState<"daily" | "weekly" | "best-scores">("daily");
 
   const { data: leaderboardData, isLoading } = useQuery<LeaderboardResponse>({
     queryKey: ["/api/leaderboard", period],
@@ -47,13 +47,16 @@ export default function Leaderboard() {
           </p>
         </div>
 
-        <Tabs value={period} onValueChange={(v) => setPeriod(v as "daily" | "weekly")} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6">
+        <Tabs value={period} onValueChange={(v) => setPeriod(v as "daily" | "weekly" | "best-scores")} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="daily" data-testid="tab-daily">
               Daily
             </TabsTrigger>
             <TabsTrigger value="weekly" data-testid="tab-weekly">
               Weekly
+            </TabsTrigger>
+            <TabsTrigger value="best-scores" data-testid="tab-best-scores">
+              Best Scores
             </TabsTrigger>
           </TabsList>
 
@@ -92,7 +95,7 @@ export default function Leaderboard() {
                             Player {entry.fid}
                           </div>
                           <div className="text-xs md:text-sm text-muted-foreground">
-                            {entry.won > 0 ? `${entry.won} win${entry.won > 1 ? 's' : ''}` : 'No wins'}
+                            {period === "best-scores" ? "Best Score" : entry.won > 0 ? `${entry.won} win${entry.won > 1 ? 's' : ''}` : 'No wins'}
                             {period === "daily" && ` • ${entry.attempts} attempt${entry.attempts > 1 ? 's' : ''}`}
                           </div>
                         </div>

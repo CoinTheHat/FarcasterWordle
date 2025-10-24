@@ -9,6 +9,7 @@ import {
   getBoardStats,
   getDailyLeaderboard,
   getWeeklyLeaderboard,
+  getBestScoresLeaderboard,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo } from "./lib/date";
 import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateScore, getRandomWord, type Language } from "./lib/words";
@@ -354,6 +355,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       period: "weekly",
       startDate,
       endDate: today,
+      leaderboard,
+    });
+  });
+
+  app.get("/api/leaderboard/best-scores", (req: Request, res: Response) => {
+    const limit = parseInt(req.query.limit as string) || 100;
+    
+    const leaderboard = getBestScoresLeaderboard(limit);
+    
+    res.json({
+      period: "all-time",
       leaderboard,
     });
   });

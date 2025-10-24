@@ -254,3 +254,49 @@ export function getWeeklyLeaderboard(startDate: string, endDate: string, limit: 
     rank: row.rank,
   }));
 }
+
+export function getBestScoresLeaderboard(limit: number = 100): LeaderboardEntry[] {
+  const rows = db
+    .prepare(
+      `WITH best_scores AS (
+        SELECT 
+          fid,
+          MAX(score) as best_score
+        FROM daily_results
+        GROUP BY fid
+      ),
+      ranked_games AS (
+        SELECT 
+          dr.fid,
+          dr.score,
+          dr.attempts,
+          dr.won,
+          dr.created_at,
+          ROW_NUMBER() OVER (
+            PARTITION BY dr.fid 
+            ORDER BY dr.score DESC, dr.attempts ASC, dr.created_at ASC
+          ) as rn
+        FROM daily_results dr
+        INNER JOIN best_scores bs ON dr.fid = bs.fid AND dr.score = bs.best_score
+      )
+      SELECT 
+        fid,
+        score,
+        attempts,
+        won,
+        RANK() OVER (ORDER BY score DESC, attempts ASC) as rank
+      FROM ranked_games
+      WHERE rn = 1
+      ORDER BY score DESC, attempts ASC
+      LIMIT ?`
+    )
+    .all(limit) as any[];
+
+  return rows.map(row => ({
+    fid: row.fid,
+    score: row.score || 0,
+    attempts: row.attempts,
+    won: row.won,
+    rank: row.rank,
+  }));
+}
