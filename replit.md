@@ -10,6 +10,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**October 24, 2025 - Leaderboard & Mobile Responsive**
+- Added daily and weekly leaderboards with rankings
+- Leaderboard displays top 100 players with scores, attempts, and wins
+- Trophy icon navigation in header to access leaderboard
+- Daily leaderboard: Today's top scores
+- Weekly leaderboard: Last 7 days aggregated scores using Istanbul timezone
+- Mobile-responsive design with md: breakpoints throughout app
+- Fixed timezone bug: Weekly leaderboard now uses Europe/Istanbul timezone
+
 **October 24, 2025 - Scoring System & Wallet Integration**
 - Added scoring system: Green tiles +2 points, Yellow tiles +1 point
 - Row multipliers: 1st row 5x, 2nd row 4x, 3rd row 3x, 4th row 2x, 5th row 1.5x, 6th row 1x
