@@ -100,6 +100,8 @@ export default function Game() {
   }, [gameStatus]);
 
   const handleEnter = useCallback(async () => {
+    console.log("🎯 handleEnter called", { gameStatus, currentGuess: currentGuess.length, guessesCount: guesses.length });
+    
     if (gameStatus !== "playing" || currentGuess.length !== 5) {
       if (currentGuess.length > 0 && currentGuess.length < 5) {
         toast({
@@ -112,8 +114,10 @@ export default function Game() {
     }
 
     const normalized = normalizeGuess(currentGuess);
+    console.log("✅ Normalized guess:", normalized);
     
     if (!isValidGuess(normalized)) {
+      console.log("❌ Invalid guess");
       toast({
         title: "Not in word list",
         description: "Please try a different word",
@@ -123,14 +127,18 @@ export default function Game() {
     }
 
     try {
+      console.log("📡 Submitting guess...");
       const response = await submitGuess(normalized);
+      console.log("📥 Response received:", response);
       
       const newGuesses = [...guesses, normalized];
       const newFeedback = [...feedback, response.feedback];
       
+      console.log("🔄 Updating state:", { newGuesses, newFeedback });
       setGuesses(newGuesses);
       setFeedback(newFeedback);
       setCurrentGuess("");
+      console.log("✨ Current guess cleared");
       
       const rowIndex = newGuesses.length - 1;
       setRevealingRow(rowIndex);
@@ -141,6 +149,7 @@ export default function Game() {
       }, 600);
 
       if (response.won) {
+        console.log("🎉 Won!");
         setGameStatus("won");
         setSolution(normalized);
         setTimeout(() => {
@@ -155,6 +164,7 @@ export default function Game() {
           }
         }, 1000);
       } else if (response.gameOver) {
+        console.log("😢 Lost!");
         setGameStatus("lost");
         setSolution(response.solution || "");
         setTimeout(() => {
@@ -167,13 +177,17 @@ export default function Game() {
             });
           }
         }, 1000);
-      } else if (stats) {
-        setStats({
-          ...stats,
-          remainingAttempts: response.remainingAttempts,
-        });
+      } else {
+        console.log("➡️ Continue playing");
+        if (stats) {
+          setStats({
+            ...stats,
+            remainingAttempts: response.remainingAttempts,
+          });
+        }
       }
     } catch (err) {
+      console.error("💥 Error submitting guess:", err);
       toast({
         title: "Error",
         description: err instanceof Error ? err.message : "Failed to submit guess",
