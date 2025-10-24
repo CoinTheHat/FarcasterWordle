@@ -1,12 +1,12 @@
 {
   "name": "WordCast",
-  "version": "1.0.0",
-  "description": "Daily Wordle-style word puzzle game on Farcaster with scoring, leaderboards, and blockchain score persistence",
-  "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E🎮%3C/text%3E%3C/svg%3E",
-  "homeUrl": "/",
-  "imageUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E🎮%3C/text%3E%3C/svg%3E",
-  "buttonTitle": "Play WordCast",
-  "splashImageUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='75' font-size='75'%3E🎮%3C/text%3E%3C/svg%3E",
+  "version": "1",
+  "iconUrl": "https://your-replit-url.replit.app/icon.png",
+  "homeUrl": "https://your-replit-url.replit.app",
+  "splashImageUrl": "https://your-replit-url.replit.app/splash.png",
   "splashBackgroundColor": "#8B5CF6",
-  "webhookUrl": ""
+  "primaryCategory": "games",
+  "tags": ["game", "puzzle", "wordle", "daily", "blockchain", "leaderboard"],
+  "subtitle": "Daily word puzzle game with leaderboards",
+  "description": "Play daily Wordle-style word puzzles, compete on leaderboards, earn points with strategic guessing, and save your scores to the blockchain. Track your streak and challenge friends!"
 }
