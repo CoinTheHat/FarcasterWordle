@@ -48,11 +48,22 @@ export async function initializeFarcaster(): Promise<FarcasterContext> {
 
 export async function shareToCast(text: string): Promise<boolean> {
   try {
-    const result = await sdk.actions.addFrame({
-      text,
-    });
+    const encodedText = encodeURIComponent(text);
+    const composeUrl = `https://warpcast.com/~/compose?text=${encodedText}`;
     
-    return !!result;
+    if (import.meta.env.DEV) {
+      window.open(composeUrl, '_blank', 'noopener,noreferrer');
+      return true;
+    }
+    
+    try {
+      await sdk.actions.openUrl(composeUrl);
+      return true;
+    } catch (sdkError) {
+      console.log("SDK openUrl failed, using window.open:", sdkError);
+      window.open(composeUrl, '_blank', 'noopener,noreferrer');
+      return true;
+    }
   } catch (error) {
     console.error("Failed to share cast:", error);
     return false;
