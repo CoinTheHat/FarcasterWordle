@@ -193,10 +193,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
+    if (!txHash || typeof txHash !== "string") {
+      res.status(400).json({ error: "Transaction hash is required" });
+      return;
+    }
+
+    const txHashRegex = /^0x[a-fA-F0-9]{64}$/;
+    if (!txHashRegex.test(txHash)) {
+      res.status(400).json({ error: "Invalid transaction hash format" });
+      return;
+    }
+
     const activeGame = activeGames.get(sessionId);
 
     if (!activeGame) {
-      res.status(400).json({ error: "Game session not found" });
+      res.status(400).json({ error: "Game session not found or expired. Please start a new game." });
       return;
     }
 
