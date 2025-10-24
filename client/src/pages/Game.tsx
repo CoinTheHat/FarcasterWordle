@@ -15,7 +15,7 @@ import { Loader2, Wallet } from "lucide-react";
 export default function Game() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
-  const { sendTransaction, isPending: isSendingTx } = useSendTransaction();
+  const { sendTransactionAsync, isPending: isSendingTx } = useSendTransaction();
   
   const [fid, setFid] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -88,7 +88,7 @@ export default function Game() {
     try {
       const scoreHex = `0x${totalScore.toString(16).padStart(64, '0')}`;
       
-      await sendTransaction({
+      const hash = await sendTransactionAsync({
         to: address as `0x${string}`,
         value: BigInt(0),
         data: scoreHex as `0x${string}`,
@@ -100,6 +100,7 @@ export default function Game() {
         duration: 3000,
       });
     } catch (err) {
+      console.error("Blockchain save error:", err);
       toast({
         title: "Failed to save score",
         description: err instanceof Error ? err.message : "Transaction failed",
@@ -107,7 +108,7 @@ export default function Game() {
         duration: 2000,
       });
     }
-  }, [isConnected, address, totalScore, sendTransaction, toast]);
+  }, [isConnected, address, totalScore, sendTransactionAsync, toast]);
 
   const updateLetterStates = useCallback((guess: string, fb: TileFeedback[]) => {
     setLetterStates((prev) => {
