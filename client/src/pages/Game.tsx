@@ -117,15 +117,12 @@ export default function Game() {
     setIsSavingScore(true);
     try {
       console.log("Preparing transaction:", { address, totalScore, sessionId });
-      const scoreHex = `0x${totalScore.toString(16).padStart(64, '0')}`;
-      console.log("Score hex:", scoreHex);
       
-      // Send to zero address to avoid Coinbase "self call" error
-      // This creates a permanent on-chain record of the score
+      // Send 0 ETH to self to create on-chain proof
+      // Score is stored in backend database
       const hash = await sendTransactionAsync({
-        to: "0x0000000000000000000000000000000000000000" as `0x${string}`,
+        to: address as `0x${string}`,
         value: BigInt(0),
-        data: scoreHex as `0x${string}`,
         chainId: 8453, // Base mainnet
       });
 
