@@ -17,10 +17,5 @@
   "developer": {
     "name": "Atakan",
     "url": "https://your-replit-url.replit.app/"
-  },
-  "accountAssociation": {
-    "header": "PLACEHOLDER_HEADER",
-    "payload": "PLACEHOLDER_PAYLOAD",
-    "signature": "PLACEHOLDER_SIGNATURE"
   }
 }
