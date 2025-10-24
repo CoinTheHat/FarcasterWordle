@@ -137,14 +137,37 @@ export default function Game() {
       if (isUserRejection) {
         toast({
           title: "Transaction cancelled",
-          description: "⚠️ Without saving to blockchain, your score won't count for leaderboards or streaks. You can play again with a new word!",
+          description: "⚠️ Without saving to blockchain, your score won't count for leaderboards or streaks. Starting a new game with a different word!",
           variant: "destructive",
           duration: 5000,
         });
       } else {
         toast({
           title: "Failed to save score",
-          description: err instanceof Error ? err.message : "Transaction failed",
+          description: err instanceof Error ? err.message : "Transaction failed. Starting a new game!",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+
+      try {
+        const gameSession = await startGame();
+        setSessionId(gameSession.sessionId);
+        setGuesses([]);
+        setFeedback([]);
+        setCurrentGuess("");
+        setLetterStates(new Map());
+        setGameStatus("playing");
+        setGameCompleted(false);
+        setShowGameOver(false);
+        setTotalScore(0);
+        setLastRoundScore(0);
+        setSolution("");
+      } catch (restartErr) {
+        console.error("Failed to restart game:", restartErr);
+        toast({
+          title: "Error",
+          description: "Failed to start new game. Please refresh the page.",
           variant: "destructive",
           duration: 3000,
         });
