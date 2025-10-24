@@ -3,12 +3,10 @@ import { useAccount, useConnect, useSendTransaction } from "wagmi";
 import { Header } from "@/components/Header";
 import { Board } from "@/components/Board";
 import { GameOverModal, StatsModal, SettingsModal, HelpModal } from "@/components/Modals";
-import { BurnerSetupModal } from "@/components/BurnerSetupModal";
 import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
 import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame } from "@/lib/api";
 import { getFormattedDate } from "@/lib/date";
 import { normalizeGuess, isValidGuess } from "@/lib/words";
-import { sendBurnerTransaction, getBurnerBalance, type BurnerWallet, createBurnerWallet } from "@/lib/burner";
 import type { TileFeedback, GameStatus, UserStats } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Wallet } from "lucide-react";
@@ -48,10 +46,6 @@ export default function Game() {
   });
   const [hintUsed, setHintUsed] = useState(false);
   
-  const [burnerWallet, setBurnerWallet] = useState<BurnerWallet | null>(null);
-  const [showBurnerSetup, setShowBurnerSetup] = useState(false);
-  const [burnerBalance, setBurnerBalance] = useState("0");
-  
   const { toast } = useToast();
 
   useEffect(() => {
@@ -68,8 +62,8 @@ export default function Game() {
         if (userStats.remainingAttempts === 0) {
           setGameCompleted(true);
         } else {
-          // Show burner setup modal (burner is always created fresh per session)
-          setShowBurnerSetup(true);
+          const gameSession = await startGame();
+          setSessionId(gameSession.sessionId);
         }
       } catch (err) {
         console.error("Failed to load stats:", err);
@@ -280,34 +274,6 @@ export default function Game() {
         updateLetterStates(normalized, response.feedback);
       }, 600);
 
-      // Send automatic TX with burner wallet
-      if (burnerWallet) {
-        try {
-          // Encode guess data: guess + score using TextEncoder
-          const guessData = `${normalized}:${response.roundScore || 0}`;
-          const encoder = new TextEncoder();
-          const bytes = encoder.encode(guessData);
-          const hexString = Array.from(bytes)
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('')
-            .padStart(64, '0');
-          const txData = `0x${hexString}`;
-          
-          await sendBurnerTransaction(
-            burnerWallet,
-            burnerWallet.address, // Send to self
-            txData
-          );
-          
-          // Update balance
-          const newBalance = await getBurnerBalance(burnerWallet.address);
-          setBurnerBalance(newBalance);
-        } catch (txErr) {
-          console.error("Failed to send burner TX:", txErr);
-          // Don't block game on TX failure
-        }
-      }
-
       if (response.won) {
         setGameStatus("won");
         setSolution(normalized);
@@ -329,7 +295,7 @@ export default function Game() {
         duration: 2000,
       });
     }
-  }, [gameStatus, currentGuess, sessionId, guesses, feedback, toast, updateLetterStates, burnerWallet]);
+  }, [gameStatus, currentGuess, sessionId, guesses, feedback, toast, updateLetterStates]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -416,25 +382,6 @@ export default function Game() {
     }
   };
 
-  const handleBurnerSetupComplete = async (burner: BurnerWallet) => {
-    setBurnerWallet(burner);
-    setShowBurnerSetup(false);
-    
-    // Start game session
-    try {
-      const gameSession = await startGame();
-      setSessionId(gameSession.sessionId);
-      
-      toast({
-        title: "Ready to Play!",
-        description: "Session wallet is active. Each guess will create an on-chain transaction.",
-        duration: 3000,
-      });
-    } catch (err) {
-      console.error("Failed to start game:", err);
-      setError("Failed to start game");
-    }
-  };
 
   if (isLoading) {
     return (
@@ -473,7 +420,6 @@ export default function Game() {
         totalScore={totalScore}
         walletConnected={isConnected}
         walletAddress={address}
-        burnerBalance={burnerBalance}
         onSettingsClick={() => setShowSettings(true)}
         onStatsClick={() => setShowStats(true)}
         onHelpClick={() => setShowHelp(true)}
@@ -600,13 +546,6 @@ export default function Game() {
       <HelpModal
         isOpen={showHelp}
         onClose={() => setShowHelp(false)}
-      />
-
-      <BurnerSetupModal
-        isOpen={showBurnerSetup}
-        onComplete={handleBurnerSetupComplete}
-        mainWalletAddress={address}
-        sendTransactionAsync={sendTransactionAsync}
       />
     </div>
   );
