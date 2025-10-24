@@ -10,7 +10,7 @@ import {
   getDailyLeaderboard,
   getWeeklyLeaderboard,
 } from "./db";
-import { getTodayDateString, isConsecutiveDay } from "./lib/date";
+import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo } from "./lib/date";
 import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateScore } from "./lib/words";
 
 const MAX_ATTEMPTS = 6;
@@ -215,9 +215,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/leaderboard/weekly", (req: Request, res: Response) => {
     const today = getTodayDateString();
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-    const startDate = sevenDaysAgo.toISOString().split('T')[0].replace(/-/g, '');
+    const startDate = getDateStringDaysAgo(6);
     
     const limit = parseInt(req.query.limit as string) || 100;
     

@@ -14,6 +14,10 @@ export function getYesterdayDateString(): string {
   return getNowInIstanbul().minus({ days: 1 }).toFormat("yyyyMMdd");
 }
 
+export function getDateStringDaysAgo(days: number): string {
+  return getNowInIstanbul().minus({ days }).toFormat("yyyyMMdd");
+}
+
 export function isConsecutiveDay(lastPlayed: string | null, today: string): boolean {
   if (!lastPlayed) return false;
   
