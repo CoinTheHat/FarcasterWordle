@@ -15,7 +15,7 @@ import { Loader2, Wallet } from "lucide-react";
 export default function Game() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
-  const { sendTransactionAsync, isPending: isSendingTx } = useSendTransaction();
+  const { sendTransactionAsync } = useSendTransaction();
   
   const [fid, setFid] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +33,7 @@ export default function Game() {
   const [totalScore, setTotalScore] = useState(0);
   const [lastRoundScore, setLastRoundScore] = useState(0);
   const [gameCompleted, setGameCompleted] = useState(false);
+  const [isSavingScore, setIsSavingScore] = useState(false);
   
   const [showGameOver, setShowGameOver] = useState(false);
   const [showStats, setShowStats] = useState(false);
@@ -57,7 +58,6 @@ export default function Game() {
         setStats(userStats);
         
         if (userStats.remainingAttempts === 0) {
-          setGameStatus("completed");
           setGameCompleted(true);
           setShowGameOver(true);
         } else {
@@ -102,6 +102,7 @@ export default function Game() {
       return;
     }
 
+    setIsSavingScore(true);
     try {
       const scoreHex = `0x${totalScore.toString(16).padStart(64, '0')}`;
       
@@ -132,7 +133,8 @@ export default function Game() {
       const isUserRejection = err instanceof Error && 
         (err.message.includes("User rejected") || 
          err.message.includes("User denied") ||
-         err.message.includes("rejected"));
+         err.message.includes("rejected") ||
+         err.message.includes("cancelled"));
 
       if (isUserRejection) {
         toast({
@@ -173,6 +175,8 @@ export default function Game() {
           duration: 3000,
         });
       }
+    } finally {
+      setIsSavingScore(false);
     }
   }, [sessionId, isConnected, address, totalScore, sendTransactionAsync, toast]);
 
@@ -311,19 +315,41 @@ export default function Game() {
     const emoji = gameStatus === "won" ? "✅" : "❌";
     const text = `WordCast ${stats.today}\n${emoji} ${gameStatus === "won" ? `${attempts}/6` : "X/6"}\n🔥 Streak: ${stats.streak}\n\nPlay daily on Farcaster!`;
 
-    const shared = await shareToCast(text);
-    
-    if (!shared) {
-      const copied = await copyToClipboard(text);
+    try {
+      const shared = await shareToCast(text);
+      
+      if (!shared) {
+        try {
+          const copied = await copyToClipboard(text);
+          toast({
+            title: copied ? "Copied to clipboard!" : "Unable to copy",
+            description: copied ? "Share your results!" : "Please copy manually",
+            variant: copied ? "default" : "destructive",
+            duration: 2000,
+          });
+        } catch (clipboardErr) {
+          console.error("Clipboard error:", clipboardErr);
+          toast({
+            title: "Unable to copy",
+            description: "Please try again",
+            variant: "destructive",
+            duration: 2000,
+          });
+        }
+      } else {
+        toast({
+          title: "Shared to Farcaster!",
+          description: "Your results have been posted",
+          duration: 2000,
+        });
+      }
+    } catch (err) {
+      console.error("Share error:", err);
       toast({
-        title: copied ? "Copied to clipboard!" : "Failed to copy",
-        description: copied ? "Share your results!" : "Try again",
-        variant: copied ? "default" : "destructive",
-      });
-    } else {
-      toast({
-        title: "Shared to Farcaster!",
-        description: "Your results have been posted",
+        title: "Unable to share",
+        description: "Please try again",
+        variant: "destructive",
+        duration: 2000,
       });
     }
   };
@@ -477,7 +503,7 @@ export default function Game() {
         maxStreak={stats.maxStreak}
         totalScore={totalScore}
         walletConnected={isConnected}
-        isSavingScore={isSendingTx}
+        isSavingScore={isSavingScore}
         gameCompleted={gameCompleted}
         onShare={handleShare}
         onSaveScore={handleSaveScore}

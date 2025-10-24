@@ -10,6 +10,18 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**October 24, 2025 - Mobile Optimization & Error Handling Fixes**
+- Fixed "Saving..." button stuck state: Added isSavingScore state management with proper reset in finally block
+- Improved TX error handling: Added "cancelled" detection to user rejection logic
+- Enhanced clipboard error handling: Wrapped copyToClipboard in try-catch to prevent "Failed to copy" errors
+- Mobile spacing optimization: Reduced padding throughout for better screen fit
+  - Main layout: py-8 → py-4 (mobile), stats cards: p-3 → p-2 (mobile)
+  - Board padding: p-6 → p-3 (mobile), tile gaps: gap-2 → gap-1.5 (mobile)
+  - Keyboard: p-4 → p-3, button heights h-12 → h-11, gaps gap-1.5 → gap-1 (mobile)
+- Shortened mobile labels: "Current Streak" → "Streak", "Max Streak" → "Max", "Remaining" → "Left"
+- Font size adjustments: text-2xl → text-xl for stats, text-xs → text-[10px] for labels (mobile)
+- Fixed GameStatus type error: Removed invalid "completed" status, using gameCompleted flag instead
+
 **October 24, 2025 - Session-Based Game System with Security Fixes**
 - Implemented session-based random word system (replaces daily fixed words)
 - Backend endpoints: /api/start-game, /api/guess, /api/complete-game
