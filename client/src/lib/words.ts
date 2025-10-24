@@ -49,13 +49,17 @@ export const ALLOWED_GUESSES = [
   "IDEAL", "IMAGE", "INDEX", "INNER", "INPUT", "ISSUE", "JAPAN", "JIMMY"
 ];
 
-export function normalizeGuess(guess: string): string {
-  // Use Turkish locale for proper uppercase conversion (i → İ)
-  return guess.toLocaleUpperCase('tr-TR').trim();
+export function normalizeGuess(guess: string, language: string = 'en'): string {
+  // Use Turkish locale only for Turkish language to handle i → İ properly
+  // Use standard uppercase for English to avoid İ issues
+  if (language === 'tr') {
+    return guess.toLocaleUpperCase('tr-TR').trim();
+  }
+  return guess.toUpperCase().trim();
 }
 
-export function isValidGuess(guess: string): boolean {
-  const normalized = normalizeGuess(guess);
+export function isValidGuess(guess: string, language: string = 'en'): boolean {
+  const normalized = normalizeGuess(guess, language);
   // Accept any 5-letter word with A-Z and Turkish characters (Ç, Ğ, İ, Ö, Ş, Ü)
   return normalized.length === 5 && /^[A-ZÇĞİÖŞÜ]{5}$/.test(normalized);
 }

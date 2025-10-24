@@ -99,13 +99,17 @@ Preferred communication style: Simple, everyday language.
 - "Save Score to Blockchain" button in GameOver modal
 - Transaction sends score as hex-encoded data to user's own address on Base network
 
-**October 24, 2025 - Word Validation Update**
-- Changed validation to accept ANY 5-letter word (A-Z characters)
+**October 24, 2025 - Turkish Character Support & Word Validation**
+- Added full Turkish character support (Ç, Ğ, İ, Ö, Ş, Ü)
+- Keyboard layout updated with Turkish characters on all three rows
+- Locale-aware uppercase conversion using toLocaleUpperCase('tr-TR')
+- Proper handling of Turkish 'i' → 'İ' conversion
+- Changed validation to accept ANY 5-letter word (A-Z + Turkish characters)
 - Removed restriction to ALLOWED_GUESSES word list
-- Both frontend and backend now use simple format validation: 5 letters A-Z only
+- Both frontend and backend use regex: `/^[A-ZÇĞİÖŞÜ]{5}$/`
 - Feedback system colors tiles based on solution word
-- Players can try any 5-letter combination
-- Works for both English and Turkish word lists
+- Players can try any 5-letter combination in both languages
+- Works perfectly for Turkish words like ŞEKER, ÇİÇEK, GÖĞÜS
 
 ## System Architecture
 

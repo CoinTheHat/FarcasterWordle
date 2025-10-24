@@ -226,9 +226,12 @@ export default function Game() {
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (gameStatus !== "playing") return;
-    const value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 5);
+    // Allow A-Z and Turkish characters (Ç, Ğ, İ, Ö, Ş, Ü)
+    const value = language === 'tr' 
+      ? e.target.value.toLocaleUpperCase('tr-TR').replace(/[^A-ZÇĞİÖŞÜ]/g, '').slice(0, 5)
+      : e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 5);
     setCurrentGuess(value);
-  }, [gameStatus]);
+  }, [gameStatus, language]);
 
   const handleEnter = useCallback(async () => {
     if (gameStatus !== "playing" || currentGuess.length !== 5) {
@@ -253,12 +256,14 @@ export default function Game() {
       return;
     }
 
-    const normalized = normalizeGuess(currentGuess);
+    const normalized = normalizeGuess(currentGuess, language || 'en');
     
-    if (!isValidGuess(normalized)) {
+    if (!isValidGuess(normalized, language || 'en')) {
       toast({
         title: "Invalid word",
-        description: "Please enter only letters (A-Z)",
+        description: language === 'tr' 
+          ? "Please enter only letters (A-Z or Turkish characters)" 
+          : "Please enter only letters (A-Z)",
         variant: "destructive",
         duration: 2000,
       });

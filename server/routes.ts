@@ -156,15 +156,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
-    // Use Turkish locale for proper uppercase conversion (i → İ)
-    const normalized = guess.toLocaleUpperCase('tr-TR').trim();
-
     const activeGame = activeGames.get(sessionId);
 
     if (!activeGame) {
       res.status(400).json({ error: "Game session not found or expired. Please start a new game." });
       return;
     }
+
+    // Use language-aware normalization (Turkish locale for tr, standard for en)
+    const normalized = activeGame.language === 'tr' 
+      ? guess.toLocaleUpperCase('tr-TR').trim()
+      : guess.toUpperCase().trim();
 
     // Accept any 5-letter word with Turkish characters (Ç, Ğ, İ, Ö, Ş, Ü)
     if (normalized.length !== 5 || !/^[A-ZÇĞİÖŞÜ]{5}$/.test(normalized)) {

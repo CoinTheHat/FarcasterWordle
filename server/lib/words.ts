@@ -108,9 +108,17 @@ export function getWordOfTheDay(yyyymmdd: string, language: Language = "en"): st
   return words[index];
 }
 
+export function normalizeGuess(guess: string, language: Language = 'en'): string {
+  // Use Turkish locale only for Turkish language to handle i → İ properly
+  // Use standard uppercase for English to avoid İ issues
+  if (language === 'tr') {
+    return guess.toLocaleUpperCase('tr-TR').trim();
+  }
+  return guess.toUpperCase().trim();
+}
+
 export function isValidGuess(guess: string, language: Language = 'en'): boolean {
-  // Use Turkish locale for proper uppercase conversion (i → İ)
-  const normalized = guess.toLocaleUpperCase('tr-TR').trim();
+  const normalized = normalizeGuess(guess, language);
   
   // Accept ANY 5-letter word (A-Z and Turkish characters: Ç, Ğ, İ, Ö, Ş, Ü)
   // The feedback system will handle coloring based on the solution
