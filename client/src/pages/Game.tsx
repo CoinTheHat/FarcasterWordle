@@ -59,7 +59,6 @@ export default function Game() {
         
         if (userStats.remainingAttempts === 0) {
           setGameCompleted(true);
-          setShowGameOver(true);
         } else {
           const gameSession = await startGame();
           setSessionId(gameSession.sessionId);
