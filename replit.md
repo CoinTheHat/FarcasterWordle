@@ -102,9 +102,10 @@ Preferred communication style: Simple, everyday language.
 **October 24, 2025 - Word Validation Update**
 - Changed validation to accept ANY 5-letter word (A-Z characters)
 - Removed restriction to ALLOWED_GUESSES word list
-- Both frontend and backend now use regex validation: `/^[A-Z]{5}$/`
-- Toast notifications auto-dismiss after 2 seconds (duration: 2000)
-- Allows players to try any combination of 5 letters
+- Both frontend and backend now use simple format validation: 5 letters A-Z only
+- Feedback system colors tiles based on solution word
+- Players can try any 5-letter combination
+- Works for both English and Turkish word lists
 
 ## System Architecture
 

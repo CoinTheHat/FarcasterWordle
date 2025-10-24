@@ -165,8 +165,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
-    if (!isValidGuess(normalized, activeGame.language)) {
-      res.status(400).json({ error: "Not a valid word" });
+    // Accept any 5-letter word (format validation only)
+    if (normalized.length !== 5 || !/^[A-Z]{5}$/.test(normalized)) {
+      res.status(400).json({ error: "Must be 5 letters (A-Z)" });
       return;
     }
 

@@ -111,12 +111,13 @@ export function getWordOfTheDay(yyyymmdd: string, language: Language = "en"): st
 export function isValidGuess(guess: string, language: Language = 'en'): boolean {
   const normalized = guess.toUpperCase().trim();
   
+  // Accept ANY 5-letter word (A-Z only)
+  // The feedback system will handle coloring based on the solution
   if (normalized.length !== 5 || !/^[A-Z]{5}$/.test(normalized)) {
     return false;
   }
   
-  const allowedGuesses = language === 'tr' ? ALLOWED_GUESSES_TR_SET : ALLOWED_GUESSES_EN_SET;
-  return allowedGuesses.has(normalized);
+  return true;
 }
 
 export function calculateFeedback(guess: string, solution: string): ("correct" | "present" | "absent")[] {
