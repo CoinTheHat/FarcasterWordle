@@ -401,9 +401,16 @@ export default function Game() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <Loader2 className="w-12 h-12 animate-spin text-primary" />
-        <p className="mt-4 text-muted-foreground">Loading WordCast...</p>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950">
+        <div className="flex flex-col items-center gap-6">
+          <div className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent animate-pulse">
+            WordCast
+          </div>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Loader2 className="w-5 h-5 animate-spin" />
+            <span className="text-sm">Loading your daily puzzle...</span>
+          </div>
+        </div>
       </div>
     );
   }

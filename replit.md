@@ -10,17 +10,24 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-**October 24, 2025 - Leaderboard Improvements & Harder Turkish Words**
-- Fixed Weekly Leaderboard: Now shows MAX score per user (not SUM)
-  - Previously: User plays 3 games → scores added (50+40+30=120)
-  - Now: User plays 3 games → shows best score only (50)
-- Added "Best Scores" (All-Time) leaderboard tab
-  - Shows each user's highest score ever achieved across all games
-  - CTE-based SQL with deterministic tiebreaker (fewest attempts, earliest date)
-- Replaced Turkish words with more challenging vocabulary
-  - Old: ARABA, BAHCE, CANTA (easier words)
-  - New: AFYON, ASLAN, BEKCI, BILGI, BOCEK, BOMBA, KAVGA, KORKU, etc. (harder words)
-- All three leaderboards use same logic: Show each user's BEST score for the time period
+**October 24, 2025 - Splash Screen & Leaderboard Improvements & Harder Turkish Words**
+- Updated splash screen with large "WordCast" branding
+  - Replaced simple loader with gradient text logo (6xl mobile, 8xl desktop)
+  - Blue → Purple → Pink gradient with dark mode support
+  - Pulse animation for visual appeal
+  - Full app name instead of abbreviation
+- Fixed Leaderboard Display Issues:
+  - Fixed Weekly Leaderboard: Now shows MAX score per user (not SUM)
+    - Previously: User plays 3 games → scores added (50+40+30=120)
+    - Now: User plays 3 games → shows best score only (50)
+  - Added "Best Scores" (All-Time) leaderboard tab
+    - Shows each user's highest score ever achieved across all games
+    - CTE-based SQL with deterministic tiebreaker (fewest attempts, earliest date)
+  - Replaced Turkish words with more challenging vocabulary
+    - Old: ARABA, BAHCE, CANTA (easier words)
+    - New: AFYON, ASLAN, BEKCI, BILGI, BOCEK, BOMBA, KAVGA, KORKU, etc. (harder words)
+    - 102 challenging 5-letter Turkish words (validated)
+  - All three leaderboards use same logic: Show each user's BEST score for the time period
 
 **October 24, 2025 - Multi-Language Support (Turkish/English)**
 - Added full multi-language support with Turkish and English word lists
