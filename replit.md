@@ -10,6 +10,18 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**October 24, 2025 - Leaderboard Improvements & Harder Turkish Words**
+- Fixed Weekly Leaderboard: Now shows MAX score per user (not SUM)
+  - Previously: User plays 3 games → scores added (50+40+30=120)
+  - Now: User plays 3 games → shows best score only (50)
+- Added "Best Scores" (All-Time) leaderboard tab
+  - Shows each user's highest score ever achieved across all games
+  - CTE-based SQL with deterministic tiebreaker (fewest attempts, earliest date)
+- Replaced Turkish words with more challenging vocabulary
+  - Old: ARABA, BAHCE, CANTA (easier words)
+  - New: AFYON, ASLAN, BEKCI, BILGI, BOCEK, BOMBA, KAVGA, KORKU, etc. (harder words)
+- All three leaderboards use same logic: Show each user's BEST score for the time period
+
 **October 24, 2025 - Multi-Language Support (Turkish/English)**
 - Added full multi-language support with Turkish and English word lists
 - Language selection modal appears on first app launch
@@ -54,14 +66,15 @@ Preferred communication style: Simple, everyday language.
 - Fixed splash screen: Removed visible color codes, clean professional design
 - Wagmi integration: Using @farcaster/miniapp-wagmi-connector for proper wallet support
 
-**October 24, 2025 - Leaderboard & Mobile Responsive**
-- Added daily and weekly leaderboards with rankings
-- Leaderboard displays top 100 players with scores, attempts, and wins
+**October 24, 2025 - Leaderboard System**
+- Three leaderboard tabs: Daily, Weekly, Best Scores (All-Time)
 - Trophy icon navigation in header to access leaderboard
-- Daily leaderboard: Today's top scores
-- Weekly leaderboard: Last 7 days aggregated scores using Istanbul timezone
+- Daily leaderboard: Today's best scores (one entry per user)
+- Weekly leaderboard: Last 7 days - shows each user's MAX score (not total)
+- Best Scores: All-time highest score per user across entire history
+- All leaderboards show top 100 players with deterministic ranking
 - Mobile-responsive design with md: breakpoints throughout app
-- Fixed timezone bug: Weekly leaderboard now uses Europe/Istanbul timezone
+- Uses Europe/Istanbul timezone (UTC+3) for daily/weekly boundaries
 
 **October 24, 2025 - Scoring System & Wallet Integration**
 - Added scoring system: Green tiles +2 points, Yellow tiles +1 point

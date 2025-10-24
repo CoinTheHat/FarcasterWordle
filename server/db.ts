@@ -232,25 +232,47 @@ export function getDailyLeaderboard(yyyymmdd: string, limit: number = 100): Lead
 export function getWeeklyLeaderboard(startDate: string, endDate: string, limit: number = 100): LeaderboardEntry[] {
   const rows = db
     .prepare(
-      `SELECT 
+      `WITH weekly_best_scores AS (
+        SELECT 
+          fid,
+          MAX(score) as best_score
+        FROM daily_results
+        WHERE yyyymmdd >= ? AND yyyymmdd <= ?
+        GROUP BY fid
+      ),
+      ranked_weekly_games AS (
+        SELECT 
+          dr.fid,
+          dr.score,
+          dr.attempts,
+          dr.won,
+          dr.created_at,
+          ROW_NUMBER() OVER (
+            PARTITION BY dr.fid 
+            ORDER BY dr.score DESC, dr.attempts ASC, dr.created_at ASC
+          ) as rn
+        FROM daily_results dr
+        INNER JOIN weekly_best_scores wbs ON dr.fid = wbs.fid AND dr.score = wbs.best_score
+        WHERE dr.yyyymmdd >= ? AND dr.yyyymmdd <= ?
+      )
+      SELECT 
         fid,
-        SUM(score) as total_score,
-        AVG(attempts) as avg_attempts,
-        SUM(won) as total_won,
-        RANK() OVER (ORDER BY SUM(score) DESC, AVG(attempts) ASC) as rank
-      FROM daily_results
-      WHERE yyyymmdd >= ? AND yyyymmdd <= ?
-      GROUP BY fid
-      ORDER BY total_score DESC, avg_attempts ASC
+        score,
+        attempts,
+        won,
+        RANK() OVER (ORDER BY score DESC, attempts ASC, created_at ASC) as rank
+      FROM ranked_weekly_games
+      WHERE rn = 1
+      ORDER BY score DESC, attempts ASC, created_at ASC
       LIMIT ?`
     )
-    .all(startDate, endDate, limit) as any[];
+    .all(startDate, endDate, startDate, endDate, limit) as any[];
 
   return rows.map(row => ({
     fid: row.fid,
-    score: row.total_score || 0,
-    attempts: Math.round(row.avg_attempts || 0),
-    won: row.total_won || 0,
+    score: row.score || 0,
+    attempts: row.attempts,
+    won: row.won,
     rank: row.rank,
   }));
 }
