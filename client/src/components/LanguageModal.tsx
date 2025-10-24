@@ -30,7 +30,7 @@ export function LanguageModal({ isOpen, onSelect }: LanguageModalProps) {
             className="h-24 flex flex-col gap-2 text-lg"
             data-testid="button-language-en"
           >
-            <span className="text-3xl">🇬🇧</span>
+            <span className="text-3xl font-bold">EN</span>
             <span>English</span>
           </Button>
           <Button
@@ -39,7 +39,7 @@ export function LanguageModal({ isOpen, onSelect }: LanguageModalProps) {
             className="h-24 flex flex-col gap-2 text-lg"
             data-testid="button-language-tr"
           >
-            <span className="text-3xl">🇹🇷</span>
+            <span className="text-3xl font-bold">TR</span>
             <span>Türkçe</span>
           </Button>
         </div>
