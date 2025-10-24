@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy } from "lucide-react";
+import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy, Wallet } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link, useLocation } from "wouter";
 
@@ -9,6 +9,8 @@ interface HeaderProps {
   todayDate?: string;
   totalScore?: number;
   showScore?: boolean;
+  walletConnected?: boolean;
+  walletAddress?: string;
   onSettingsClick?: () => void;
   onStatsClick?: () => void;
   onHelpClick?: () => void;
@@ -22,6 +24,8 @@ export function Header({
   todayDate = "", 
   totalScore = 0, 
   showScore = true,
+  walletConnected = false,
+  walletAddress,
   onSettingsClick, 
   onStatsClick, 
   onHelpClick, 
@@ -31,6 +35,10 @@ export function Header({
   const [location] = useLocation();
   const isLeaderboard = location === "/leaderboard";
   const isGame = location === "/";
+  
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -99,6 +107,13 @@ export function Header({
         </div>
 
         <div className="flex items-center gap-2">
+          {walletConnected && walletAddress && (
+            <Badge variant="secondary" className="hidden md:flex items-center gap-1" data-testid="badge-wallet">
+              <Wallet className="w-3 h-3" />
+              {formatAddress(walletAddress)}
+            </Badge>
+          )}
+          
           <Link href="/leaderboard">
             <Button
               size="icon"

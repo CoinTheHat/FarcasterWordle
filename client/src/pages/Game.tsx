@@ -334,6 +334,8 @@ export default function Game() {
         maxStreak={stats.maxStreak}
         todayDate={getFormattedDate()}
         totalScore={totalScore}
+        walletConnected={isConnected}
+        walletAddress={address}
         onSettingsClick={() => setShowSettings(true)}
         onStatsClick={() => setShowStats(true)}
         onHelpClick={() => setShowHelp(true)}
