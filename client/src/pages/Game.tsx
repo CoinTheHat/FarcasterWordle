@@ -37,7 +37,12 @@ export default function Game() {
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const [solution, setSolution] = useState("");
   const [revealingRow, setRevealingRow] = useState<number | undefined>();
-  const [totalScore, setTotalScore] = useState(0);
+  const [totalScore, setTotalScore] = useState(() => {
+    // Load today's score from localStorage if available
+    const today = getFormattedDate();
+    const savedScore = localStorage.getItem(`wordcast-score-${today}`);
+    return savedScore ? parseInt(savedScore, 10) : 0;
+  });
   const [lastRoundScore, setLastRoundScore] = useState(0);
   const [gameCompleted, setGameCompleted] = useState(false);
   const [isSavingScore, setIsSavingScore] = useState(false);
@@ -136,6 +141,10 @@ export default function Game() {
         maxStreak: result.maxStreak,
         remainingAttempts: 0,
       } : null);
+
+      // Save today's score to localStorage
+      const today = getFormattedDate();
+      localStorage.setItem(`wordcast-score-${today}`, totalScore.toString());
 
       toast({
         title: "Score saved!",
@@ -279,7 +288,12 @@ export default function Game() {
       setFeedback(newFeedback);
       setCurrentGuess("");
       setLastRoundScore(response.roundScore || 0);
-      setTotalScore(response.totalScore || 0);
+      const newTotalScore = response.totalScore || 0;
+      setTotalScore(newTotalScore);
+      
+      // Save updated score to localStorage
+      const today = getFormattedDate();
+      localStorage.setItem(`wordcast-score-${today}`, newTotalScore.toString());
       
       const rowIndex = newGuesses.length - 1;
       setRevealingRow(rowIndex);
