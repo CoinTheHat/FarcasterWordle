@@ -11,7 +11,7 @@ import { getFormattedDate } from "@/lib/date";
 import { normalizeGuess, isValidGuess } from "@/lib/words";
 import type { TileFeedback, GameStatus, UserStats } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Wallet } from "lucide-react";
 
 export default function Game() {
   const { address, isConnected } = useAccount();
@@ -345,6 +345,32 @@ export default function Game() {
 
       <main className="flex-1 flex flex-col items-center justify-between py-8 px-4">
         <div className="w-full max-w-2xl flex-1 flex flex-col justify-center">
+          {/* Wallet Status */}
+          {!isConnected && connectors.length > 0 && (
+            <div className="mb-6 mx-4">
+              <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-4 text-center shadow-lg">
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-2">
+                  <Wallet className="w-4 h-4" />
+                  <span>Connecting wallet...</span>
+                </div>
+                <div className="w-full bg-secondary rounded-full h-1 overflow-hidden">
+                  <div className="bg-primary h-full w-1/2 animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {isConnected && address && (
+            <div className="mb-6 mx-4">
+              <div className="bg-card/80 backdrop-blur-sm border border-green-500/20 rounded-lg p-4 text-center shadow-lg">
+                <div className="flex items-center justify-center gap-2 text-sm text-green-600 dark:text-green-400">
+                  <Wallet className="w-4 h-4" />
+                  <span>Wallet Connected: {address.slice(0, 6)}...{address.slice(-4)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+          
           {/* Stats Badge */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8 px-4">
             <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-3 md:p-4 text-center shadow-lg hover-elevate transition-all">
