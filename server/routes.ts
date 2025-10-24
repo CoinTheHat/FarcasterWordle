@@ -106,17 +106,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
     
+    // CRITICAL FIX: Block if user already has today's result
     const todayResult = getDailyResult(fid, today);
     if (todayResult) {
       res.status(400).json({ error: "Already completed today's game" });
       return;
     }
 
+    // CRITICAL FIX: Check for existing active (non-completed) session
+    // This prevents multiple session exploit
+    let existingSession: ActiveGame | undefined;
+    let existingSessionId: string | undefined;
+    
     activeGames.forEach((game, sid) => {
-      if (game.fid === fid && game.completed) {
-        activeGames.delete(sid);
+      if (game.fid === fid) {
+        if (game.completed) {
+          // Clean up completed sessions
+          activeGames.delete(sid);
+        } else {
+          // Found active session - reuse it
+          existingSession = game;
+          existingSessionId = sid;
+        }
       }
     });
+
+    // If active session exists, validate it's for today before reusing
+    if (existingSession && existingSessionId) {
+      // CRITICAL FIX: Check if session is from today
+      // If session is stale (from previous day), delete it and create new one
+      const sessionDate = existingSession.createdAt ? existingSession.createdAt.substring(0, 10).replace(/-/g, '') : '';
+      
+      if (sessionDate === today) {
+        // Session is from today, safe to reuse
+        res.json({
+          sessionId: existingSessionId,
+          maxAttempts: MAX_ATTEMPTS,
+          resumed: true,
+        });
+        return;
+      } else {
+        // Stale session from previous day, delete and create new
+        activeGames.delete(existingSessionId);
+      }
+    }
 
     const sessionId = generateSessionId();
     const solution = getRandomWord(language as Language);
@@ -194,8 +227,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const won = normalized === activeGame.solution;
     const gameOver = won || activeGame.attemptsUsed >= MAX_ATTEMPTS;
 
+    // CRITICAL FIX: Check if result already saved (multi-session protection)
+    const today = getTodayDateString();
+    const existingResult = getDailyResult(fid, today);
+    
+    if (existingResult) {
+      // User already completed today's game in another session
+      res.status(400).json({ 
+        error: "Already completed today's game",
+        gameOver: true,
+      });
+      return;
+    }
+
     if (gameOver) {
       activeGame.won = won;
+      
+      // CRITICAL FIX: Save game result immediately when game ends
+      // This prevents unlimited replays after refresh
+      // Save result to DB immediately (before TX)
+      createDailyResult(fid, today, activeGame.attemptsUsed, won, activeGame.totalScore);
+      
+      // Update streak
+      const streak = getOrCreateStreak(fid);
+      let newCurrentStreak = streak.currentStreak;
+      let newMaxStreak = streak.maxStreak;
+
+      if (won) {
+        if (isConsecutiveDay(streak.lastPlayedYyyymmdd, today)) {
+          newCurrentStreak = streak.currentStreak + 1;
+        } else {
+          newCurrentStreak = 1;
+        }
+        newMaxStreak = Math.max(newMaxStreak, newCurrentStreak);
+      } else {
+        newCurrentStreak = 0;
+      }
+
+      updateStreak(fid, newCurrentStreak, newMaxStreak, today);
+      
+      // CRITICAL FIX: Mark session as completed to prevent stale session reuse
+      activeGame.completed = true;
+      activeGame.completedAt = new Date().toISOString();
     }
 
     res.json({
@@ -250,12 +323,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const today = getTodayDateString();
     const todayResult = getDailyResult(fid, today);
 
-    if (todayResult) {
-      res.status(400).json({ error: "Already saved today's result" });
+    // Result is now saved during /api/guess when game ends
+    // This endpoint just marks TX as completed
+    if (!todayResult) {
+      res.status(400).json({ error: "No game result found for today" });
       return;
     }
 
     if (activeGame.completed) {
+      // Idempotent: already marked as completed
       const streak = getOrCreateStreak(fid);
       res.json({
         success: true,
@@ -266,32 +342,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
-    createDailyResult(fid, today, activeGame.attemptsUsed, activeGame.won, activeGame.totalScore);
-
+    // Mark session as completed (TX successful)
     const streak = getOrCreateStreak(fid);
-    let newCurrentStreak = streak.currentStreak;
-    let newMaxStreak = streak.maxStreak;
-
-    if (activeGame.won) {
-      if (isConsecutiveDay(streak.lastPlayedYyyymmdd, today)) {
-        newCurrentStreak = streak.currentStreak + 1;
-      } else {
-        newCurrentStreak = 1;
-      }
-      newMaxStreak = Math.max(newMaxStreak, newCurrentStreak);
-    } else {
-      newCurrentStreak = 0;
-    }
-
-    updateStreak(fid, newCurrentStreak, newMaxStreak, today);
-
     activeGame.completed = true;
     activeGame.completedAt = new Date().toISOString();
 
     res.json({
       success: true,
-      streak: newCurrentStreak,
-      maxStreak: newMaxStreak,
+      streak: streak.currentStreak,
+      maxStreak: streak.maxStreak,
     });
   });
 
