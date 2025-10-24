@@ -11,22 +11,26 @@ import {
   getWeeklyLeaderboard,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo } from "./lib/date";
-import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateScore } from "./lib/words";
+import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateScore, getRandomWord } from "./lib/words";
+import { randomBytes } from "crypto";
 
 const MAX_ATTEMPTS = 6;
 
 interface ActiveGame {
   fid: number;
-  date: string;
+  sessionId: string;
+  solution: string;
   guesses: string[];
   attemptsUsed: number;
   totalScore: number;
+  won: boolean | null;
+  createdAt: string;
 }
 
 const activeGames = new Map<string, ActiveGame>();
 
-function getGameKey(fid: number, date: string): string {
-  return `${fid}-${date}`;
+function generateSessionId(): string {
+  return randomBytes(16).toString("hex");
 }
 
 interface AuthRequest extends Request {
@@ -71,7 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const streak = getOrCreateStreak(fid);
     const todayResult = getDailyResult(fid, today);
 
-    const remainingAttempts = todayResult ? MAX_ATTEMPTS - todayResult.attempts : MAX_ATTEMPTS;
+    const remainingAttempts = todayResult ? 0 : MAX_ATTEMPTS;
 
     res.json({
       fid,
@@ -80,15 +84,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
       lastPlayed: streak.lastPlayedYyyymmdd,
       today,
       remainingAttempts,
+      hasCompletedToday: !!todayResult,
+    });
+  });
+
+  app.post("/api/start-game", requireAuth, (req: AuthRequest, res: Response) => {
+    const fid = req.fid!;
+    const today = getTodayDateString();
+    
+    const todayResult = getDailyResult(fid, today);
+    if (todayResult) {
+      res.status(400).json({ error: "Already completed today's game" });
+      return;
+    }
+
+    const sessionId = generateSessionId();
+    const solution = getRandomWord();
+    
+    const activeGame: ActiveGame = {
+      fid,
+      sessionId,
+      solution,
+      guesses: [],
+      attemptsUsed: 0,
+      totalScore: 0,
+      won: null,
+      createdAt: new Date().toISOString(),
+    };
+    
+    activeGames.set(sessionId, activeGame);
+    
+    res.json({
+      sessionId,
+      maxAttempts: MAX_ATTEMPTS,
     });
   });
 
   app.post("/api/guess", requireAuth, (req: AuthRequest, res: Response) => {
     const fid = req.fid!;
-    const { guess } = req.body;
+    const { guess, sessionId } = req.body;
 
     if (!guess || typeof guess !== "string") {
       res.status(400).json({ error: "Invalid guess" });
+      return;
+    }
+
+    if (!sessionId || typeof sessionId !== "string") {
+      res.status(400).json({ error: "Invalid session" });
       return;
     }
 
@@ -99,28 +141,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
-    const today = getTodayDateString();
-    const solution = getWordOfTheDay(today);
-    
-    const todayResult = getDailyResult(fid, today);
+    const activeGame = activeGames.get(sessionId);
 
-    if (todayResult) {
-      res.status(400).json({ error: "Already completed today's game" });
+    if (!activeGame) {
+      res.status(400).json({ error: "Game session not found" });
       return;
     }
 
-    const gameKey = getGameKey(fid, today);
-    let activeGame = activeGames.get(gameKey);
-
-    if (!activeGame) {
-      activeGame = {
-        fid,
-        date: today,
-        guesses: [],
-        attemptsUsed: 0,
-        totalScore: 0,
-      };
-      activeGames.set(gameKey, activeGame);
+    if (activeGame.fid !== fid) {
+      res.status(403).json({ error: "Unauthorized" });
+      return;
     }
 
     if (activeGame.attemptsUsed >= MAX_ATTEMPTS) {
@@ -131,34 +161,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     activeGame.guesses.push(normalized);
     activeGame.attemptsUsed++;
 
-    const feedback = calculateFeedback(normalized, solution);
+    const feedback = calculateFeedback(normalized, activeGame.solution);
     const roundScore = calculateScore(feedback, activeGame.attemptsUsed);
     activeGame.totalScore += roundScore;
     
-    const won = normalized === solution;
+    const won = normalized === activeGame.solution;
     const gameOver = won || activeGame.attemptsUsed >= MAX_ATTEMPTS;
 
     if (gameOver) {
-      createDailyResult(fid, today, activeGame.attemptsUsed, won, activeGame.totalScore);
-
-      const streak = getOrCreateStreak(fid);
-      let newCurrentStreak = streak.currentStreak;
-      let newMaxStreak = streak.maxStreak;
-
-      if (won) {
-        if (isConsecutiveDay(streak.lastPlayedYyyymmdd, today)) {
-          newCurrentStreak = streak.currentStreak + 1;
-        } else {
-          newCurrentStreak = 1;
-        }
-        newMaxStreak = Math.max(newMaxStreak, newCurrentStreak);
-      } else {
-        newCurrentStreak = 0;
-      }
-
-      updateStreak(fid, newCurrentStreak, newMaxStreak, today);
-
-      activeGames.delete(gameKey);
+      activeGame.won = won;
     }
 
     res.json({
@@ -167,16 +178,90 @@ export async function registerRoutes(app: Express): Promise<Server> {
       won,
       remainingAttempts: MAX_ATTEMPTS - activeGame.attemptsUsed,
       gameOver,
-      solution: gameOver ? solution : undefined,
+      solution: gameOver ? activeGame.solution : undefined,
       roundScore,
       totalScore: activeGame.totalScore,
     });
   });
 
-  app.get("/api/hint", requireAuth, (req: AuthRequest, res: Response) => {
+  app.post("/api/complete-game", requireAuth, (req: AuthRequest, res: Response) => {
+    const fid = req.fid!;
+    const { sessionId, txHash } = req.body;
+
+    if (!sessionId || typeof sessionId !== "string") {
+      res.status(400).json({ error: "Invalid session" });
+      return;
+    }
+
+    const activeGame = activeGames.get(sessionId);
+
+    if (!activeGame) {
+      res.status(400).json({ error: "Game session not found" });
+      return;
+    }
+
+    if (activeGame.fid !== fid) {
+      res.status(403).json({ error: "Unauthorized" });
+      return;
+    }
+
+    if (activeGame.won === null) {
+      res.status(400).json({ error: "Game not completed" });
+      return;
+    }
+
     const today = getTodayDateString();
-    const solution = getWordOfTheDay(today);
+    const todayResult = getDailyResult(fid, today);
+
+    if (todayResult) {
+      res.status(400).json({ error: "Already saved today's result" });
+      return;
+    }
+
+    createDailyResult(fid, today, activeGame.attemptsUsed, activeGame.won, activeGame.totalScore);
+
+    const streak = getOrCreateStreak(fid);
+    let newCurrentStreak = streak.currentStreak;
+    let newMaxStreak = streak.maxStreak;
+
+    if (activeGame.won) {
+      if (isConsecutiveDay(streak.lastPlayedYyyymmdd, today)) {
+        newCurrentStreak = streak.currentStreak + 1;
+      } else {
+        newCurrentStreak = 1;
+      }
+      newMaxStreak = Math.max(newMaxStreak, newCurrentStreak);
+    } else {
+      newCurrentStreak = 0;
+    }
+
+    updateStreak(fid, newCurrentStreak, newMaxStreak, today);
+
+    activeGames.delete(sessionId);
+
+    res.json({
+      success: true,
+      streak: newCurrentStreak,
+      maxStreak: newMaxStreak,
+    });
+  });
+
+  app.get("/api/hint", requireAuth, (req: AuthRequest, res: Response) => {
+    const { sessionId } = req.query;
     
+    if (!sessionId || typeof sessionId !== "string") {
+      res.status(400).json({ error: "Invalid session" });
+      return;
+    }
+
+    const activeGame = activeGames.get(sessionId);
+    
+    if (!activeGame) {
+      res.status(400).json({ error: "Game session not found" });
+      return;
+    }
+    
+    const solution = activeGame.solution;
     const randomPosition = Math.floor(Math.random() * 5);
     const letter = solution[randomPosition];
     

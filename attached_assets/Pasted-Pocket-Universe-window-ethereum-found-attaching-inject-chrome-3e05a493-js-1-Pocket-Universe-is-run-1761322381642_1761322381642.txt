@@ -1,0 +1,331 @@
+Pocket Universe: window.ethereum found, attaching
+inject.chrome.3e05a493.js:1 Pocket Universe is running!
+inject.chrome.3e05a493.js:1 Pocket Universe: window.phantom.solana found, attaching
+inject.chrome.3e05a493.js:1 Pocket Universe is running for Solana!
+inject.chrome.3e05a493.js:1 Failed to define property TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at l2Cug.~utils/log (inject.chrome.3e05a493.js:1:13112)
+    at l (inject.chrome.3e05a493.js:1:705)
+    at p (inject.chrome.3e05a493.js:1:809)
+    at cowF3.~utils/log (inject.chrome.3e05a493.js:1:6313)
+    at l (inject.chrome.3e05a493.js:1:705)
+    at p (inject.chrome.3e05a493.js:1:809)
+    at bAx4k.~utils/log (inject.chrome.3e05a493.js:1:1408)
+    at l (inject.chrome.3e05a493.js:1:705)
+    at bAx4k.~utils/log (inject.chrome.3e05a493.js:1:1090)
+inject.chrome.3e05a493.js:1 Pocket Universe is running!
+requestProvider.js:2 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at requestProvider.js:2:569545
+    at requestProvider.js:2:569725
+    at requestProvider.js:2:569729
+    at requestProvider.js:2:569733Understand this error
+inject.chrome.3e05a493.js:1 Pocket Universe is running!
+inpage.js:1 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperties (<anonymous>)
+    at inpage.js:1:2142386
+    at inpage.js:1:2143316
+    at inpage.js:1:2143320Understand this error
+inject.chrome.3e05a493.js:1 Pocket Universe is running!
+inpage.js:1 MetaMask encountered an error setting the global Ethereum provider - this is likely due to another Ethereum wallet extension also setting the global Ethereum provider: TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at a (inpage.js:1:51293)
+    at r.initializeProvider (inpage.js:1:51064)
+    at Object.<anonymous> (inpage.js:1:2308)
+    at Object.<anonymous> (inpage.js:1:6316)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:6329)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:412)
+    at inpage.js:1:429
+a @ inpage.js:1Understand this error
+2inject.chrome.3e05a493.js:1 Pocket Universe is running!
+evmAsk.js:5 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:5:5093)
+    at window.addEventListener.once (evmAsk.js:5:9013)Understand this error
+/csp-logging:1  Failed to load resource: the server responded with a status of 403 ()Understand this error
+inject.chrome.3e05a493.js:1 Pocket Universe is running!
+content.js:2 Check phishing by URL: Passed.
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+/connect?sdkName=%40coinbase%2Fwallet-sdk&sdkVersion=4.3.6&origin=https%3A%2F%2Fwww.base.dev&coop=null:1 Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+98137.26933bd4b4150634fe1f.js:2 Pocket Universe is running!
+98137.26933bd4b4150634fe1f.js:2 Backpack couldn't override `window.ethereum`.
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this warning
+/csp-logging:1  Failed to load resource: the server responded with a status of 403 ()Understand this error
+contentScript.js:2 origins don't match https://www.base.dev https://keys.coinbase.com
+(anonymous) @ contentScript.js:2Understand this error
+98137.26933bd4b4150634fe1f.js:2 origins don't match https://www.base.dev https://keys.coinbase.com
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+contentScript.js:2 origins don't match https://www.base.dev https://keys.coinbase.com
+(anonymous) @ contentScript.js:2Understand this error
+98137.26933bd4b4150634fe1f.js:2 origins don't match https://www.base.dev https://keys.coinbase.com
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+98137.26933bd4b4150634fe1f.js:2 Error: Self calls are not allowed.
+    at h4e (main.0c49cb1e0cf5ec9754d8.js:2:3366661)
+    at m7e (main.0c49cb1e0cf5ec9754d8.js:2:3491058)
+    at yo (98137.26933bd4b4150634fe1f.js:8:1703127)
+    at Sc (98137.26933bd4b4150634fe1f.js:8:1762442)
+    at vu (98137.26933bd4b4150634fe1f.js:8:1751594)
+    at gu (98137.26933bd4b4150634fe1f.js:8:1751522)
+    at yu (98137.26933bd4b4150634fe1f.js:8:1751385)
+    at au (98137.26933bd4b4150634fe1f.js:8:1748192)
+    at iu (98137.26933bd4b4150634fe1f.js:8:1746744)
+    at E (98137.26933bd4b4150634fe1f.js:8:1773507)
+    at MessagePort.P (98137.26933bd4b4150634fe1f.js:8:1774039)
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+inpage.js:1 Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): chrome.runtime.sendMessage() called from a webpage must specify an Extension ID (string) for its first argument.
+    at rt (inpage.js:1:725152)
+    at inpage.js:1:725560Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+98137.26933bd4b4150634fe1f.js:2 Error: Self calls are not allowed.
+    at h4e (main.0c49cb1e0cf5ec9754d8.js:2:3366661)
+    at m7e (main.0c49cb1e0cf5ec9754d8.js:2:3491058)
+    at yo (98137.26933bd4b4150634fe1f.js:8:1703127)
+    at Sc (98137.26933bd4b4150634fe1f.js:8:1762442)
+    at vu (98137.26933bd4b4150634fe1f.js:8:1751594)
+    at gu (98137.26933bd4b4150634fe1f.js:8:1751522)
+    at yu (98137.26933bd4b4150634fe1f.js:8:1751385)
+    at au (98137.26933bd4b4150634fe1f.js:8:1748192)
+    at iu (98137.26933bd4b4150634fe1f.js:8:1746744)
+    at E (98137.26933bd4b4150634fe1f.js:8:1773507)
+    at MessagePort.P (98137.26933bd4b4150634fe1f.js:8:1774039)
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+98137.26933bd4b4150634fe1f.js:2 Error: Self calls are not allowed.
+    at h4e (main.0c49cb1e0cf5ec9754d8.js:2:3366661)
+    at m7e (main.0c49cb1e0cf5ec9754d8.js:2:3491058)
+    at yo (98137.26933bd4b4150634fe1f.js:8:1703127)
+    at Sc (98137.26933bd4b4150634fe1f.js:8:1762442)
+    at vu (98137.26933bd4b4150634fe1f.js:8:1751594)
+    at gu (98137.26933bd4b4150634fe1f.js:8:1751522)
+    at yu (98137.26933bd4b4150634fe1f.js:8:1751385)
+    at au (98137.26933bd4b4150634fe1f.js:8:1748192)
+    at iu (98137.26933bd4b4150634fe1f.js:8:1746744)
+    at E (98137.26933bd4b4150634fe1f.js:8:1773507)
+    at MessagePort.P (98137.26933bd4b4150634fe1f.js:8:1774039)
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+98137.26933bd4b4150634fe1f.js:2 Error: Self calls are not allowed.
+    at h4e (main.0c49cb1e0cf5ec9754d8.js:2:3366661)
+    at m7e (main.0c49cb1e0cf5ec9754d8.js:2:3491058)
+    at yo (98137.26933bd4b4150634fe1f.js:8:1703127)
+    at Sc (98137.26933bd4b4150634fe1f.js:8:1762442)
+    at vu (98137.26933bd4b4150634fe1f.js:8:1751594)
+    at gu (98137.26933bd4b4150634fe1f.js:8:1751522)
+    at yu (98137.26933bd4b4150634fe1f.js:8:1751385)
+    at au (98137.26933bd4b4150634fe1f.js:8:1748192)
+    at iu (98137.26933bd4b4150634fe1f.js:8:1746744)
+    at E (98137.26933bd4b4150634fe1f.js:8:1773507)
+    at MessagePort.P (98137.26933bd4b4150634fe1f.js:8:1774039)
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+98137.26933bd4b4150634fe1f.js:2 Error: Self calls are not allowed.
+    at h4e (main.0c49cb1e0cf5ec9754d8.js:2:3366661)
+    at m7e (main.0c49cb1e0cf5ec9754d8.js:2:3491058)
+    at yo (98137.26933bd4b4150634fe1f.js:8:1703127)
+    at Sc (98137.26933bd4b4150634fe1f.js:8:1762442)
+    at vu (98137.26933bd4b4150634fe1f.js:8:1751594)
+    at gu (98137.26933bd4b4150634fe1f.js:8:1751522)
+    at yu (98137.26933bd4b4150634fe1f.js:8:1751385)
+    at au (98137.26933bd4b4150634fe1f.js:8:1748192)
+    at iu (98137.26933bd4b4150634fe1f.js:8:1746744)
+    at E (98137.26933bd4b4150634fe1f.js:8:1773507)
+    at MessagePort.P (98137.26933bd4b4150634fe1f.js:8:1774039)
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+98137.26933bd4b4150634fe1f.js:2 Error: Self calls are not allowed.
+    at h4e (main.0c49cb1e0cf5ec9754d8.js:2:3366661)
+    at m7e (main.0c49cb1e0cf5ec9754d8.js:2:3491058)
+    at yo (98137.26933bd4b4150634fe1f.js:8:1703127)
+    at Sc (98137.26933bd4b4150634fe1f.js:8:1762442)
+    at vu (98137.26933bd4b4150634fe1f.js:8:1751594)
+    at gu (98137.26933bd4b4150634fe1f.js:8:1751522)
+    at yu (98137.26933bd4b4150634fe1f.js:8:1751385)
+    at au (98137.26933bd4b4150634fe1f.js:8:1748192)
+    at iu (98137.26933bd4b4150634fe1f.js:8:1746744)
+    at E (98137.26933bd4b4150634fe1f.js:8:1773507)
+    at MessagePort.P (98137.26933bd4b4150634fe1f.js:8:1774039)
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+98137.26933bd4b4150634fe1f.js:2 Error: Self calls are not allowed.
+    at h4e (main.0c49cb1e0cf5ec9754d8.js:2:3366661)
+    at m7e (main.0c49cb1e0cf5ec9754d8.js:2:3491058)
+    at yo (98137.26933bd4b4150634fe1f.js:8:1703127)
+    at Sc (98137.26933bd4b4150634fe1f.js:8:1762442)
+    at vu (98137.26933bd4b4150634fe1f.js:8:1751594)
+    at gu (98137.26933bd4b4150634fe1f.js:8:1751522)
+    at yu (98137.26933bd4b4150634fe1f.js:8:1751385)
+    at au (98137.26933bd4b4150634fe1f.js:8:1748192)
+    at iu (98137.26933bd4b4150634fe1f.js:8:1746744)
+    at E (98137.26933bd4b4150634fe1f.js:8:1773507)
+    at MessagePort.P (98137.26933bd4b4150634fe1f.js:8:1774039)
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+98137.26933bd4b4150634fe1f.js:2 Error: Self calls are not allowed.
+    at h4e (main.0c49cb1e0cf5ec9754d8.js:2:3366661)
+    at m7e (main.0c49cb1e0cf5ec9754d8.js:2:3491058)
+    at yo (98137.26933bd4b4150634fe1f.js:8:1703127)
+    at Sc (98137.26933bd4b4150634fe1f.js:8:1762442)
+    at vu (98137.26933bd4b4150634fe1f.js:8:1751594)
+    at gu (98137.26933bd4b4150634fe1f.js:8:1751522)
+    at yu (98137.26933bd4b4150634fe1f.js:8:1751385)
+    at au (98137.26933bd4b4150634fe1f.js:8:1748192)
+    at iu (98137.26933bd4b4150634fe1f.js:8:1746744)
+    at E (98137.26933bd4b4150634fe1f.js:8:1773507)
+    at MessagePort.P (98137.26933bd4b4150634fe1f.js:8:1774039)
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+98137.26933bd4b4150634fe1f.js:2 Error: Self calls are not allowed.
+    at h4e (main.0c49cb1e0cf5ec9754d8.js:2:3366661)
+    at m7e (main.0c49cb1e0cf5ec9754d8.js:2:3491058)
+    at yo (98137.26933bd4b4150634fe1f.js:8:1703127)
+    at Sc (98137.26933bd4b4150634fe1f.js:8:1762442)
+    at vu (98137.26933bd4b4150634fe1f.js:8:1751594)
+    at gu (98137.26933bd4b4150634fe1f.js:8:1751522)
+    at yu (98137.26933bd4b4150634fe1f.js:8:1751385)
+    at au (98137.26933bd4b4150634fe1f.js:8:1748192)
+    at iu (98137.26933bd4b4150634fe1f.js:8:1746744)
+    at E (98137.26933bd4b4150634fe1f.js:8:1773507)
+    at MessagePort.P (98137.26933bd4b4150634fe1f.js:8:1774039)
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+98137.26933bd4b4150634fe1f.js:2 Error: Self calls are not allowed.
+    at h4e (main.0c49cb1e0cf5ec9754d8.js:2:3366661)
+    at m7e (main.0c49cb1e0cf5ec9754d8.js:2:3491058)
+    at yo (98137.26933bd4b4150634fe1f.js:8:1703127)
+    at Sc (98137.26933bd4b4150634fe1f.js:8:1762442)
+    at vu (98137.26933bd4b4150634fe1f.js:8:1751594)
+    at gu (98137.26933bd4b4150634fe1f.js:8:1751522)
+    at yu (98137.26933bd4b4150634fe1f.js:8:1751385)
+    at au (98137.26933bd4b4150634fe1f.js:8:1748192)
+    at iu (98137.26933bd4b4150634fe1f.js:8:1746744)
+    at E (98137.26933bd4b4150634fe1f.js:8:1773507)
+    at MessagePort.P (98137.26933bd4b4150634fe1f.js:8:1774039)
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+as.coinbase.com/metrics:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+page.js:2 Uncaught (in promise) a: The source https://keys.coinbase.com/connect?sdkName=%40coinbase%2Fwallet-sdk&sdkVersion=4.3.6&origin=https%3A%2F%2Fwww.base.dev&coop=null has not been authorized yet
+    at g (page.js:2:13551)
+    at page.js:2:21912
+g @ page.js:2
+(anonymous) @ page.js:2
+postMessage
+onPortMessageHandler @ content.js:2Understand this error
+main.js?attr=-kF9nhChqVVbCKlJ-f75HUbBygjteH0CBjHud9hUaJfBUnnsLL5U2aZdSMkaw8c8axP0ay_NhhslaN9z_kbeZiBJSO8PlZ8GBFJt7fLKuhOo_nx5f2J4XryhqCvaNa-0pNSRBoMKFepWEewLttYYVqlYHx17_ZQFupihW66a5XfLY7w8t0hPunWH-jvcaFxChsb52-VGz2vHl4x1CZj-uQ:5963  POST https://exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496 net::ERR_BLOCKED_BY_CLIENT
+fetchCallImpl @ main.js?attr=-kF9nhChqVVbCKlJ-f75HUbBygjteH0CBjHud9hUaJfBUnnsLL5U2aZdSMkaw8c8axP0ay_NhhslaN9z_kbeZiBJSO8PlZ8GBFJt7fLKuhOo_nx5f2J4XryhqCvaNa-0pNSRBoMKFepWEewLttYYVqlYHx17_ZQFupihW66a5XfLY7w8t0hPunWH-jvcaFxChsb52-VGz2vHl4x1CZj-uQ:5963
+fetch @ main.js?attr=-kF9nhChqVVbCKlJ-f75HUbBygjteH0CBjHud9hUaJfBUnnsLL5U2aZdSMkaw8c8axP0ay_NhhslaN9z_kbeZiBJSO8PlZ8GBFJt7fLKuhOo_nx5f2J4XryhqCvaNa-0pNSRBoMKFepWEewLttYYVqlYHx17_ZQFupihW66a5XfLY7w8t0hPunWH-jvcaFxChsb52-VGz2vHl4x1CZj-uQ:5969
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+add @ 98137.26933bd4b4150634fe1f.js:2
+send @ 98137.26933bd4b4150634fe1f.js:2
+send @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+send @ 98137.26933bd4b4150634fe1f.js:2
+sendEnvelope @ 98137.26933bd4b4150634fe1f.js:2
+sendSession @ 98137.26933bd4b4150634fe1f.js:2
+captureSession @ 98137.26933bd4b4150634fe1f.js:2
+_updateSessionFromEvent @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+_executeHandlers @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+_runExecutor @ 98137.26933bd4b4150634fe1f.js:2
+xe @ 98137.26933bd4b4150634fe1f.js:2
+then @ 98137.26933bd4b4150634fe1f.js:2
+_processEvent @ 98137.26933bd4b4150634fe1f.js:2
+_captureEvent @ 98137.26933bd4b4150634fe1f.js:2
+captureEvent @ 98137.26933bd4b4150634fe1f.js:2
+captureEvent @ 98137.26933bd4b4150634fe1f.js:2
+Mt @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+Jr @ 98137.26933bd4b4150634fe1f.js:2
+push.845500.Bn.i.onunhandledrejection @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+main.js?attr=-kF9nhChqVVbCKlJ-f75HUbBygjteH0CBjHud9hUaJfBUnnsLL5U2aZdSMkaw8c8axP0ay_NhhslaN9z_kbeZiBJSO8PlZ8GBFJt7fLKuhOo_nx5f2J4XryhqCvaNa-0pNSRBoMKFepWEewLttYYVqlYHx17_ZQFupihW66a5XfLY7w8t0hPunWH-jvcaFxChsb52-VGz2vHl4x1CZj-uQ:5963  POST https://exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496 net::ERR_BLOCKED_BY_CLIENT
+fetchCallImpl @ main.js?attr=-kF9nhChqVVbCKlJ-f75HUbBygjteH0CBjHud9hUaJfBUnnsLL5U2aZdSMkaw8c8axP0ay_NhhslaN9z_kbeZiBJSO8PlZ8GBFJt7fLKuhOo_nx5f2J4XryhqCvaNa-0pNSRBoMKFepWEewLttYYVqlYHx17_ZQFupihW66a5XfLY7w8t0hPunWH-jvcaFxChsb52-VGz2vHl4x1CZj-uQ:5963
+fetch @ main.js?attr=-kF9nhChqVVbCKlJ-f75HUbBygjteH0CBjHud9hUaJfBUnnsLL5U2aZdSMkaw8c8axP0ay_NhhslaN9z_kbeZiBJSO8PlZ8GBFJt7fLKuhOo_nx5f2J4XryhqCvaNa-0pNSRBoMKFepWEewLttYYVqlYHx17_ZQFupihW66a5XfLY7w8t0hPunWH-jvcaFxChsb52-VGz2vHl4x1CZj-uQ:5969
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+add @ 98137.26933bd4b4150634fe1f.js:2
+send @ 98137.26933bd4b4150634fe1f.js:2
+send @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+send @ 98137.26933bd4b4150634fe1f.js:2
+sendEnvelope @ 98137.26933bd4b4150634fe1f.js:2
+sendEvent @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+_executeHandlers @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+_runExecutor @ 98137.26933bd4b4150634fe1f.js:2
+xe @ 98137.26933bd4b4150634fe1f.js:2
+then @ 98137.26933bd4b4150634fe1f.js:2
+_processEvent @ 98137.26933bd4b4150634fe1f.js:2
+_captureEvent @ 98137.26933bd4b4150634fe1f.js:2
+captureEvent @ 98137.26933bd4b4150634fe1f.js:2
+captureEvent @ 98137.26933bd4b4150634fe1f.js:2
+Mt @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+Jr @ 98137.26933bd4b4150634fe1f.js:2
+push.845500.Bn.i.onunhandledrejection @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+main.js?attr=-kF9nhChqVVbCKlJ-f75HUbBygjteH0CBjHud9hUaJfBUnnsLL5U2aZdSMkaw8c8axP0ay_NhhslaN9z_kbeZiBJSO8PlZ8GBFJt7fLKuhOo_nx5f2J4XryhqCvaNa-0pNSRBoMKFepWEewLttYYVqlYHx17_ZQFupihW66a5XfLY7w8t0hPunWH-jvcaFxChsb52-VGz2vHl4x1CZj-uQ:5963  POST https://exceptions.coinbase.com/sentry/api/4509158356746240/envelope/?sentry_version=7&sentry_key=4953e974e75f8b972eb3188fb2ca9496 net::ERR_BLOCKED_BY_CLIENT
+fetchCallImpl @ main.js?attr=-kF9nhChqVVbCKlJ-f75HUbBygjteH0CBjHud9hUaJfBUnnsLL5U2aZdSMkaw8c8axP0ay_NhhslaN9z_kbeZiBJSO8PlZ8GBFJt7fLKuhOo_nx5f2J4XryhqCvaNa-0pNSRBoMKFepWEewLttYYVqlYHx17_ZQFupihW66a5XfLY7w8t0hPunWH-jvcaFxChsb52-VGz2vHl4x1CZj-uQ:5963
+fetch @ main.js?attr=-kF9nhChqVVbCKlJ-f75HUbBygjteH0CBjHud9hUaJfBUnnsLL5U2aZdSMkaw8c8axP0ay_NhhslaN9z_kbeZiBJSO8PlZ8GBFJt7fLKuhOo_nx5f2J4XryhqCvaNa-0pNSRBoMKFepWEewLttYYVqlYHx17_ZQFupihW66a5XfLY7w8t0hPunWH-jvcaFxChsb52-VGz2vHl4x1CZj-uQ:5969
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+add @ 98137.26933bd4b4150634fe1f.js:2
+send @ 98137.26933bd4b4150634fe1f.js:2
+send @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2
+send @ 98137.26933bd4b4150634fe1f.js:2
+sendEnvelope @ 98137.26933bd4b4150634fe1f.js:2
+_flushOutcomes @ 98137.26933bd4b4150634fe1f.js:2
+(anonymous) @ 98137.26933bd4b4150634fe1f.js:2Understand this error
+main.js?attr=-kF9nhChqVVbCKlJ-f75HUbBygjteH0CBjHud9hUaJfBUnnsLL5U2aZdSMkaw8c8axP0ay_NhhslaN9z_kbeZiBJSO8PlZ8GBFJt7fLKuhOo_nx5f2J4XryhqCvaNa-0pNSRBoMKFepWEewLttYYVqlYHx17_ZQFupihW66a5XfLY7w8t0hPunWH-jvcaFxChsb52-VGz2vHl4x1CZj-uQ:5963  POST https://as.coinbase.com/metrics net::ERR_BLOCKED_BY_CLIENT

@@ -106,3 +106,8 @@ export function calculateScore(feedback: ("correct" | "present" | "absent")[], a
   
   return Math.round(baseScore * multiplier);
 }
+
+export function getRandomWord(): string {
+  const randomIndex = Math.floor(Math.random() * TARGET_WORDS.length);
+  return TARGET_WORDS[randomIndex];
+}
