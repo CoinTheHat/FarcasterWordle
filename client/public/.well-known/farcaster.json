@@ -1,11 +1,10 @@
-
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjUxNTExNiwidHlwZSI6ImF1dGgiLCJrZXkiOiIweGExRGEwNTJiNjBjMTU3ZDc3NjQ5MTE4MWQ2NkU1MzYxRmMyNGIxQkMifQ",
+    "payload": "eyJkb21haW4iOiJmYXJjYXN0ZXItd29yZGxlLnJlcGxpdC5hcHAifQ",
+    "signature": "IogODvHJlPqzbQQJNweOECXNV4ESZpe7KbOztaOFepg6mqoHEDnzsvtgypfngaZ8xeT9cYoKu+CrUjFEeQm0xxw="
+  },
   "miniapp": {
-    {
-      "accountAssociation": {
-        "header": "eyJmaWQiOjUxNTExNiwidHlwZSI6ImF1dGgiLCJrZXkiOiIweGExRGEwNTJiNjBjMTU3ZDc3NjQ5MTE4MWQ2NkU1MzYxRmMyNGIxQkMifQ",
-        "payload": "eyJkb21haW4iOiJmYXJjYXN0ZXItd29yZGxlLnJlcGxpdC5hcHAifQ",
-        "signature": "IogODvHJlPqzbQQJNweOECXNV4ESZpe7KbOztaOFepg6mqoHEDnzsvtgypfngaZ8xeT9cYoKu+CrUjFEeQm0xxw="
-      },
     "version": "1",
     "name": "WordCast",
     "homeUrl": "https://farcaster-wordle.replit.app/",
