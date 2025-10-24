@@ -10,6 +10,7 @@ export const db = new Database(DB_PATH);
 db.exec(`
   CREATE TABLE IF NOT EXISTS profiles (
     fid INTEGER PRIMARY KEY,
+    username TEXT,
     created_at TEXT NOT NULL,
     last_seen_at TEXT NOT NULL
   );
@@ -34,8 +35,16 @@ db.exec(`
   );
 `);
 
+// Add username column if it doesn't exist (migration)
+try {
+  db.exec(`ALTER TABLE profiles ADD COLUMN username TEXT;`);
+} catch (e) {
+  // Column already exists, ignore error
+}
+
 export interface Profile {
   fid: number;
+  username: string | null;
   createdAt: string;
   lastSeenAt: string;
 }
@@ -67,19 +76,22 @@ export function getOrCreateProfile(fid: number): Profile {
     db.prepare("UPDATE profiles SET last_seen_at = ? WHERE fid = ?").run(now, fid);
     return {
       fid: existing.fid,
+      username: existing.username || null,
       createdAt: existing.created_at,
       lastSeenAt: now,
     };
   }
 
-  db.prepare("INSERT INTO profiles (fid, created_at, last_seen_at) VALUES (?, ?, ?)").run(
+  db.prepare("INSERT INTO profiles (fid, username, created_at, last_seen_at) VALUES (?, ?, ?, ?)").run(
     fid,
+    null,
     now,
     now
   );
 
   return {
     fid,
+    username: null,
     createdAt: now,
     lastSeenAt: now,
   };
@@ -127,6 +139,10 @@ export function createDailyResult(
     score,
     createdAt: now,
   };
+}
+
+export function updateUsername(fid: number, username: string): void {
+  db.prepare("UPDATE profiles SET username = ? WHERE fid = ?").run(username, fid);
 }
 
 export function getOrCreateStreak(fid: number): Streak {
@@ -198,6 +214,7 @@ export function getBoardStats(yyyymmdd: string): {
 
 export interface LeaderboardEntry {
   fid: number;
+  username: string | null;
   score: number;
   attempts: number;
   won: number;
@@ -208,20 +225,23 @@ export function getDailyLeaderboard(yyyymmdd: string, limit: number = 100): Lead
   const rows = db
     .prepare(
       `SELECT 
-        fid, 
-        score, 
-        attempts, 
-        won,
-        RANK() OVER (ORDER BY score DESC, attempts ASC) as rank
-      FROM daily_results
-      WHERE yyyymmdd = ?
-      ORDER BY score DESC, attempts ASC
+        dr.fid, 
+        p.username,
+        dr.score, 
+        dr.attempts, 
+        dr.won,
+        RANK() OVER (ORDER BY dr.score DESC, dr.attempts ASC) as rank
+      FROM daily_results dr
+      LEFT JOIN profiles p ON dr.fid = p.fid
+      WHERE dr.yyyymmdd = ?
+      ORDER BY dr.score DESC, dr.attempts ASC
       LIMIT ?`
     )
     .all(yyyymmdd, limit) as any[];
 
   return rows.map(row => ({
     fid: row.fid,
+    username: row.username || null,
     score: row.score || 0,
     attempts: row.attempts,
     won: row.won,
@@ -256,20 +276,23 @@ export function getWeeklyLeaderboard(startDate: string, endDate: string, limit: 
         WHERE dr.yyyymmdd >= ? AND dr.yyyymmdd <= ?
       )
       SELECT 
-        fid,
-        score,
-        attempts,
-        won,
-        RANK() OVER (ORDER BY score DESC, attempts ASC, created_at ASC) as rank
-      FROM ranked_weekly_games
-      WHERE rn = 1
-      ORDER BY score DESC, attempts ASC, created_at ASC
+        rwg.fid,
+        p.username,
+        rwg.score,
+        rwg.attempts,
+        rwg.won,
+        RANK() OVER (ORDER BY rwg.score DESC, rwg.attempts ASC, rwg.created_at ASC) as rank
+      FROM ranked_weekly_games rwg
+      LEFT JOIN profiles p ON rwg.fid = p.fid
+      WHERE rwg.rn = 1
+      ORDER BY rwg.score DESC, rwg.attempts ASC, rwg.created_at ASC
       LIMIT ?`
     )
     .all(startDate, endDate, startDate, endDate, limit) as any[];
 
   return rows.map(row => ({
     fid: row.fid,
+    username: row.username || null,
     score: row.score || 0,
     attempts: row.attempts,
     won: row.won,
@@ -302,20 +325,23 @@ export function getBestScoresLeaderboard(limit: number = 100): LeaderboardEntry[
         INNER JOIN best_scores bs ON dr.fid = bs.fid AND dr.score = bs.best_score
       )
       SELECT 
-        fid,
-        score,
-        attempts,
-        won,
-        RANK() OVER (ORDER BY score DESC, attempts ASC) as rank
-      FROM ranked_games
-      WHERE rn = 1
-      ORDER BY score DESC, attempts ASC
+        rg.fid,
+        p.username,
+        rg.score,
+        rg.attempts,
+        rg.won,
+        RANK() OVER (ORDER BY rg.score DESC, rg.attempts ASC) as rank
+      FROM ranked_games rg
+      LEFT JOIN profiles p ON rg.fid = p.fid
+      WHERE rg.rn = 1
+      ORDER BY rg.score DESC, rg.attempts ASC
       LIMIT ?`
     )
     .all(limit) as any[];
 
   return rows.map(row => ({
     fid: row.fid,
+    username: row.username || null,
     score: row.score || 0,
     attempts: row.attempts,
     won: row.won,

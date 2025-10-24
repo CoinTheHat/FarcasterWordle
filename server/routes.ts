@@ -6,6 +6,7 @@ import {
   createDailyResult,
   getOrCreateStreak,
   updateStreak,
+  updateUsername,
   getBoardStats,
   getDailyLeaderboard,
   getWeeklyLeaderboard,
@@ -79,7 +80,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const fid = req.fid!;
     const today = getTodayDateString();
 
-    getOrCreateProfile(fid);
+    const profile = getOrCreateProfile(fid);
     const streak = getOrCreateStreak(fid);
     const todayResult = getDailyResult(fid, today);
 
@@ -87,12 +88,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     res.json({
       fid,
+      username: profile.username,
       streak: streak.currentStreak,
       maxStreak: streak.maxStreak,
       lastPlayed: streak.lastPlayedYyyymmdd,
       today,
       remainingAttempts,
       hasCompletedToday: !!todayResult,
+    });
+  });
+
+  app.post("/api/update-username", requireAuth, (req: AuthRequest, res: Response) => {
+    const fid = req.fid!;
+    const { username } = req.body;
+
+    if (!username || typeof username !== "string") {
+      res.status(400).json({ error: "Username is required" });
+      return;
+    }
+
+    const trimmedUsername = username.trim();
+
+    if (trimmedUsername.length === 0) {
+      res.status(400).json({ error: "Username cannot be empty" });
+      return;
+    }
+
+    if (trimmedUsername.length > 20) {
+      res.status(400).json({ error: "Username must be 20 characters or less" });
+      return;
+    }
+
+    // Simple validation: alphanumeric, underscores, hyphens
+    if (!/^[a-zA-Z0-9_-]+$/.test(trimmedUsername)) {
+      res.status(400).json({ error: "Username can only contain letters, numbers, underscores, and hyphens" });
+      return;
+    }
+
+    updateUsername(fid, trimmedUsername);
+
+    res.json({
+      success: true,
+      username: trimmedUsername,
     });
   });
 
