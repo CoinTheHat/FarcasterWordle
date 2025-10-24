@@ -76,3 +76,19 @@ export interface BoardStats {
   lostCount: number;
   averageAttempts: number;
 }
+
+export interface LeaderboardEntry {
+  fid: number;
+  score: number;
+  attempts: number;
+  won: number;
+  rank: number;
+}
+
+export interface LeaderboardResponse {
+  period: "daily" | "weekly";
+  date?: string;
+  startDate?: string;
+  endDate?: string;
+  leaderboard: LeaderboardEntry[];
+}

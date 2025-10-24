@@ -7,6 +7,8 @@ import {
   getOrCreateStreak,
   updateStreak,
   getBoardStats,
+  getDailyLeaderboard,
+  getWeeklyLeaderboard,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay } from "./lib/date";
 import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateScore } from "./lib/words";
@@ -137,7 +139,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const gameOver = won || activeGame.attemptsUsed >= MAX_ATTEMPTS;
 
     if (gameOver) {
-      createDailyResult(fid, today, activeGame.attemptsUsed, won);
+      createDailyResult(fid, today, activeGame.attemptsUsed, won, activeGame.totalScore);
 
       const streak = getOrCreateStreak(fid);
       let newCurrentStreak = streak.currentStreak;
@@ -195,6 +197,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       wonCount: stats.wonCount,
       lostCount: stats.lostCount,
       averageAttempts: stats.averageAttempts,
+    });
+  });
+
+  app.get("/api/leaderboard/daily", (req: Request, res: Response) => {
+    const date = (req.query.date as string) || getTodayDateString();
+    const limit = parseInt(req.query.limit as string) || 100;
+    
+    const leaderboard = getDailyLeaderboard(date, limit);
+    
+    res.json({
+      period: "daily",
+      date,
+      leaderboard,
+    });
+  });
+
+  app.get("/api/leaderboard/weekly", (req: Request, res: Response) => {
+    const today = getTodayDateString();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+    const startDate = sevenDaysAgo.toISOString().split('T')[0].replace(/-/g, '');
+    
+    const limit = parseInt(req.query.limit as string) || 100;
+    
+    const leaderboard = getWeeklyLeaderboard(startDate, today, limit);
+    
+    res.json({
+      period: "weekly",
+      startDate,
+      endDate: today,
+      leaderboard,
     });
   });
 

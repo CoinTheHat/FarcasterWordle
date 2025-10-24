@@ -20,6 +20,7 @@ db.exec(`
     yyyymmdd TEXT NOT NULL,
     attempts INTEGER NOT NULL,
     won INTEGER NOT NULL,
+    score INTEGER DEFAULT 0,
     created_at TEXT NOT NULL,
     UNIQUE(fid, yyyymmdd)
   );
@@ -45,6 +46,7 @@ export interface DailyResult {
   yyyymmdd: string;
   attempts: number;
   won: number;
+  score: number;
   createdAt: string;
 }
 
@@ -96,6 +98,7 @@ export function getDailyResult(fid: number, yyyymmdd: string): DailyResult | nul
     yyyymmdd: row.yyyymmdd,
     attempts: row.attempts,
     won: row.won,
+    score: row.score || 0,
     createdAt: row.created_at,
   };
 }
@@ -104,15 +107,16 @@ export function createDailyResult(
   fid: number,
   yyyymmdd: string,
   attempts: number,
-  won: boolean
+  won: boolean,
+  score: number
 ): DailyResult {
   const now = new Date().toISOString();
 
   const result = db
     .prepare(
-      "INSERT INTO daily_results (fid, yyyymmdd, attempts, won, created_at) VALUES (?, ?, ?, ?, ?)"
+      "INSERT INTO daily_results (fid, yyyymmdd, attempts, won, score, created_at) VALUES (?, ?, ?, ?, ?, ?)"
     )
-    .run(fid, yyyymmdd, attempts, won ? 1 : 0, now);
+    .run(fid, yyyymmdd, attempts, won ? 1 : 0, score, now);
 
   return {
     id: result.lastInsertRowid as number,
@@ -120,6 +124,7 @@ export function createDailyResult(
     yyyymmdd,
     attempts,
     won: won ? 1 : 0,
+    score,
     createdAt: now,
   };
 }
@@ -189,4 +194,63 @@ export function getBoardStats(yyyymmdd: string): {
     lostCount: stats.lost_count || 0,
     averageAttempts: stats.avg_attempts || 0,
   };
+}
+
+export interface LeaderboardEntry {
+  fid: number;
+  score: number;
+  attempts: number;
+  won: number;
+  rank: number;
+}
+
+export function getDailyLeaderboard(yyyymmdd: string, limit: number = 100): LeaderboardEntry[] {
+  const rows = db
+    .prepare(
+      `SELECT 
+        fid, 
+        score, 
+        attempts, 
+        won,
+        RANK() OVER (ORDER BY score DESC, attempts ASC) as rank
+      FROM daily_results
+      WHERE yyyymmdd = ?
+      ORDER BY score DESC, attempts ASC
+      LIMIT ?`
+    )
+    .all(yyyymmdd, limit) as any[];
+
+  return rows.map(row => ({
+    fid: row.fid,
+    score: row.score || 0,
+    attempts: row.attempts,
+    won: row.won,
+    rank: row.rank,
+  }));
+}
+
+export function getWeeklyLeaderboard(startDate: string, endDate: string, limit: number = 100): LeaderboardEntry[] {
+  const rows = db
+    .prepare(
+      `SELECT 
+        fid,
+        SUM(score) as total_score,
+        AVG(attempts) as avg_attempts,
+        SUM(won) as total_won,
+        RANK() OVER (ORDER BY SUM(score) DESC, AVG(attempts) ASC) as rank
+      FROM daily_results
+      WHERE yyyymmdd >= ? AND yyyymmdd <= ?
+      GROUP BY fid
+      ORDER BY total_score DESC, avg_attempts ASC
+      LIMIT ?`
+    )
+    .all(startDate, endDate, limit) as any[];
+
+  return rows.map(row => ({
+    fid: row.fid,
+    score: row.total_score || 0,
+    attempts: Math.round(row.avg_attempts || 0),
+    won: row.total_won || 0,
+    rank: row.rank,
+  }));
 }

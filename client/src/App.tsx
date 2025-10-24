@@ -6,12 +6,14 @@ import { wagmiConfig } from "./lib/wagmi";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Game from "@/pages/Game";
+import Leaderboard from "@/pages/Leaderboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Game} />
+      <Route path="/leaderboard" component={Leaderboard} />
       <Route component={NotFound} />
     </Switch>
   );
