@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -227,12 +228,12 @@ export function SettingsModal({
   currentUsername,
   onUsernameUpdate,
 }: SettingsModalProps) {
-  const [username, setUsername] = React.useState(currentUsername || "");
-  const [isSaving, setIsSaving] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
-  const [success, setSuccess] = React.useState(false);
+  const [username, setUsername] = useState(currentUsername || "");
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setUsername(currentUsername || "");
     setError(null);
     setSuccess(false);
