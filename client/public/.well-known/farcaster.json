@@ -1,9 +1,10 @@
 {
   "accountAssociation": {
-    "header": "eyJmaWQiOjUxNTExNiwidHlwZSI6ImF1dGgiLCJrZXkiOiIweGExRGEwNTJiNjBjMTU3ZDc3NjQ5MTE4MWQ2NkU1MzYxRmMyNGIxQkMifQ",
+    "header": "eyJmaWQiOjUxNTExNiwidHlwZSI6ImF1dGgiLCJrZXkiOiIweEZEOUNmQkU1NTEzZEYzNEQwQmI4OENhNzMzZDI0QzMyMzkwNjQ0MTcifQ",
     "payload": "eyJkb21haW4iOiJmYXJjYXN0ZXItd29yZGxlLnJlcGxpdC5hcHAifQ",
     "signature": "IogODvHJlPqzbQQJNweOECXNV4ESZpe7KbOztaOFepg6mqoHEDnzsvtgypfngaZ8xeT9cYoKu+CrUjFEeQm0xxw="
-  },
+  }
+},
   "miniapp": {
     "version": "1",
     "name": "WordCast",
