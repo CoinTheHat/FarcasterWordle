@@ -1,8 +1,7 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useAccount, useConnect, useSendTransaction } from "wagmi";
 import { Header } from "@/components/Header";
 import { Board } from "@/components/Board";
-import { Keyboard } from "@/components/Keyboard";
 import { GameOverModal, StatsModal, SettingsModal, HelpModal } from "@/components/Modals";
 import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
 import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame } from "@/lib/api";
@@ -11,12 +10,15 @@ import { normalizeGuess, isValidGuess } from "@/lib/words";
 import type { TileFeedback, GameStatus, UserStats } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Wallet } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function Game() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { sendTransactionAsync } = useSendTransaction();
   
+  const inputRef = useRef<HTMLInputElement>(null);
   const [fid, setFid] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -211,14 +213,10 @@ export default function Game() {
     });
   }, []);
 
-  const handleKeyPress = useCallback((key: string) => {
-    if (gameStatus !== "playing" || currentGuess.length >= 5) return;
-    setCurrentGuess((prev) => prev + key);
-  }, [gameStatus, currentGuess]);
-
-  const handleDelete = useCallback(() => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (gameStatus !== "playing") return;
-    setCurrentGuess((prev) => prev.slice(0, -1));
+    const value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 5);
+    setCurrentGuess(value);
   }, [gameStatus]);
 
   const handleEnter = useCallback(async () => {
@@ -299,24 +297,18 @@ export default function Game() {
     }
   }, [gameStatus, currentGuess, sessionId, guesses, feedback, toast, updateLetterStates]);
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleEnter();
+    }
+  }, [handleEnter]);
+
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      
-      if (showGameOver || showStats || showSettings || showHelp) return;
-
-      if (e.key === "Enter") {
-        handleEnter();
-      } else if (e.key === "Backspace") {
-        handleDelete();
-      } else if (/^[a-zA-Z]$/.test(e.key)) {
-        handleKeyPress(e.key.toUpperCase());
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyPress, handleDelete, handleEnter, showGameOver, showStats, showSettings, showHelp]);
+    if (gameStatus === "playing" && !showGameOver && !showStats && !showSettings && !showHelp) {
+      inputRef.current?.focus();
+    }
+  }, [gameStatus, showGameOver, showStats, showSettings, showHelp]);
 
   const handleShare = async () => {
     if (!stats) return;
@@ -491,15 +483,31 @@ export default function Game() {
           />
         </div>
 
-        <div className="w-full max-w-2xl">
-          <Keyboard
-            onKeyPress={handleKeyPress}
-            onEnter={handleEnter}
-            onDelete={handleDelete}
-            letterStates={letterStates}
-            colorBlindMode={colorBlindMode}
-            disabled={gameStatus !== "playing"}
-          />
+        <div className="w-full max-w-2xl px-4 pb-4">
+          <div className="flex gap-2 items-center">
+            <Input
+              ref={inputRef}
+              type="text"
+              value={currentGuess}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              placeholder="Type your guess..."
+              disabled={gameStatus !== "playing" || gameCompleted}
+              maxLength={5}
+              className="text-center text-2xl font-bold uppercase tracking-widest h-14"
+              data-testid="input-guess"
+              autoFocus
+            />
+            <Button
+              onClick={handleEnter}
+              disabled={gameStatus !== "playing" || currentGuess.length !== 5 || gameCompleted}
+              size="lg"
+              className="h-14 px-8"
+              data-testid="button-submit"
+            >
+              Submit
+            </Button>
+          </div>
         </div>
       </main>
 
