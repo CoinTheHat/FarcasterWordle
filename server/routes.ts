@@ -72,8 +72,21 @@ function requireAuth(req: AuthRequest, res: Response, next: () => void) {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  app.get("/.well-known/farcaster.json", (_req, res) => {
-    res.sendFile("farcaster.json", { root: process.cwd() });
+  app.get("/.well-known/farcaster.json", (req, res) => {
+    const host = req.get('host') || '';
+    
+    // Yeni domain için yeni manifest
+    if (host.includes('farcasterwordle.com')) {
+      res.sendFile("farcaster-new.json", { root: process.cwd() });
+    } 
+    // Eski domain için eski manifest
+    else if (host.includes('replit.app')) {
+      res.sendFile("farcaster-old.json", { root: process.cwd() });
+    }
+    // Fallback: yeni manifest
+    else {
+      res.sendFile("farcaster-new.json", { root: process.cwd() });
+    }
   });
 
   app.get("/api/me", requireAuth, async (req: AuthRequest, res: Response) => {

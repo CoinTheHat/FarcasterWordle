@@ -1,0 +1,25 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjUxNTExNiwidHlwZSI6ImF1dGgiLCJrZXkiOiIweEZEOUNmQkU1NTEzZEYzNEQwQmI4OENhNzMzZDI0QzMyMzkwNjQ0MTcifQ",
+    "payload": "eyJkb21haW4iOiJmYXJjYXN0ZXItd29yZGxlLnJlcGxpdC5hcHAifQ",
+    "signature": "IogODvHJlPqzbQQJNweOECXNV4ESZpe7KbOztaOFepg6mqoHEDnzsvtgypfngaZ8xeT9cYoKu+CrUjFEeQm0xxw="
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "WordCast",
+    "canonicalDomain": "farcasterwordle.com",
+    "homeUrl": "https://farcaster-wordle.replit.app/",
+    "iconUrl": "https://farcaster-wordle.replit.app/icon.png",
+    "splashImageUrl": "https://farcaster-wordle.replit.app/splash.png",
+    "splashBackgroundColor": "#8B5CF6",
+    "primaryCategory": "games",
+    "tags": ["game", "puzzle", "wordle", "daily", "blockchain"],
+    "subtitle": "Daily word puzzle blockchain",
+    "description": "Play daily Wordle puzzles, compete on leaderboards, earn points with smart guessing, and save scores to blockchain. Track your streak and challenge friends!",
+    "tagline": "Guess the word climb the board",
+    "ogTitle": "WordCast - Daily Word Puzzle",
+    "ogDescription": "Play daily word puzzles, compete on leaderboards, and save scores to blockchain.",
+    "ogImageUrl": "https://farcaster-wordle.replit.app/splash.png",
+    "noindex": false
+  }
+}
