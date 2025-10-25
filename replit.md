@@ -8,6 +8,12 @@ WordCast is a production-ready Wordle-style daily word game built as a Farcaster
 
 Preferred communication style: Simple, everyday language.
 
+## Deployment
+
+**Production Domain:** https://farcasterwordle.com
+**Previous Domain:** farcaster-wordle.replit.app (migrated October 2025)
+**Domain Migration:** Completed with new accountAssociation signature for farcasterwordle.com domain ownership verification.
+
 ## System Architecture
 
 ### Frontend Architecture
