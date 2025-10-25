@@ -11,7 +11,6 @@
     "iconUrl": "https://farcasterwordle.com/icon.png",
     "splashImageUrl": "https://farcasterwordle.com/splash.png",
     "splashBackgroundColor": "#8B5CF6",
-    "canonicalDomain": "farcasterwordle.com",
     "primaryCategory": "games",
     "tags": ["game", "puzzle", "wordle", "daily", "blockchain"],
     "subtitle": "Daily word puzzle blockchain",
