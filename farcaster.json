@@ -7,9 +7,9 @@
   "miniapp": {
     "version": "1",
     "name": "WordCast",
-    "homeUrl": "https://farcaster-wordle.replit.app/",
-    "iconUrl": "https://farcaster-wordle.replit.app/icon.png",
-    "splashImageUrl": "https://farcaster-wordle.replit.app/splash.png",
+    "homeUrl": "https://farcasterwordle.com/",
+    "iconUrl": "https://farcasterwordle.com/icon.png",
+    "splashImageUrl": "https://farcasterwordle.com/splash.png",
     "splashBackgroundColor": "#8B5CF6",
     "primaryCategory": "games",
     "tags": ["game", "puzzle", "wordle", "daily", "blockchain"],
@@ -18,7 +18,7 @@
     "tagline": "Guess the word climb the board",
     "ogTitle": "WordCast - Daily Word Puzzle",
     "ogDescription": "Play daily word puzzles, compete on leaderboards, and save scores to blockchain.",
-    "ogImageUrl": "https://farcaster-wordle.replit.app/splash.png",
+    "ogImageUrl": "https://farcasterwordle.com/splash.png",
     "noindex": false
   }
 }
