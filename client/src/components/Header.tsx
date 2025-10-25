@@ -57,7 +57,7 @@ export function Header({
               data-testid="button-language"
               className="h-8 w-8 md:h-10 md:w-auto md:px-3 md:gap-1.5"
             >
-              <span className="text-base">{currentLanguage === 'tr' ? '🇹🇷' : '🇬🇧'}</span>
+              <span className="text-base">{currentLanguage === 'tr' ? '🇹🇷' : '🇺🇸'}</span>
               <span className="hidden md:inline font-semibold">{currentLanguage.toUpperCase()}</span>
             </Button>
           )}
@@ -104,7 +104,7 @@ export function Header({
         <div className="flex flex-col items-center flex-1 min-w-0">
           <Link href="/">
             <h1 className="text-lg md:text-2xl font-bold tracking-tight cursor-pointer hover:text-primary transition-colors whitespace-nowrap" data-testid="text-title">
-              WORDCAST
+              WordCast
             </h1>
           </Link>
           {todayDate && (
