@@ -22,19 +22,19 @@ export const TARGET_WORDS_EN = [
 ];
 
 export const TARGET_WORDS_TR = [
-  "AFYON", "ASLAN", "BEKCI", "BILGI", "BOCEK", "BOMBA", "BUDUN", "BULUT",
-  "CAMIZ", "CELIK", "CEVAP", "CIKAR", "DAMLA", "DEDIK", "DOGRU", "DURUM",
-  "EKSEN", "ENLEM", "FASIL", "FIKIR", "FIYAT", "GARIP", "GECIT", "GIZLI",
-  "GURUH", "HAYIR", "HEVES", "HIKAY", "IMZAC", "ISLEM", "IZLEK", "KABUK",
-  "KADRO", "KALIN", "KASIK", "KAVGA", "KAYIP", "KESIK", "KILIC", "KIYMA",
-  "KOMUR", "KORKU", "KURAL", "KUSAK", "LABEL", "LODOS", "MAKAM", "MALUM",
-  "MARUL", "MECAZ", "MELOD", "MUCIZ", "NABIZ", "NAKIT", "NESIL", "NIYET",
-  "OBJEK", "ODUNC", "OLMAZ", "ORGAN", "ORTAC", "OYNAK", "OZLEM", "PARCA",
-  "PILAV", "RAKAM", "RANGU", "RESMI", "RUTIN", "SABAH", "SAKIN", "SAPAN",
-  "SEBEP", "SEMIZ", "SICAK", "SIFIR", "SINEK", "SOMUT", "SORUN", "SUYLA",
-  "TALAN", "TAPIR", "TEMEL", "TOKAT", "TOPAL", "TORUN", "TUTAR", "UCRET",
-  "UMUMI", "UREME", "VAPUR", "VERIM", "YAKUT", "YAYLA", "YETKI", "YIGIT",
-  "YORUM", "YUDUM", "ZAFER", "ZIMBA", "ZIRVE", "ZURNA"
+  "AFYON", "ASLAN", "BEKÇİ", "BİLGİ", "BÖCEK", "BOMBA", "BUDUN", "BULUT",
+  "CAMİZ", "ÇELİK", "CEVAP", "ÇIKAR", "DAMLA", "DEDİK", "DOĞRU", "DURUM",
+  "EKSEN", "ENLEM", "FASIL", "FİKİR", "FİYAT", "GARİP", "GEÇİT", "GİZLİ",
+  "GÜRUH", "HAYIR", "HEVES", "HİKAY", "İMZAÇ", "İŞLEM", "İZLEK", "KABUK",
+  "KADRO", "KALIN", "KAŞIK", "KAVGA", "KAYIP", "KESİK", "KILIÇ", "KIYMA",
+  "KÖMÜR", "KORKU", "KURAL", "KUŞAK", "LABEL", "LODOS", "MAKAM", "MALUM",
+  "MARUL", "MECAZ", "MELOD", "MUCİZ", "NABIZ", "NAKİT", "NESİL", "NİYET",
+  "OBJEK", "ÖDÜNÇ", "OLMAZ", "ORGAN", "ORTAÇ", "OYNAK", "ÖZLEM", "PARÇA",
+  "PİLAV", "RAKAM", "RANGU", "RESMİ", "RUTİN", "SABAH", "SAKİN", "SAPAN",
+  "SEBEP", "SEMİZ", "SICAK", "SIFIR", "SİNEK", "SOMUT", "SORUN", "SUYLA",
+  "TALAN", "TAPİR", "TEMEL", "TOKAT", "TOPAL", "TORUN", "TUTAR", "ÜCRET",
+  "UMUMİ", "ÜREME", "VAPUR", "VERİM", "YAKUT", "YAYLA", "YETKİ", "YİĞİT",
+  "YORUM", "YUDUM", "ZAFER", "ZİMBA", "ZİRVE", "ZURNA"
 ];
 
 export const TARGET_WORDS: Record<Language, string[]> = {
@@ -109,10 +109,11 @@ export function getWordOfTheDay(yyyymmdd: string, language: Language = "en"): st
 }
 
 export function normalizeGuess(guess: string, language: Language = 'en'): string {
-  // For Turkish: Use standard toUpperCase() instead of toLocaleUpperCase('tr-TR')
-  // This treats both "i" and "ı" the same way (both become "I")
-  // This fixes the confusion where "garip" and "garıp" would be treated differently
-  // Our word list uses "I" (dotless) consistently for both letters
+  // For Turkish: Use toLocaleUpperCase('tr-TR') to handle Turkish characters properly
+  // This ensures ö→Ö, ü→Ü, ğ→Ğ, ş→Ş, ç→Ç, ı→I, i→İ
+  if (language === 'tr') {
+    return guess.toLocaleUpperCase('tr-TR').trim();
+  }
   return guess.toUpperCase().trim();
 }
 
