@@ -1,21 +1,27 @@
 {
-  "accountAssociation": {
-    "header": "eyJmaWQiOjUxNTExNiwidHlwZSI6ImF1dGgiLCJrZXkiOiIweEZEOUNmQkU1NTEzZEYzNEQwQmI4OENhNzMzZDI0QzMyMzkwNjQ0MTcifQ",
-    "payload": "eyJkb21haW4iOiJmYXJjYXN0ZXJ3b3JkbGUuY29tIn0",
-    "signature": "h19AygUqZFVUeW3CgHPnnsLFwF58usu0sW9CI6VOdgsXSOHY+xMVPI8YumaK5xMLBA6fF3WF6isRZi4nHfNiJRs="
-  },
   "frame": {
-    "version": "1",
     "name": "WordCast",
-    "homeUrl": "https://farcasterwordle.com/",
-    "iconUrl": "https://farcasterwordle.com/icon.png",
-    "imageUrl": "https://farcasterwordle.com/splash.png",
-    "splashImageUrl": "https://farcasterwordle.com/splash.png",
+    "version": "1",
+    "iconUrl": "https://https://farcasterwordle.com//icon.png",
+    "homeUrl": "https://https://farcasterwordle.com/",
+    "imageUrl": "https://https://farcasterwordle.com//image.png",
+    "splashImageUrl": "https://https://farcasterwordle.com//splash.png",
     "splashBackgroundColor": "#8B5CF6",
-    "primaryCategory": "games",
-    "tags": ["game", "puzzle", "wordle", "daily", "blockchain"],
+    "webhookUrl": "https://https://farcasterwordle.com//api/webhook",
     "subtitle": "Daily word puzzle blockchain",
     "description": "Play daily Wordle puzzles, compete on leaderboards, earn points with smart guessing, and save scores to blockchain. Track your streak and challenge friends!",
-    "webhookUrl": "https://farcasterwordle.com/api/webhook"
+    "primaryCategory": "games",
+    "tags": [
+      "game",
+      "puzzle",
+      "wordle",
+      "daily",
+      "blockchain"
+    ]
+  },
+  "accountAssociation": {
+    "header": "eyJmaWQiOjUxNTExNiwidHlwZSI6ImF1dGgiLCJrZXkiOiIweEZEOUNmQkU1NTEzZEYzNEQwQmI4OENhNzMzZDI0QzMyMzkwNjQ0MTcifQ",
+    "payload": "eyJkb21haW4iOiJodHRwczovL2ZhcmNhc3RlcndvcmRsZS5jb20vIn0",
+    "signature": "kfhpPOLDE9lMTBzdTzuBM2diiTROKzGGjgwTJv+Bkxs5VhhriK3OZPlSuBewo5e/3fDxwnEC+c5lAkkdgEj1GBw="
   }
 }
