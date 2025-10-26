@@ -304,21 +304,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         await createDailyResult(fid, today, activeGame.attemptsUsed, won, activeGame.totalScore);
         
-        // Update streak
+        // Update streak (based on consecutive days played, not won)
         const streak = await getOrCreateStreak(fid);
         let newCurrentStreak = streak.currentStreak;
         let newMaxStreak = streak.maxStreak;
 
-        if (won) {
-          if (isConsecutiveDay(streak.lastPlayedYyyymmdd, today)) {
-            newCurrentStreak = streak.currentStreak + 1;
-          } else {
-            newCurrentStreak = 1;
-          }
-          newMaxStreak = Math.max(newMaxStreak, newCurrentStreak);
+        if (isConsecutiveDay(streak.lastPlayedYyyymmdd, today)) {
+          newCurrentStreak = streak.currentStreak + 1;
         } else {
-          newCurrentStreak = 0;
+          newCurrentStreak = 1;
         }
+        newMaxStreak = Math.max(newMaxStreak, newCurrentStreak);
 
         await updateStreak(fid, newCurrentStreak, newMaxStreak, today);
       } catch (error: any) {
