@@ -90,6 +90,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/webhook", async (req: Request, res: Response) => {
+    console.log("[Farcaster Webhook]", JSON.stringify(req.body, null, 2));
+    res.json({ success: true });
+  });
+
   app.get("/api/me", requireAuth, async (req: AuthRequest, res: Response) => {
     const fid = req.fid!;
     const today = getTodayDateString();
