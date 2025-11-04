@@ -14,7 +14,7 @@ import {
   getBestScoresLeaderboard,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo } from "./lib/date";
-import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateWinScore, getRandomWord, type Language } from "./lib/words";
+import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateWinScore, calculateLossScore, getRandomWord, type Language } from "./lib/words";
 import { randomBytes } from "crypto";
 
 const MAX_ATTEMPTS = 6;
@@ -307,10 +307,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const won = normalized === activeGame.solution;
     const gameOver = won || activeGame.attemptsUsed >= MAX_ATTEMPTS;
     
-    // Calculate final score only when player wins
+    // Calculate final score: win score (with multiplier) or loss score (no multiplier)
     let finalScore = 0;
     if (won) {
       finalScore = calculateWinScore(activeGame.attemptsUsed);
+    } else if (gameOver) {
+      // Player lost but gets points based on their last attempt (green/yellow tiles)
+      finalScore = calculateLossScore(feedback);
     }
 
     // CRITICAL FIX: Check if result already saved (multi-session protection)

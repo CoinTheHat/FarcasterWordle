@@ -163,15 +163,25 @@ export function calculateScore(feedback: ("correct" | "present" | "absent")[], a
   
   const baseScore = (correctCount * 2) + (presentCount * 1);
   
-  const multipliers = [5, 4, 3, 2, 1.5, 1];
+  const multipliers = [6, 5, 4, 3, 2, 1];
   const multiplier = multipliers[attemptsUsed - 1] || 1;
   
   return Math.round(baseScore * multiplier);
 }
 
+export function calculateLossScore(feedback: ("correct" | "present" | "absent")[]): number {
+  const correctCount = feedback.filter(f => f === "correct").length;
+  const presentCount = feedback.filter(f => f === "present").length;
+  
+  // No multiplier for loss - just base score from last attempt
+  const baseScore = (correctCount * 2) + (presentCount * 1);
+  
+  return baseScore;
+}
+
 export function calculateWinScore(attemptsUsed: number): number {
   const baseScore = 20;
-  const multipliers = [5, 4, 3, 2, 1.5, 1];
+  const multipliers = [6, 5, 4, 3, 2, 1];
   const multiplier = multipliers[attemptsUsed - 1] || 1;
   return Math.round(baseScore * multiplier);
 }
