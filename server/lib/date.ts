@@ -29,8 +29,20 @@ export function isConsecutiveDay(lastPlayed: string | null, today: string): bool
 }
 
 export function getLastWeekDateRange(): { startDate: string; endDate: string } {
-  const now = getNowInIstanbul();
-  const endDate = now.minus({ days: 7 }).toFormat("yyyyMMdd");
-  const startDate = now.minus({ days: 13 }).toFormat("yyyyMMdd");
-  return { startDate, endDate };
+  // Use UTC for weekly prize distribution (resets Monday 00:00 UTC)
+  const nowUTC = DateTime.now().setZone("UTC");
+  
+  // Find this week's Monday at 00:00 UTC
+  // weekday: Monday=1, Tuesday=2, ..., Sunday=7
+  // Subtract (weekday-1) days to get to Monday
+  const thisMonday = nowUTC.minus({ days: nowUTC.weekday - 1 }).startOf('day');
+  
+  // Last week = previous Monday to previous Sunday
+  const lastMonday = thisMonday.minus({ weeks: 1 });
+  const lastSunday = lastMonday.plus({ days: 6 });
+  
+  return {
+    startDate: lastMonday.toFormat("yyyyMMdd"),
+    endDate: lastSunday.toFormat("yyyyMMdd"),
+  };
 }

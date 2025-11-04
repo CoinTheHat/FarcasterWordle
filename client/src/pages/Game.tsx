@@ -75,6 +75,12 @@ export default function Game() {
           return;
         }
         
+        // Require wallet connection before starting game
+        if (!isConnected) {
+          setIsLoading(false);
+          return;
+        }
+        
         // In development, allow starting new games even when remainingAttempts === 0
         if (userStats.remainingAttempts === 0 && import.meta.env.MODE !== 'development') {
           setGameCompleted(true);
@@ -91,7 +97,7 @@ export default function Game() {
     }
 
     init();
-  }, [language]);
+  }, [language, isConnected]);
 
   useEffect(() => {
     if (!isConnected && connectors.length > 0) {
@@ -525,6 +531,57 @@ export default function Game() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <p className="text-destructive">Failed to load game data</p>
+      </div>
+    );
+  }
+
+  // Require wallet connection to play
+  if (!isConnected && !isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950">
+        <Header
+          streak={stats.streak}
+          maxStreak={stats.maxStreak}
+          todayDate={getFormattedDate()}
+          totalScore={totalScore}
+          walletConnected={false}
+          walletAddress={undefined}
+          currentLanguage={language || undefined}
+          onSettingsClick={() => setShowSettings(true)}
+          onStatsClick={() => setShowStats(true)}
+          onHelpClick={() => setShowHelp(true)}
+          onHintClick={handleHintClick}
+          onLanguageClick={() => setShowLanguageModal(true)}
+          hintUsed={hintUsed}
+        />
+        
+        <main className="flex-1 flex flex-col items-center justify-center px-4">
+          <div className="bg-card border border-card-border rounded-lg p-8 max-w-md text-center shadow-lg">
+            <Wallet className="w-16 h-16 mx-auto mb-4 text-yellow-500" />
+            <h2 className="text-2xl font-bold mb-2">Connect Wallet to Play</h2>
+            <p className="text-muted-foreground mb-6">
+              You need to connect your wallet to play WordCast and participate in weekly prizes.
+            </p>
+            <Button
+              onClick={handleWalletConnect}
+              disabled={isConnectingWallet}
+              className="w-full"
+              data-testid="button-connect-wallet"
+            >
+              {isConnectingWallet ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Connecting...
+                </>
+              ) : (
+                <>
+                  <Wallet className="w-4 h-4 mr-2" />
+                  Connect Wallet
+                </>
+              )}
+            </Button>
+          </div>
+        </main>
       </div>
     );
   }
