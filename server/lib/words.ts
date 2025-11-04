@@ -169,6 +169,13 @@ export function calculateScore(feedback: ("correct" | "present" | "absent")[], a
   return Math.round(baseScore * multiplier);
 }
 
+export function calculateWinScore(attemptsUsed: number): number {
+  const baseScore = 20;
+  const multipliers = [5, 4, 3, 2, 1.5, 1];
+  const multiplier = multipliers[attemptsUsed - 1] || 1;
+  return Math.round(baseScore * multiplier);
+}
+
 export function getRandomWord(language: Language = "en"): string {
   const words = TARGET_WORDS[language];
   const randomIndex = Math.floor(Math.random() * words.length);

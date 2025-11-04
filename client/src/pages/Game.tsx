@@ -43,7 +43,6 @@ export default function Game() {
     const savedScore = localStorage.getItem(`wordcast-score-${today}`);
     return savedScore ? parseInt(savedScore, 10) : 0;
   });
-  const [lastRoundScore, setLastRoundScore] = useState(0);
   const [gameCompleted, setGameCompleted] = useState(false);
   const [isSavingScore, setIsSavingScore] = useState(false);
   
@@ -288,8 +287,7 @@ export default function Game() {
       setGuesses(newGuesses);
       setFeedback(newFeedback);
       setCurrentGuess("");
-      setLastRoundScore(response.roundScore || 0);
-      const newTotalScore = response.totalScore || 0;
+      const newTotalScore = response.score || 0;
       setTotalScore(newTotalScore);
       
       // Save updated score to localStorage

@@ -14,7 +14,7 @@ import {
   getBestScoresLeaderboard,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo } from "./lib/date";
-import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateScore, getRandomWord, type Language } from "./lib/words";
+import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateWinScore, getRandomWord, type Language } from "./lib/words";
 import { randomBytes } from "crypto";
 
 const MAX_ATTEMPTS = 6;
@@ -26,7 +26,6 @@ interface ActiveGame {
   language: Language;
   guesses: string[];
   attemptsUsed: number;
-  totalScore: number;
   won: boolean | null;
   createdAt: string;
   completed: boolean;
@@ -244,7 +243,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       language: language as Language,
       guesses: [],
       attemptsUsed: 0,
-      totalScore: 0,
       won: null,
       createdAt: new Date().toISOString(),
       completed: false,
@@ -304,11 +302,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     activeGame.attemptsUsed++;
 
     const feedback = calculateFeedback(normalized, activeGame.solution);
-    const roundScore = calculateScore(feedback, activeGame.attemptsUsed);
-    activeGame.totalScore += roundScore;
     
     const won = normalized === activeGame.solution;
     const gameOver = won || activeGame.attemptsUsed >= MAX_ATTEMPTS;
+    
+    // Calculate final score only when player wins
+    let finalScore = 0;
+    if (won) {
+      finalScore = calculateWinScore(activeGame.attemptsUsed);
+    }
 
     // CRITICAL FIX: Check if result already saved (multi-session protection)
     const today = getTodayDateString();
@@ -329,7 +331,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // CRITICAL FIX: Save game result immediately when game ends
       // Use try-catch to handle unique constraint violations gracefully
       try {
-        await createDailyResult(fid, today, activeGame.attemptsUsed, won, activeGame.totalScore);
+        await createDailyResult(fid, today, activeGame.attemptsUsed, won, finalScore);
         
         // Update streak (based on consecutive days played, not won)
         const streak = await getOrCreateStreak(fid);
@@ -364,8 +366,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       remainingAttempts: MAX_ATTEMPTS - activeGame.attemptsUsed,
       gameOver,
       solution: gameOver ? activeGame.solution : undefined,
-      roundScore,
-      totalScore: activeGame.totalScore,
+      score: finalScore,
     });
   });
 
