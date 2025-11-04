@@ -27,3 +27,10 @@ export function isConsecutiveDay(lastPlayed: string | null, today: string): bool
   const daysDiff = todayDate.diff(lastDate, "days").days;
   return daysDiff === 1;
 }
+
+export function getLastWeekDateRange(): { startDate: string; endDate: string } {
+  const now = getNowInIstanbul();
+  const endDate = now.minus({ days: 7 }).toFormat("yyyyMMdd");
+  const startDate = now.minus({ days: 13 }).toFormat("yyyyMMdd");
+  return { startDate, endDate };
+}

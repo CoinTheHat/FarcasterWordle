@@ -19,6 +19,15 @@ export default function Leaderboard() {
     },
   });
 
+  const { data: lastWeekWinners } = useQuery<LeaderboardResponse>({
+    queryKey: ["/api/leaderboard/last-week-winners"],
+    queryFn: async () => {
+      const response = await fetch("/api/leaderboard/last-week-winners");
+      if (!response.ok) throw new Error("Failed to fetch last week winners");
+      return response.json();
+    },
+  });
+
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Trophy className="w-5 h-5 text-yellow-500" />;
     if (rank === 2) return <Medal className="w-5 h-5 text-gray-400" />;
@@ -46,6 +55,66 @@ export default function Leaderboard() {
             See how you rank against other players
           </p>
         </div>
+
+        {lastWeekWinners?.leaderboard && lastWeekWinners.leaderboard.length > 0 && (
+          <Card className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border-yellow-500/20">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Trophy className="w-5 h-5 text-yellow-500" />
+                Last Week's Winners
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                Top 3 players from previous week
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {lastWeekWinners.leaderboard.map((entry) => (
+                <div
+                  key={`last-week-${entry.fid}-${entry.rank}`}
+                  className="flex items-center justify-between p-3 md:p-4 rounded-lg bg-background/50 border"
+                  data-testid={`last-week-winner-${entry.rank}`}
+                >
+                  <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
+                    <div className="flex items-center gap-2 min-w-[60px]">
+                      {getRankIcon(entry.rank)}
+                      {getRankBadge(entry.rank)}
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-sm md:text-base truncate">
+                        {entry.username || `Player ${entry.fid}`}
+                      </div>
+                      {entry.walletAddress ? (
+                        <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
+                          <Wallet className="w-3 h-3" />
+                          <span className="font-mono truncate" data-testid={`last-week-wallet-${entry.rank}`}>
+                            {entry.walletAddress.slice(0, 6)}...{entry.walletAddress.slice(-4)}
+                          </span>
+                          <Badge variant="default" className="text-[10px] px-1.5 py-0 bg-yellow-500 hover:bg-yellow-600">
+                            Prize Winner
+                          </Badge>
+                        </div>
+                      ) : (
+                        <div className="text-xs text-muted-foreground mt-1">
+                          No wallet connected
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-end gap-1">
+                    <div className="text-lg md:text-xl font-bold text-yellow-600 dark:text-yellow-500">
+                      {entry.score}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      points
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
 
         <Tabs value={period} onValueChange={(v) => setPeriod(v as "daily" | "weekly" | "best-scores")} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
