@@ -188,9 +188,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
     
-    // CRITICAL FIX: Block if user already has today's result
+    // CRITICAL FIX: Block if user already has today's result (skip in development for testing)
     const todayResult = await getDailyResult(fid, today);
-    if (todayResult) {
+    if (todayResult && process.env.NODE_ENV !== 'development') {
       res.status(400).json({ error: "Already completed today's game" });
       return;
     }
@@ -253,6 +253,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({
       sessionId,
       maxAttempts: MAX_ATTEMPTS,
+      ...(process.env.NODE_ENV === 'development' ? { solution } : {}),
     });
   });
 
@@ -366,7 +367,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       remainingAttempts: MAX_ATTEMPTS - activeGame.attemptsUsed,
       gameOver,
       solution: gameOver ? activeGame.solution : undefined,
-      score: finalScore,
+      ...(gameOver ? { score: finalScore } : {}),
     });
   });
 

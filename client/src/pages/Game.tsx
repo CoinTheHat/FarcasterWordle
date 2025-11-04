@@ -75,7 +75,8 @@ export default function Game() {
           return;
         }
         
-        if (userStats.remainingAttempts === 0) {
+        // In development, allow starting new games even when remainingAttempts === 0
+        if (userStats.remainingAttempts === 0 && import.meta.env.MODE !== 'development') {
           setGameCompleted(true);
         } else {
           const gameSession = await startGame(language);
@@ -194,7 +195,6 @@ export default function Game() {
         setGameCompleted(false);
         setShowGameOver(false);
         setTotalScore(0);
-        setLastRoundScore(0);
         setSolution("");
         setHintUsed(false);
       } catch (restartErr) {
@@ -287,12 +287,24 @@ export default function Game() {
       setGuesses(newGuesses);
       setFeedback(newFeedback);
       setCurrentGuess("");
-      const newTotalScore = response.score || 0;
-      setTotalScore(newTotalScore);
       
-      // Save updated score to localStorage
-      const today = getFormattedDate();
-      localStorage.setItem(`wordcast-score-${today}`, newTotalScore.toString());
+      // Only update score when game is over (won or lost)
+      if (response.gameOver) {
+        const newTotalScore = response.score || 0;
+        setTotalScore(newTotalScore);
+        
+        // Save final score to localStorage
+        const today = getFormattedDate();
+        localStorage.setItem(`wordcast-score-${today}`, newTotalScore.toString());
+        
+        // Refetch user stats to ensure UI reflects persisted database score
+        try {
+          const updatedStats = await fetchUserStats();
+          setStats(updatedStats);
+        } catch (err) {
+          console.error("Failed to refetch stats:", err);
+        }
+      }
       
       const rowIndex = newGuesses.length - 1;
       setRevealingRow(rowIndex);
@@ -419,7 +431,6 @@ export default function Game() {
     setGameStatus("playing");
     setSolution("");
     setTotalScore(0);
-    setLastRoundScore(0);
     setGameCompleted(false);
     setHintUsed(false);
     

@@ -98,7 +98,7 @@ export interface GuessResponse {
   remainingAttempts: number;
   gameOver?: boolean;
   solution?: string;
-  score: number;
+  score?: number;
 }
 
 export interface BoardStats {
