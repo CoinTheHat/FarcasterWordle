@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Medal, Award, Flame } from "lucide-react";
+import { Trophy, Medal, Award, Flame, Wallet } from "lucide-react";
 import type { LeaderboardResponse } from "@shared/schema";
 
 export default function Leaderboard() {
@@ -98,6 +98,17 @@ export default function Leaderboard() {
                             {period === "best-scores" ? "Best Score" : entry.won > 0 ? `${entry.won} win${entry.won > 1 ? 's' : ''}` : 'No wins'}
                             {period === "daily" && ` • ${entry.attempts} attempt${entry.attempts > 1 ? 's' : ''}`}
                           </div>
+                          {period === "weekly" && entry.rank <= 3 && entry.walletAddress && (
+                            <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
+                              <Wallet className="w-3 h-3" />
+                              <span className="font-mono truncate" data-testid={`text-wallet-${entry.rank}`}>
+                                {entry.walletAddress.slice(0, 6)}...{entry.walletAddress.slice(-4)}
+                              </span>
+                              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                Prize
+                              </Badge>
+                            </div>
+                          )}
                         </div>
                       </div>
 

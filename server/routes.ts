@@ -7,6 +7,7 @@ import {
   getOrCreateStreak,
   updateStreak,
   updateUsername,
+  updateWalletAddress,
   getBoardStats,
   getDailyLeaderboard,
   getWeeklyLeaderboard,
@@ -108,6 +109,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({
       fid,
       username: profile.username,
+      walletAddress: profile.walletAddress,
       streak: streak.currentStreak,
       maxStreak: streak.maxStreak,
       lastPlayed: streak.lastPlayedYyyymmdd,
@@ -149,6 +151,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({
       success: true,
       username: trimmedUsername,
+    });
+  });
+
+  app.post("/api/save-wallet", requireAuth, async (req: AuthRequest, res: Response) => {
+    const fid = req.fid!;
+    const { walletAddress } = req.body;
+
+    if (!walletAddress || typeof walletAddress !== "string") {
+      res.status(400).json({ error: "Wallet address is required" });
+      return;
+    }
+
+    const trimmedAddress = walletAddress.trim();
+
+    // Validate Ethereum address format (0x + 40 hex characters)
+    if (!/^0x[a-fA-F0-9]{40}$/.test(trimmedAddress)) {
+      res.status(400).json({ error: "Invalid Ethereum wallet address format" });
+      return;
+    }
+
+    await updateWalletAddress(fid, trimmedAddress);
+
+    res.json({
+      success: true,
+      walletAddress: trimmedAddress,
     });
   });
 

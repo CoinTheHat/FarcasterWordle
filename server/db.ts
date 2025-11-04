@@ -90,6 +90,12 @@ export async function updateUsername(fid: number, username: string): Promise<voi
     .where(eq(schema.profiles.fid, fid));
 }
 
+export async function updateWalletAddress(fid: number, walletAddress: string): Promise<void> {
+  await db.update(schema.profiles)
+    .set({ walletAddress })
+    .where(eq(schema.profiles.fid, fid));
+}
+
 export async function getOrCreateStreak(fid: number): Promise<Streak> {
   const existing = await db.select()
     .from(schema.streaks)
@@ -222,6 +228,7 @@ export async function getWeeklyLeaderboard(startDate: string, endDate: string, l
     .select({
       fid: rankedWeeklyGames.fid,
       username: schema.profiles.username,
+      walletAddress: schema.profiles.walletAddress,
       score: rankedWeeklyGames.score,
       attempts: rankedWeeklyGames.attempts,
       won: rankedWeeklyGames.won,
@@ -236,6 +243,7 @@ export async function getWeeklyLeaderboard(startDate: string, endDate: string, l
   return results.map(row => ({
     fid: row.fid,
     username: row.username || null,
+    walletAddress: row.walletAddress || null,
     score: row.score,
     attempts: row.attempts,
     won: row.won,

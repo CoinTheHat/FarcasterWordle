@@ -5,7 +5,7 @@ import { Board } from "@/components/Board";
 import { GameOverModal, StatsModal, SettingsModal, HelpModal } from "@/components/Modals";
 import { LanguageModal } from "@/components/LanguageModal";
 import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
-import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame, updateUsername as apiUpdateUsername } from "@/lib/api";
+import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame, updateUsername as apiUpdateUsername, saveWalletAddress } from "@/lib/api";
 import { getFormattedDate } from "@/lib/date";
 import { normalizeGuess, isValidGuess } from "@/lib/words";
 import type { TileFeedback, GameStatus, UserStats, Language } from "@shared/schema";
@@ -55,6 +55,7 @@ export default function Game() {
     return localStorage.getItem("colorBlindMode") === "true";
   });
   const [hintUsed, setHintUsed] = useState(false);
+  const [isConnectingWallet, setIsConnectingWallet] = useState(false);
   
   const { toast } = useToast();
 
@@ -439,6 +440,51 @@ export default function Game() {
     }
   }, []);
 
+  const handleWalletConnect = useCallback(async () => {
+    if (!address) {
+      setIsConnectingWallet(true);
+      try {
+        if (connectors.length > 0) {
+          await connect({ connector: connectors[0] });
+        }
+      } catch (err: any) {
+        toast({
+          title: "Connection Failed",
+          description: err.message || "Failed to connect wallet",
+          variant: "destructive",
+        });
+        setIsConnectingWallet(false);
+        return;
+      }
+    }
+
+    if (address) {
+      try {
+        await saveWalletAddress(address);
+        const updatedStats = await fetchUserStats();
+        setStats(updatedStats);
+        toast({
+          title: "Wallet Connected",
+          description: "Your wallet address has been saved for prize distribution!",
+        });
+      } catch (err: any) {
+        toast({
+          title: "Save Failed",
+          description: err.message || "Failed to save wallet address",
+          variant: "destructive",
+        });
+      } finally {
+        setIsConnectingWallet(false);
+      }
+    }
+  }, [address, connectors, connect, toast]);
+
+  useEffect(() => {
+    if (address && isConnectingWallet) {
+      handleWalletConnect();
+    }
+  }, [address, isConnectingWallet, handleWalletConnect]);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950">
@@ -608,6 +654,9 @@ export default function Game() {
         onColorBlindToggle={handleColorBlindToggle}
         currentUsername={stats.username}
         onUsernameUpdate={handleUsernameUpdate}
+        currentWalletAddress={stats.walletAddress}
+        onWalletConnect={handleWalletConnect}
+        isConnectingWallet={isConnectingWallet}
       />
 
       <HelpModal

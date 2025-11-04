@@ -6,6 +6,7 @@ import { z } from "zod";
 export const profiles = pgTable("profiles", {
   fid: integer("fid").primaryKey(),
   username: text("username"),
+  walletAddress: text("wallet_address"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   lastSeenAt: timestamp("last_seen_at").notNull().defaultNow(),
 });
@@ -75,6 +76,7 @@ export interface GameState {
 export interface UserStats {
   fid: number;
   username: string | null;
+  walletAddress?: string | null;
   streak: number;
   maxStreak: number;
   lastPlayed: string | null;
@@ -111,6 +113,7 @@ export interface BoardStats {
 export interface LeaderboardEntry {
   fid: number;
   username: string | null;
+  walletAddress?: string | null;
   score: number;
   attempts: number;
   won: number;

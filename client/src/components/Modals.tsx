@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Share2, TrendingUp, Trophy, Flame, Loader2 } from "lucide-react";
+import { Share2, TrendingUp, Trophy, Flame, Loader2, Wallet } from "lucide-react";
 
 interface GameOverModalProps {
   isOpen: boolean;
@@ -218,6 +218,9 @@ interface SettingsModalProps {
   onColorBlindToggle: (enabled: boolean) => void;
   currentUsername: string | null;
   onUsernameUpdate: (username: string) => Promise<void>;
+  currentWalletAddress?: string | null;
+  onWalletConnect?: () => void;
+  isConnectingWallet?: boolean;
 }
 
 export function SettingsModal({
@@ -227,6 +230,9 @@ export function SettingsModal({
   onColorBlindToggle,
   currentUsername,
   onUsernameUpdate,
+  currentWalletAddress,
+  onWalletConnect,
+  isConnectingWallet = false,
 }: SettingsModalProps) {
   const [username, setUsername] = useState(currentUsername || "");
   const [isSaving, setIsSaving] = useState(false);
@@ -304,6 +310,51 @@ export function SettingsModal({
               <p className="text-sm text-green-600 dark:text-green-400" data-testid="text-username-success">
                 ✓ Username updated successfully
               </p>
+            )}
+          </div>
+
+          <div className="space-y-3 p-4 rounded-lg border">
+            <div className="flex flex-col gap-1">
+              <span className="font-medium">Wallet Address</span>
+              <span className="text-sm text-muted-foreground">
+                Connect wallet for weekly leaderboard prizes
+              </span>
+            </div>
+            {currentWalletAddress ? (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
+                  <Wallet className="w-4 h-4 text-primary" />
+                  <span className="text-sm font-mono flex-1 truncate" data-testid="text-wallet-address">
+                    {currentWalletAddress.slice(0, 6)}...{currentWalletAddress.slice(-4)}
+                  </span>
+                  <Badge variant="secondary" className="text-xs">
+                    Connected
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  ✓ Wallet saved for prize distribution
+                </p>
+              </div>
+            ) : (
+              <Button
+                onClick={onWalletConnect}
+                disabled={isConnectingWallet}
+                className="w-full gap-2"
+                size="sm"
+                data-testid="button-connect-wallet"
+              >
+                {isConnectingWallet ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Connecting...
+                  </>
+                ) : (
+                  <>
+                    <Wallet className="w-4 h-4" />
+                    Connect Wallet
+                  </>
+                )}
+              </Button>
             )}
           </div>
 

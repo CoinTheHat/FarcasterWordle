@@ -141,3 +141,23 @@ export async function updateUsername(username: string): Promise<UpdateUsernameRe
   
   return response.json();
 }
+
+export interface SaveWalletResponse {
+  success: boolean;
+  walletAddress: string;
+}
+
+export async function saveWalletAddress(walletAddress: string): Promise<SaveWalletResponse> {
+  const response = await fetch("/api/save-wallet", {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ walletAddress }),
+  });
+  
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: "Failed to save wallet address" }));
+    throw new Error(error.error || "Failed to save wallet address");
+  }
+  
+  return response.json();
+}
