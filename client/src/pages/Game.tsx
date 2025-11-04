@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useAccount, useConnect, useSendTransaction } from "wagmi";
 import { Header } from "@/components/Header";
 import { Board } from "@/components/Board";
-import { GameOverModal, StatsModal, SettingsModal, HelpModal } from "@/components/Modals";
+import { GameOverModal, StatsModal, SettingsModal } from "@/components/Modals";
+import { HowToPlayModal } from "@/components/HowToPlayModal";
 import { LanguageModal } from "@/components/LanguageModal";
 import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
 import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame, updateUsername as apiUpdateUsername, saveWalletAddress } from "@/lib/api";
@@ -782,9 +783,10 @@ export default function Game() {
         isConnectingWallet={isConnectingWallet}
       />
 
-      <HelpModal
-        isOpen={showHelp}
+      <HowToPlayModal
+        open={showHelp}
         onClose={() => setShowHelp(false)}
+        language={language || "en"}
       />
 
       <LanguageModal
