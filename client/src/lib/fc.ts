@@ -2,6 +2,7 @@ import { sdk } from "@farcaster/miniapp-sdk";
 
 export interface FarcasterContext {
   fid: number | null;
+  walletAddress: string | null;
   isReady: boolean;
   error: string | null;
 }
@@ -15,6 +16,7 @@ export async function initializeFarcaster(): Promise<FarcasterContext> {
     console.log("Development mode: using FID", devFid);
     return {
       fid: devFid,
+      walletAddress: null,
       isReady: true,
       error: null,
     };
@@ -27,6 +29,7 @@ export async function initializeFarcaster(): Promise<FarcasterContext> {
       console.log("Not in Farcaster context, using fallback FID for web access");
       return {
         fid: 12345,
+        walletAddress: null,
         isReady: true,
         error: null,
       };
@@ -34,8 +37,23 @@ export async function initializeFarcaster(): Promise<FarcasterContext> {
 
     await sdk.actions.ready();
 
+    // Get wallet address from Farcaster context if available
+    // Note: Wallet address comes from wagmi useAccount hook in the actual app
+    // This is just for logging/debugging
+    let walletAddress: string | null = null;
+    const contextAny = context as any;
+    
+    if (contextAny.user?.verifiedAddresses && contextAny.user.verifiedAddresses.length > 0) {
+      walletAddress = contextAny.user.verifiedAddresses[0];
+      console.log("Farcaster verified address:", walletAddress);
+    } else if (contextAny.user?.custodyAddress) {
+      walletAddress = contextAny.user.custodyAddress;
+      console.log("Farcaster custody address:", walletAddress);
+    }
+
     return {
       fid: context.user.fid,
+      walletAddress,
       isReady: true,
       error: null,
     };
@@ -43,6 +61,7 @@ export async function initializeFarcaster(): Promise<FarcasterContext> {
     console.error("Farcaster SDK initialization error, using fallback FID:", error);
     return {
       fid: 12345,
+      walletAddress: null,
       isReady: true,
       error: null,
     };

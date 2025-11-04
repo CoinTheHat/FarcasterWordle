@@ -6,9 +6,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Award, Flame, Wallet } from "lucide-react";
 import type { LeaderboardResponse } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Leaderboard() {
   const [period, setPeriod] = useState<"daily" | "weekly" | "best-scores">("daily");
+  const { toast } = useToast();
 
   const { data: leaderboardData, isLoading } = useQuery<LeaderboardResponse>({
     queryKey: ["/api/leaderboard", period],
@@ -87,9 +89,35 @@ export default function Leaderboard() {
                       {entry.walletAddress ? (
                         <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
                           <Wallet className="w-3 h-3" />
-                          <span className="font-mono truncate" data-testid={`last-week-wallet-${entry.rank}`}>
-                            {entry.walletAddress.slice(0, 6)}...{entry.walletAddress.slice(-4)}
-                          </span>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(entry.walletAddress!);
+                              toast({
+                                title: "Copied!",
+                                description: "Wallet address copied to clipboard",
+                                duration: 2000,
+                              });
+                            }}
+                            className="font-mono hover:text-foreground transition-colors group flex items-center gap-1"
+                            data-testid={`last-week-wallet-${entry.rank}`}
+                            title="Click to copy full address"
+                          >
+                            <span className="hidden md:inline">{entry.walletAddress}</span>
+                            <span className="md:hidden">{entry.walletAddress.slice(0, 6)}...{entry.walletAddress.slice(-4)}</span>
+                            <svg
+                              className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                              />
+                            </svg>
+                          </button>
                           <Badge variant="default" className="text-[10px] px-1.5 py-0 bg-yellow-500 hover:bg-yellow-600">
                             Prize Winner
                           </Badge>

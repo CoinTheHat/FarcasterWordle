@@ -56,6 +56,7 @@ export default function Game() {
   const [hintUsed, setHintUsed] = useState(false);
   const [isConnectingWallet, setIsConnectingWallet] = useState(false);
   const [hasAttemptedAutoConnect, setHasAttemptedAutoConnect] = useState(false);
+  const [farcasterWallet, setFarcasterWallet] = useState<string | null>(null);
   
   const { toast } = useToast();
 
@@ -66,9 +67,26 @@ export default function Game() {
       setFid(fcContext.fid || 12345);
       setApiFid(fcContext.fid || 12345);
       
+      // Store Farcaster wallet in state for UI checks
+      if (fcContext.walletAddress) {
+        setFarcasterWallet(fcContext.walletAddress);
+      }
+      
       try {
         const userStats = await fetchUserStats();
         setStats(userStats);
+        
+        // If Farcaster context has wallet address, save it automatically
+        if (fcContext.walletAddress && (!userStats.walletAddress || userStats.walletAddress !== fcContext.walletAddress)) {
+          try {
+            await saveWalletAddress(fcContext.walletAddress);
+            const updatedStats = await fetchUserStats();
+            setStats(updatedStats);
+            console.log("Farcaster wallet address saved:", fcContext.walletAddress);
+          } catch (err) {
+            console.error("Failed to save Farcaster wallet address:", err);
+          }
+        }
         
         if (!language) {
           setShowLanguageModal(true);
@@ -76,8 +94,10 @@ export default function Game() {
           return;
         }
         
-        // Require wallet connection before starting game
-        if (!isConnected) {
+        // Check if wallet is connected (either from wagmi or Farcaster context)
+        const hasWallet = isConnected || fcContext.walletAddress || userStats.walletAddress;
+        
+        if (!hasWallet) {
           setIsLoading(false);
           return;
         }
@@ -569,9 +589,11 @@ export default function Game() {
     );
   }
 
-  // Show wallet connection prompt only after auto-connect has been attempted
-  // This prevents showing the prompt while auto-connect is in progress
-  if (!isConnected && !isLoading && hasAttemptedAutoConnect) {
+  // Show wallet connection prompt only if no wallet available from any source
+  // Check: wagmi connection, Farcaster wallet, or saved in stats
+  const hasAnyWallet = isConnected || farcasterWallet || stats?.walletAddress;
+  
+  if (!hasAnyWallet && !isLoading && hasAttemptedAutoConnect) {
     return (
       <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950">
         <Header
