@@ -371,12 +371,51 @@ export default function Game() {
         }, 1000);
       }
     } catch (err) {
-      toast({
-        title: "Error",
-        description: err instanceof Error ? err.message : "Failed to submit guess",
-        variant: "destructive",
-        duration: 2000,
-      });
+      const errorMessage = err instanceof Error ? err.message : "Failed to submit guess";
+      
+      // If session not found or expired, restart the game automatically
+      if (errorMessage.toLowerCase().includes("session") && (errorMessage.toLowerCase().includes("not found") || errorMessage.toLowerCase().includes("expired"))) {
+        toast({
+          title: language === "tr" ? "Oyun Yenileniyor" : "Game Restarting",
+          description: language === "tr" 
+            ? "Oyun oturumunuz sona erdi. Yeni oyun başlatılıyor..."
+            : "Your game session expired. Starting a new game...",
+          duration: 3000,
+        });
+        
+        try {
+          // Clear current game state
+          setGuesses([]);
+          setFeedback([]);
+          setLetterStates(new Map());
+          setCurrentGuess("");
+          setGameStatus("playing");
+          setRevealingRow(undefined);
+          
+          // Start new game session
+          const newSession = await startGame(language || "en");
+          setSessionId(newSession.sessionId);
+          
+          // Refetch stats to update remaining attempts
+          const updatedStats = await fetchUserStats();
+          setStats(updatedStats);
+          
+        } catch (restartErr) {
+          toast({
+            title: "Error",
+            description: "Failed to restart game. Please refresh the page.",
+            variant: "destructive",
+            duration: 3000,
+          });
+        }
+      } else {
+        toast({
+          title: "Error",
+          description: errorMessage,
+          variant: "destructive",
+          duration: 2000,
+        });
+      }
     }
   }, [gameStatus, currentGuess, sessionId, guesses, feedback, toast, updateLetterStates]);
 
@@ -457,11 +496,51 @@ export default function Game() {
         duration: 5000,
       });
     } catch (err) {
-      toast({
-        title: "Failed to get hint",
-        description: err instanceof Error ? err.message : "Try again",
-        variant: "destructive",
-      });
+      const errorMessage = err instanceof Error ? err.message : "Try again";
+      
+      // If session not found or expired, restart the game
+      if (errorMessage.toLowerCase().includes("session") && (errorMessage.toLowerCase().includes("not found") || errorMessage.toLowerCase().includes("expired"))) {
+        toast({
+          title: language === "tr" ? "Oyun Yenileniyor" : "Game Restarting",
+          description: language === "tr" 
+            ? "Oyun oturumunuz sona erdi. Yeni oyun başlatılıyor..."
+            : "Your game session expired. Starting a new game...",
+          duration: 3000,
+        });
+        
+        try {
+          // Clear current game state
+          setGuesses([]);
+          setFeedback([]);
+          setLetterStates(new Map());
+          setCurrentGuess("");
+          setGameStatus("playing");
+          setRevealingRow(undefined);
+          setHintUsed(false);
+          
+          // Start new game session
+          const newSession = await startGame(language || "en");
+          setSessionId(newSession.sessionId);
+          
+          // Refetch stats
+          const updatedStats = await fetchUserStats();
+          setStats(updatedStats);
+          
+        } catch (restartErr) {
+          toast({
+            title: "Error",
+            description: "Failed to restart game. Please refresh the page.",
+            variant: "destructive",
+            duration: 3000,
+          });
+        }
+      } else {
+        toast({
+          title: "Failed to get hint",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
     }
   };
 
