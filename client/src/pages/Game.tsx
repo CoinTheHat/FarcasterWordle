@@ -55,6 +55,7 @@ export default function Game() {
   });
   const [hintUsed, setHintUsed] = useState(false);
   const [isConnectingWallet, setIsConnectingWallet] = useState(false);
+  const [hasAttemptedAutoConnect, setHasAttemptedAutoConnect] = useState(false);
   
   const { toast } = useToast();
 
@@ -99,11 +100,26 @@ export default function Game() {
     init();
   }, [language, isConnected]);
 
+  // Auto-connect Farcaster wallet (happens automatically with miniAppConnector)
+  // This effect ensures we attempt connection only once
   useEffect(() => {
-    if (!isConnected && connectors.length > 0) {
-      connect({ connector: connectors[0] });
+    async function attemptAutoConnect() {
+      if (!isConnected && !hasAttemptedAutoConnect && connectors.length > 0) {
+        // Farcaster miniapp connector auto-connects to user's wallet
+        try {
+          await connect({ connector: connectors[0] });
+          console.log("Auto-connect successful");
+        } catch (err) {
+          console.log("Auto-connect failed (expected if not in Farcaster client):", err);
+        } finally {
+          // Mark as attempted only after connect promise resolves/rejects
+          setHasAttemptedAutoConnect(true);
+        }
+      }
     }
-  }, [isConnected, connectors, connect]);
+    
+    attemptAutoConnect();
+  }, [isConnected, hasAttemptedAutoConnect, connectors, connect]);
 
   const handleSaveScore = useCallback(async () => {
     if (!sessionId) {
@@ -500,6 +516,24 @@ export default function Game() {
     }
   }, [address, isConnectingWallet, handleWalletConnect]);
 
+  // Auto-save wallet address when connected (including auto-connect)
+  useEffect(() => {
+    async function saveConnectedWallet() {
+      if (isConnected && address && stats && stats.walletAddress !== address) {
+        try {
+          await saveWalletAddress(address);
+          const updatedStats = await fetchUserStats();
+          setStats(updatedStats);
+          console.log("Wallet address auto-saved:", address);
+        } catch (err) {
+          console.error("Failed to auto-save wallet address:", err);
+        }
+      }
+    }
+    
+    saveConnectedWallet();
+  }, [isConnected, address, stats]);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950">
@@ -535,8 +569,9 @@ export default function Game() {
     );
   }
 
-  // Require wallet connection to play
-  if (!isConnected && !isLoading) {
+  // Show wallet connection prompt only after auto-connect has been attempted
+  // This prevents showing the prompt while auto-connect is in progress
+  if (!isConnected && !isLoading && hasAttemptedAutoConnect) {
     return (
       <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-950 dark:to-purple-950">
         <Header
