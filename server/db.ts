@@ -165,12 +165,12 @@ export async function getDailyLeaderboard(yyyymmdd: string, limit: number = 100)
     score: schema.dailyResults.score,
     attempts: schema.dailyResults.attempts,
     won: schema.dailyResults.won,
-    rank: sql<number>`RANK() OVER (ORDER BY ${schema.dailyResults.score} DESC, ${schema.dailyResults.attempts} ASC)`,
+    rank: sql<number>`RANK() OVER (ORDER BY ${schema.dailyResults.score} DESC, ${schema.dailyResults.attempts} ASC, ${schema.dailyResults.createdAt} ASC)`,
   })
   .from(schema.dailyResults)
   .leftJoin(schema.profiles, eq(schema.dailyResults.fid, schema.profiles.fid))
   .where(eq(schema.dailyResults.yyyymmdd, yyyymmdd))
-  .orderBy(desc(schema.dailyResults.score), asc(schema.dailyResults.attempts))
+  .orderBy(desc(schema.dailyResults.score), asc(schema.dailyResults.attempts), asc(schema.dailyResults.createdAt))
   .limit(limit);
 
   return results.map(row => ({
@@ -287,12 +287,12 @@ export async function getBestScoresLeaderboard(limit: number = 100): Promise<Lea
       score: rankedGames.score,
       attempts: rankedGames.attempts,
       won: rankedGames.won,
-      rank: sql<number>`RANK() OVER (ORDER BY ${rankedGames.score} DESC, ${rankedGames.attempts} ASC)`,
+      rank: sql<number>`RANK() OVER (ORDER BY ${rankedGames.score} DESC, ${rankedGames.attempts} ASC, ${rankedGames.createdAt} ASC)`,
     })
     .from(rankedGames)
     .leftJoin(schema.profiles, eq(rankedGames.fid, schema.profiles.fid))
     .where(eq(rankedGames.rn, 1))
-    .orderBy(desc(rankedGames.score), asc(rankedGames.attempts))
+    .orderBy(desc(rankedGames.score), asc(rankedGames.attempts), asc(rankedGames.createdAt))
     .limit(limit);
 
   return results.map(row => ({
