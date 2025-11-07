@@ -23,18 +23,27 @@ export const TARGET_WORDS_EN = [
 
 export const TARGET_WORDS_TR = [
   "AFYON", "ASLAN", "BEKÇİ", "BİLGİ", "BÖCEK", "BOMBA", "BUDUN", "BULUT",
-  "CAMİZ", "ÇELİK", "CEVAP", "ÇIKAR", "DAMLA", "DEDİK", "DOĞRU", "DURUM",
+  "DENİZ", "ÇELİK", "CEVAP", "ÇIKAR", "DAMLA", "KİTAP", "DOĞRU", "DURUM",
   "EKSEN", "ENLEM", "FASIL", "FİKİR", "FİYAT", "GARİP", "GEÇİT", "GİZLİ",
-  "GÜRUH", "HAYIR", "HEVES", "HİKAY", "İMZAÇ", "İŞLEM", "İZLEK", "KABUK",
+  "GÜZEL", "HAYIR", "HEVES", "MUTLU", "PAKET", "İŞLEM", "İZLEK", "KABUK",
   "KADRO", "KALIN", "KAŞIK", "KAVGA", "KAYIP", "KESİK", "KILIÇ", "KIYMA",
-  "KÖMÜR", "KORKU", "KURAL", "KUŞAK", "LABEL", "LODOS", "MAKAM", "MALUM",
-  "MARUL", "MECAZ", "MELOD", "MUCİZ", "NABIZ", "NAKİT", "NESİL", "NİYET",
-  "OBJEK", "ÖDÜNÇ", "OLMAZ", "ORGAN", "ORTAÇ", "OYNAK", "ÖZLEM", "PARÇA",
-  "PİLAV", "RAKAM", "RANGU", "RESMİ", "RUTİN", "SABAH", "SAKİN", "SAPAN",
+  "KÖMÜR", "KORKU", "KURAL", "KUŞAK", "BAHÇE", "LODOS", "MAKAM", "MALUM",
+  "MARUL", "MECAZ", "BALIK", "SOKAK", "NABIZ", "NAKİT", "NESİL", "NİYET",
+  "TABLO", "ÖDÜNÇ", "OLMAZ", "ORGAN", "ORTAÇ", "OYNAK", "ÖZLEM", "PARÇA",
+  "PİLAV", "RAKAM", "GÜNEŞ", "RESMİ", "RUTİN", "SABAH", "SAKİN", "SAPAN",
   "SEBEP", "SEMİZ", "SICAK", "SIFIR", "SİNEK", "SOMUT", "SORUN", "SUYLA",
-  "TALAN", "TAPİR", "TEMEL", "TOKAT", "TOPAL", "TORUN", "TUTAR", "ÜCRET",
+  "TALAN", "ÇOCUK", "TEMEL", "TOKAT", "TOPAL", "TORUN", "TUTAR", "ÜCRET",
   "UMUMİ", "ÜREME", "VAPUR", "VERİM", "YAKUT", "YAYLA", "YETKİ", "YİĞİT",
-  "YORUM", "YUDUM", "ZAFER", "ZİMBA", "ZİRVE", "ZURNA"
+  "YORUM", "YUDUM", "ZAFER", "ZİMBA", "ZİRVE", "ZURNA",
+  // 50 yeni kelime eklendi
+  "AKŞAM", "BAHAR", "CADDE", "DERYA", "EVRAK", "FIRIN", "GÖMEK", "HABER",
+  "İNSAN", "JANLI", "KARAR", "LIMON", "MEYVE", "NEFES", "OKUMA", "PASTA",
+  "RENK", "SAĞIR", "TATLI", "UMMAN", "VATAN", "YAĞMUR", "ZAMAN", "AÇLIK",
+  "BEYAZ", "CEKET", "DÜNYA", "ESKİK", "FENER", "GÜMÜŞ", "HAYAL", "İLİMİ",
+  "KADIN", "LAMBA", "MIKRO", "NÖBET", "OKYAK", "PERDE", "RAFTA", "SİYAH",
+  "TENTE", "UYGUN", "VAKIT", "YALIM", "ZIBIN", "AKÇAY", "BALTA", "CİLVE",
+  "DEĞER", "EMEKÇ", "FANUS", "GEMİÇ", "HUZUR", "İKRAM", "KAĞIT", "LEVHA",
+  "MADEN", "NİŞAN", "ONGUN", "PLAKA", "RADYO", "SİLAH", "TAHTA", "ÜLKER"
 ];
 
 export const TARGET_WORDS: Record<Language, string[]> = {
