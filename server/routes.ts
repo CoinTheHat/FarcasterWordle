@@ -541,12 +541,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const { startDate, endDate } = getCurrentWeekDateRange();
     
     const leaderboard = await getWeeklyLeaderboard(startDate, endDate, 100);
+    const topThree = leaderboard.filter(entry => entry.rank <= 3 && entry.walletAddress);
     
     res.json({
       period: "current-week",
       startDate,
       endDate,
-      leaderboard: leaderboard.filter(entry => entry.rank <= 3 && entry.walletAddress != null),
+      leaderboard: topThree,
     });
   });
 
