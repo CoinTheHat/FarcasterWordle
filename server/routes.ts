@@ -498,17 +498,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/leaderboard/weekly", async (req: Request, res: Response) => {
-    const today = getTodayDateString();
-    const startDate = getDateStringDaysAgo(6);
+    const { startDate, endDate } = getCurrentWeekDateRange();
     
     const limit = parseInt(req.query.limit as string) || 100;
     
-    const leaderboard = await getWeeklyLeaderboard(startDate, today, limit);
+    const leaderboard = await getWeeklyLeaderboard(startDate, endDate, limit);
     
     res.json({
       period: "weekly",
       startDate,
-      endDate: today,
+      endDate,
       leaderboard,
     });
   });
@@ -540,8 +539,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/leaderboard/current-week-winners", async (req: Request, res: Response) => {
     const { startDate, endDate } = getCurrentWeekDateRange();
     
-    const leaderboard = await getWeeklyLeaderboard(startDate, endDate, 100);
-    const topThree = leaderboard.filter(entry => entry.rank <= 3 && entry.walletAddress);
+    const allEntries = await getWeeklyLeaderboard(startDate, endDate, 100);
+    const topThree = allEntries.filter(entry => {
+      const hasWallet = (entry as any).walletAddress;
+      return entry.rank <= 3 && hasWallet;
+    });
     
     res.json({
       period: "current-week",
