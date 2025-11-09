@@ -13,7 +13,7 @@ import {
   getWeeklyLeaderboard,
   getBestScoresLeaderboard,
 } from "./db";
-import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo, getLastWeekDateRange } from "./lib/date";
+import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo, getLastWeekDateRange, getCurrentWeekDateRange } from "./lib/date";
 import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateWinScore, calculateLossScore, getRandomWord, type Language } from "./lib/words";
 import { randomBytes } from "crypto";
 
@@ -534,6 +534,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       startDate,
       endDate,
       leaderboard: leaderboard.filter(entry => entry.rank <= 3),
+    });
+  });
+
+  app.get("/api/leaderboard/current-week-winners", async (req: Request, res: Response) => {
+    const { startDate, endDate } = getCurrentWeekDateRange();
+    
+    const leaderboard = await getWeeklyLeaderboard(startDate, endDate, 100);
+    
+    res.json({
+      period: "current-week",
+      startDate,
+      endDate,
+      leaderboard: leaderboard.filter(entry => entry.rank <= 3 && entry.walletAddress != null),
     });
   });
 

@@ -29,13 +29,13 @@ export function isConsecutiveDay(lastPlayed: string | null, today: string): bool
 }
 
 export function getLastWeekDateRange(): { startDate: string; endDate: string } {
-  // Use UTC for weekly prize distribution (resets Monday 00:00 UTC)
-  const nowUTC = DateTime.now().setZone("UTC");
+  // Use Turkey time for weekly prize distribution (resets Monday 00:00 TR)
+  const nowTR = getNowInIstanbul();
   
-  // Find this week's Monday at 00:00 UTC
+  // Find this week's Monday at 00:00 Turkey time
   // weekday: Monday=1, Tuesday=2, ..., Sunday=7
   // Subtract (weekday-1) days to get to Monday
-  const thisMonday = nowUTC.minus({ days: nowUTC.weekday - 1 }).startOf('day');
+  const thisMonday = nowTR.minus({ days: nowTR.weekday - 1 }).startOf('day');
   
   // Last week = previous Monday to previous Sunday
   const lastMonday = thisMonday.minus({ weeks: 1 });
@@ -44,5 +44,19 @@ export function getLastWeekDateRange(): { startDate: string; endDate: string } {
   return {
     startDate: lastMonday.toFormat("yyyyMMdd"),
     endDate: lastSunday.toFormat("yyyyMMdd"),
+  };
+}
+
+export function getCurrentWeekDateRange(): { startDate: string; endDate: string } {
+  // Get current week's date range (Monday to Sunday in Turkey time)
+  const nowTR = getNowInIstanbul();
+  
+  // Find this week's Monday at 00:00 Turkey time
+  const thisMonday = nowTR.minus({ days: nowTR.weekday - 1 }).startOf('day');
+  const thisSunday = thisMonday.plus({ days: 6 });
+  
+  return {
+    startDate: thisMonday.toFormat("yyyyMMdd"),
+    endDate: thisSunday.toFormat("yyyyMMdd"),
   };
 }
