@@ -51,6 +51,8 @@ export function Header({
     const newLang: Language = language === "en" ? "tr" : "en";
     setLanguage(newLang);
   };
+  
+  const currentFlag = language === "en" ? "🇺🇸" : "🇹🇷";
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -63,7 +65,7 @@ export function Header({
             data-testid="button-language-toggle"
             className="h-8 w-8 md:h-10 md:w-auto md:px-3 md:gap-1.5"
           >
-            <Globe className="w-4 h-4 md:w-5 md:h-5" />
+            <span className="text-base md:text-lg">{currentFlag}</span>
             <span className="hidden md:inline font-semibold">{language.toUpperCase()}</span>
           </Button>
           
