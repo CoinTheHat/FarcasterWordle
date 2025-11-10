@@ -40,7 +40,7 @@ Preferred communication style: Simple, everyday language.
 
 ### API Endpoints
 
--   **GET /api/me:** Retrieves user stats, creates profile if new, updates `last_seen_at`.
+-   **GET /api/me:** Retrieves user stats including `todayScore` from database, creates profile if new, updates `last_seen_at`. Returns FID, username, wallet, streaks, and today's score (source of truth).
 -   **POST /api/start-game:** Initiates a new game session with a random word based on the specified language.
 -   **POST /api/guess:** Validates a user's guess, provides feedback, and updates game status within the session.
 -   **POST /api/complete-game:** Marks a game session as completed, validates transaction hash, and updates `daily_results` and `streaks`.
@@ -59,12 +59,15 @@ User loads the app, Farcaster context is initialized, and user stats are fetched
 **Implementation Details:**
 -   **Provider System:** I18nProvider context wraps the entire app at root level, provides `t` (translations), `tf` (translation functions), `language`, and `setLanguage()`.
 -   **Translation Keys:** 140+ keys organized by component/feature (header, game, modals, leaderboard) in `client/src/lib/i18n.tsx`.
+-   **Translation Functions:** Dynamic functions including `encouragementMessage(attempts)` that returns attempt-specific motivational messages (6 variations per language).
 -   **Language Storage:** Persisted to localStorage as 'wordcast-ui-language' (default: 'en'), synchronized across tabs/windows.
 -   **Callback System:** Components can register callbacks via `registerLanguageChange()` to react to language switches (e.g., Game.tsx restarts game session with new language word list).
--   **Score Scoping:** LocalStorage score keys include language (`wordcast-score-${language}-${date}`) to prevent cross-contamination between languages.
+-   **Score Scoping:** LocalStorage score keys include language (`wordcast-score-${language}-${date}`) to prevent cross-contamination between languages. Backend database is the source of truth for scores.
 -   **Live Updates:** All UI components use `t.*` keys and update immediately when language changes, no page reload required.
 -   **Supported Languages:** English (en), Turkish (tr) with complete coverage including game UI, stats cards, input elements, buttons, wallet messages, modals, and all user-facing text.
--   **Recent Updates (Nov 10, 2025):** Game page fully translated - stats display cards (Streak→Seri, Max→Maks, Score→Puan, Left→Kalan), input placeholder (Type...→Yaz...), submit button (Submit→Gönder), wallet guard screen, and connection status messages now fully bilingual.
+-   **Recent Updates (Nov 10, 2025):** 
+    - Game page fully translated - stats display cards (Streak→Seri, Max→Maks, Score→Puan, Left→Kalan), input placeholder (Type...→Yaz...), submit button (Submit→Gönder), wallet guard screen, and connection status messages now fully bilingual.
+    - Added dynamic encouragement messages in GameOverModal based on number of attempts (1-6), with different motivational copy per language.
 
 ## External Dependencies
 

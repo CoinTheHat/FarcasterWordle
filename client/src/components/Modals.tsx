@@ -42,7 +42,7 @@ export function GameOverModal({
   onShare,
   onSaveScore,
 }: GameOverModalProps) {
-  const { t } = useTranslation();
+  const { t, tf } = useTranslation();
   
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -51,10 +51,15 @@ export function GameOverModal({
           <DialogTitle className="text-2xl font-bold text-center">
             {won ? t.gameOverCongrats : t.gameOverGameOver}
           </DialogTitle>
-          <DialogDescription className="text-center text-base">
-            {won
-              ? `${t.gameOverSolvedIn} ${attempts} ${attempts === 1 ? t.gameOverTry : t.gameOverTries}!`
-              : t.gameOverBetterLuck}
+          <DialogDescription className="text-center text-base space-y-1">
+            <div className="text-lg font-semibold text-primary">
+              {won ? tf.encouragementMessage(attempts) : t.gameOverBetterLuck}
+            </div>
+            {won && (
+              <div className="text-sm text-muted-foreground">
+                {`${t.gameOverSolvedIn} ${attempts} ${attempts === 1 ? t.gameOverTry : t.gameOverTries}`}
+              </div>
+            )}
           </DialogDescription>
         </DialogHeader>
 

@@ -79,14 +79,17 @@ export default function Game() {
       setHintUsed(false);
       setShowGameOver(false);
       
-      // Load score for new language from localStorage
-      const today = getTodayDateString();
-      const newLangScore = localStorage.getItem(`wordcast-score-${newLanguage}-${today}`);
-      setTotalScore(newLangScore ? parseInt(newLangScore, 10) : 0);
-      
       // Fetch fresh stats and start new game
       const userStats = await fetchUserStats();
       setStats(userStats);
+      
+      // Load score for new language from backend (database is source of truth)
+      const backendScore = userStats.todayScore ?? 0;
+      setTotalScore(backendScore);
+      
+      // Sync to localStorage for consistency
+      const today = getTodayDateString();
+      localStorage.setItem(`wordcast-score-${newLanguage}-${today}`, backendScore.toString());
       
       if (userStats.remainingAttempts > 0 || import.meta.env.MODE === 'development') {
         const gameSession = await startGame(newLanguage);
@@ -149,6 +152,12 @@ export default function Game() {
             await saveWalletAddress(fcContext.walletAddress);
             const updatedStats = await fetchUserStats();
             setStats(updatedStats);
+            // Update score from refreshed stats
+            if (updatedStats.todayScore !== undefined) {
+              setTotalScore(updatedStats.todayScore);
+              const today = getTodayDateString();
+              localStorage.setItem(`wordcast-score-${language}-${today}`, updatedStats.todayScore.toString());
+            }
             console.log("Farcaster wallet address saved:", fcContext.walletAddress);
           } catch (err) {
             console.error("Failed to save Farcaster wallet address:", err);
@@ -162,22 +171,12 @@ export default function Game() {
         }
         
         // Load today's score from backend (database is source of truth)
-        if (userStats.todayScore !== undefined && userStats.todayScore > 0) {
-          setTotalScore(userStats.todayScore);
-          // Also save to localStorage for consistency
-          const today = getTodayDateString();
-          localStorage.setItem(`wordcast-score-${language}-${today}`, userStats.todayScore.toString());
-        } else {
-          // If no score in backend, check localStorage as fallback
-          const today = getTodayDateString();
-          const savedScore = localStorage.getItem(`wordcast-score-${language}-${today}`);
-          if (savedScore) {
-            const scoreValue = parseInt(savedScore, 10);
-            if (scoreValue > 0) {
-              setTotalScore(scoreValue);
-            }
-          }
-        }
+        const backendScore = userStats.todayScore ?? 0;
+        setTotalScore(backendScore);
+        
+        // Sync to localStorage for consistency
+        const today = getTodayDateString();
+        localStorage.setItem(`wordcast-score-${language}-${today}`, backendScore.toString());
         
         // Check if wallet is connected (either from wagmi or Farcaster context)
         const hasWallet = isConnected || fcContext.walletAddress || userStats.walletAddress;

@@ -5,6 +5,7 @@ interface TranslationFunctions {
   solvedIn: (attempts: number) => string;
   triesLabel: (attempts: number) => string;
   shareText: (score: number, attempts: number, streak: number, won: boolean) => string;
+  encouragementMessage: (attempts: number) => string;
 }
 
 interface Translations {
@@ -543,6 +544,17 @@ const translationFunctions: Record<Language, TranslationFunctions> = {
         return `WordCast challenge today: X/6\nStreak: ${streak}\n\nCan you beat this puzzle?\nTry your luck!`;
       }
     },
+    encouragementMessage: (attempts: number) => {
+      switch (attempts) {
+        case 1: return "Phenomenal! First try!";
+        case 2: return "Excellent! Amazing!";
+        case 3: return "Great job! Well done!";
+        case 4: return "Nice work! Good!";
+        case 5: return "Well done! You got it!";
+        case 6: return "You did it! Success!";
+        default: return "Amazing!";
+      }
+    },
   },
   tr: {
     solvedIn: (attempts: number) => `${attempts} denemede çözdün!`,
@@ -552,6 +564,17 @@ const translationFunctions: Record<Language, TranslationFunctions> = {
         return `WordCast'te bugün ${score} puan kazandım!\n${attempts}/6 denemede çözdüm\nSeri: ${streak}\n\nHaftalık liderlik için yarışıyorum!\nSen de şansını dene!`;
       } else {
         return `WordCast'te bugün: X/6\nSeri: ${streak}\n\nBu bulmacayı çözebilir misin?\nŞansını dene!`;
+      }
+    },
+    encouragementMessage: (attempts: number) => {
+      switch (attempts) {
+        case 1: return "İnanılmaz! İlk denemede!";
+        case 2: return "Mükemmel! Harika!";
+        case 3: return "Çok iyi! Aferin!";
+        case 4: return "Güzel! İyi iş!";
+        case 5: return "Tebrikler! Başardın!";
+        case 6: return "Bravo! Başarılı!";
+        default: return "Harika!";
       }
     },
   },
