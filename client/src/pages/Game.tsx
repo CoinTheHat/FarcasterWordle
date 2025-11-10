@@ -9,6 +9,7 @@ import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
 import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame, updateUsername as apiUpdateUsername, saveWalletAddress } from "@/lib/api";
 import { getFormattedDate } from "@/lib/date";
 import { normalizeGuess, isValidGuess } from "@/lib/words";
+import { useTranslation } from "@/lib/i18n";
 import type { TileFeedback, GameStatus, UserStats, Language } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Wallet } from "lucide-react";
@@ -19,14 +20,12 @@ export default function Game() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { sendTransactionAsync } = useSendTransaction();
+  const { language, setLanguage, registerLanguageChange } = useTranslation();
   
   const inputRef = useRef<HTMLInputElement>(null);
   const [fid, setFid] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [language, setLanguage] = useState<Language>(() => {
-    return (localStorage.getItem("wordcast-language") as Language) || null;
-  });
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   
   const [stats, setStats] = useState<UserStats | null>(null);
@@ -39,9 +38,10 @@ export default function Game() {
   const [solution, setSolution] = useState("");
   const [revealingRow, setRevealingRow] = useState<number | undefined>();
   const [totalScore, setTotalScore] = useState(() => {
-    // Load today's score from localStorage if available
+    // Load today's score from localStorage if available, scoped by language
     const today = getFormattedDate();
-    const savedScore = localStorage.getItem(`wordcast-score-${today}`);
+    const savedLang = localStorage.getItem("wordcast-ui-language") || "en";
+    const savedScore = localStorage.getItem(`wordcast-score-${savedLang}-${today}`);
     return savedScore ? parseInt(savedScore, 10) : 0;
   });
   const [gameCompleted, setGameCompleted] = useState(false);
@@ -60,6 +60,70 @@ export default function Game() {
   const [farcasterWallet, setFarcasterWallet] = useState<string | null>(null);
   
   const { toast } = useToast();
+  const isRestartingRef = useRef(false);
+
+  // Function to restart game with new language
+  const restartGame = useCallback(async (newLanguage: Language) => {
+    if (isRestartingRef.current) return; // Prevent duplicate calls
+    isRestartingRef.current = true;
+
+    try {
+      // Clear all transient gameplay state
+      setGuesses([]);
+      setCurrentGuess("");
+      setFeedback([]);
+      setLetterStates(new Map());
+      setGameStatus("playing");
+      setSolution("");
+      setRevealingRow(undefined);
+      setHintUsed(false);
+      setShowGameOver(false);
+      
+      // Reset score for new language
+      setTotalScore(0);
+      
+      // Fetch fresh stats and start new game
+      const userStats = await fetchUserStats();
+      setStats(userStats);
+      
+      if (userStats.remainingAttempts > 0 || import.meta.env.MODE === 'development') {
+        const gameSession = await startGame(newLanguage);
+        setSessionId(gameSession.sessionId);
+        setGameCompleted(false); // Reset completed state for new session
+      } else {
+        // No attempts left - set to completed and clear session
+        setGameCompleted(true);
+        setSessionId(null);
+        setGameStatus("lost");
+      }
+
+      toast({
+        title: "Language Changed",
+        description: `Switched to ${newLanguage === 'tr' ? 'Turkish' : 'English'}`,
+        duration: 2000,
+      });
+    } catch (err) {
+      console.error("Failed to restart game:", err);
+      toast({
+        title: "Error",
+        description: "Failed to restart game. Please refresh the page.",
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      isRestartingRef.current = false;
+    }
+  }, [toast]);
+
+  // Register language change callback
+  useEffect(() => {
+    const unsubscribe = registerLanguageChange((newLang) => {
+      // Always restart game when language changes
+      restartGame(newLang);
+    });
+
+    return unsubscribe;
+  }, [registerLanguageChange, restartGame]);
 
   useEffect(() => {
     async function init() {
@@ -186,9 +250,9 @@ export default function Game() {
         remainingAttempts: 0,
       } : null);
 
-      // Save today's score to localStorage
+      // Save today's score to localStorage, scoped by language
       const today = getFormattedDate();
-      localStorage.setItem(`wordcast-score-${today}`, totalScore.toString());
+      localStorage.setItem(`wordcast-score-${language}-${today}`, totalScore.toString());
 
       toast({
         title: "Score saved!",
@@ -252,7 +316,7 @@ export default function Game() {
     } finally {
       setIsSavingScore(false);
     }
-  }, [sessionId, isConnected, address, totalScore, sendTransactionAsync, toast]);
+  }, [sessionId, isConnected, address, totalScore, sendTransactionAsync, toast, language]);
 
   const updateLetterStates = useCallback((guess: string, fb: TileFeedback[]) => {
     setLetterStates((prev) => {
@@ -336,9 +400,9 @@ export default function Game() {
         const newTotalScore = response.score || 0;
         setTotalScore(newTotalScore);
         
-        // Save final score to localStorage
+        // Save final score to localStorage, scoped by language
         const today = getFormattedDate();
-        localStorage.setItem(`wordcast-score-${today}`, newTotalScore.toString());
+        localStorage.setItem(`wordcast-score-${language}-${today}`, newTotalScore.toString());
         
         // Refetch user stats to ensure UI reflects persisted database score
         try {
@@ -417,7 +481,7 @@ export default function Game() {
         });
       }
     }
-  }, [gameStatus, currentGuess, sessionId, guesses, feedback, toast, updateLetterStates]);
+  }, [gameStatus, currentGuess, sessionId, guesses, feedback, toast, updateLetterStates, language]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -545,6 +609,11 @@ export default function Game() {
   };
 
   const handleLanguageSelect = useCallback((selectedLanguage: Language) => {
+    // Clear old language's score from localStorage
+    const today = getFormattedDate();
+    const oldLang = localStorage.getItem("wordcast-ui-language") || "en";
+    localStorage.removeItem(`wordcast-score-${oldLang}-${today}`);
+    
     // Clear game state when changing language
     setSessionId(null);
     setGuesses([]);
@@ -559,7 +628,7 @@ export default function Game() {
     setLanguage(selectedLanguage);
     localStorage.setItem("wordcast-language", selectedLanguage);
     setShowLanguageModal(false);
-  }, []);
+  }, [setLanguage]);
 
   const handleUsernameUpdate = useCallback(async (username: string) => {
     try {
