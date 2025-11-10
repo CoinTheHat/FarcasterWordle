@@ -161,6 +161,16 @@ export default function Game() {
           return;
         }
         
+        // Load today's score from localStorage for current language
+        const today = getFormattedDate();
+        const savedScore = localStorage.getItem(`wordcast-score-${language}-${today}`);
+        if (savedScore) {
+          const scoreValue = parseInt(savedScore, 10);
+          if (scoreValue > 0) {
+            setTotalScore(scoreValue);
+          }
+        }
+        
         // Check if wallet is connected (either from wagmi or Farcaster context)
         const hasWallet = isConnected || fcContext.walletAddress || userStats.walletAddress;
         
