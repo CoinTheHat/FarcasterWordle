@@ -126,6 +126,8 @@ interface Translations {
   walletConnect: string;
   walletConnected: string;
   walletFarcaster: string;
+  walletGuardTitle: string;
+  walletGuardDescription: string;
   
   // Toast Messages - Game
   toastLanguageChanged: string;
@@ -289,6 +291,8 @@ const translations: Record<Language, Translations> = {
     walletConnect: "Connect Wallet",
     walletConnected: "Connected",
     walletFarcaster: "Farcaster Wallet",
+    walletGuardTitle: "Connect Wallet to Play",
+    walletGuardDescription: "You need to connect your wallet to play WordCast and participate in weekly prizes.",
     
     // Toast Messages - Game
     toastLanguageChanged: "Language Changed",
@@ -450,6 +454,8 @@ const translations: Record<Language, Translations> = {
     walletConnect: "Cüzdan Bağla",
     walletConnected: "Bağlandı",
     walletFarcaster: "Farcaster Cüzdanı",
+    walletGuardTitle: "Cüzdan Bağla ve Oyna",
+    walletGuardDescription: "WordCast oynamak ve haftalık ödüllere katılmak için cüzdanınızı bağlamanız gerekiyor.",
     
     // Toast Messages - Game
     toastLanguageChanged: "Dil Değiştirildi",

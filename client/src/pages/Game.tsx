@@ -20,7 +20,7 @@ export default function Game() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { sendTransactionAsync } = useSendTransaction();
-  const { language, setLanguage, registerLanguageChange } = useTranslation();
+  const { t, tf, language, setLanguage, registerLanguageChange } = useTranslation();
   
   const inputRef = useRef<HTMLInputElement>(null);
   const [fid, setFid] = useState<number | null>(null);
@@ -764,9 +764,9 @@ export default function Game() {
         <main className="flex-1 flex flex-col items-center justify-center px-4">
           <div className="bg-card border border-card-border rounded-lg p-8 max-w-md text-center shadow-lg">
             <Wallet className="w-16 h-16 mx-auto mb-4 text-yellow-500" />
-            <h2 className="text-2xl font-bold mb-2">Connect Wallet to Play</h2>
+            <h2 className="text-2xl font-bold mb-2">{t.walletGuardTitle}</h2>
             <p className="text-muted-foreground mb-6">
-              You need to connect your wallet to play WordCast and participate in weekly prizes.
+              {t.walletGuardDescription}
             </p>
             <Button
               onClick={handleWalletConnect}
@@ -777,12 +777,12 @@ export default function Game() {
               {isConnectingWallet ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Connecting...
+                  {t.settingsWalletConnecting}
                 </>
               ) : (
                 <>
                   <Wallet className="w-4 h-4 mr-2" />
-                  Connect Wallet
+                  {t.walletConnect}
                 </>
               )}
             </Button>
