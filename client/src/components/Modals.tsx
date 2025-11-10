@@ -239,7 +239,7 @@ export function SettingsModal({
   onWalletConnect,
   isConnectingWallet = false,
 }: SettingsModalProps) {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [username, setUsername] = useState(currentUsername || "");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -249,7 +249,7 @@ export function SettingsModal({
     setUsername(currentUsername || "");
     setError(null);
     setSuccess(false);
-  }, [currentUsername, isOpen]);
+  }, [currentUsername, isOpen, language]);
 
   const handleSaveUsername = async () => {
     if (!username.trim()) {

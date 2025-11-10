@@ -4,24 +4,46 @@ import { WORD_SALT } from "../env";
 export type Language = "en" | "tr";
 
 export const TARGET_WORDS_EN = [
-  "BADGE", "CHAIN", "FRAME", "WARPCAST", "MOXIE", "BUILD", "STAKE", "GRANT",
-  "NOBLE", "POWER", "SHARE", "TRUST", "VALUE", "WORTH", "YIELD", "SPACE",
-  "CASTE", "REACT", "BASED", "BREAD", "CLEAR", "DRAFT", "EQUAL", "FRESH",
-  "GRACE", "HEART", "IMAGE", "JOINT", "KREWE", "LIGHT", "MAGIC", "NERDY",
-  "OCEAN", "PRIZE", "QUEST", "REACH", "SCOPE", "TRACK", "UNITE", "VITAL",
-  "WORLD", "YOUTH", "ZESTY", "ALIVE", "BLOOM", "CHARM", "DREAM", "EXTRA",
-  "FORGE", "GLIDE", "HAPPY", "JEWEL", "KUDOS", "LUNAR", "MUSIC", "OXIDE",
-  "PEACE", "QUIRK", "RAPID", "SMILE", "TOUCH", "VOGUE", "WHEAT", "ADAPT",
-  "BRAVE", "CLIMB", "DANCE", "EVOKE", "FAITH", "GRAND", "HONOR", "IDEAL",
-  "JOLLY", "KNACK", "LOYAL", "MERIT", "NERVE", "ORBIT", "PLUMB", "QUILT",
-  "ROCKY", "SWEPT", "THYME", "URBAN", "VIGOR", "WIELD", "YEARN", "ZIPPY",
-  "AGILE", "BENDY", "CRISP", "DIGIT", "EMBER", "FIELD", "GREAT", "HANDY",
-  "INPUT", "JUDGE", "KNIFE", "LEGAL", "METRO", "NOBLE", "OFFER", "PROUD",
-  "QUITE", "RANGE", "SWIFT", "THEME", "VIVID", "WROTE", "ABYSS", "BURST",
-  "CRANE", "DUTCH", "ENTRY", "FALSE", "GENRE", "HORSE", "INDEX", "JUMBO"
+  // Farcaster/Crypto themed
+  "BADGE", "CHAIN", "FRAME", "MOXIE", "BUILD", "STAKE", "GRANT", "NOBLE",
+  "POWER", "SHARE", "TRUST", "VALUE", "WORTH", "YIELD", "SPACE", "CASTE",
+  "REACT", "BASED", "TOKEN", "MINTS", "TRADE", "REALM", "VAULT", "FORGE",
+  
+  // Common easy words
+  "BREAD", "CLEAR", "DRAFT", "EQUAL", "FRESH", "GRACE", "HEART", "IMAGE",
+  "JOINT", "LIGHT", "MAGIC", "NERDY", "OCEAN", "PRIZE", "QUEST", "REACH",
+  "SCOPE", "TRACK", "UNITE", "VITAL", "WORLD", "YOUTH", "ZESTY", "ALIVE",
+  "BLOOM", "CHARM", "DREAM", "EXTRA", "GLIDE", "HAPPY", "JEWEL", "KUDOS",
+  "LUNAR", "MUSIC", "OXIDE", "PEACE", "QUIRK", "RAPID", "SMILE", "TOUCH",
+  "VOGUE", "WHEAT", "ADAPT", "BRAVE", "CLIMB", "DANCE", "EVOKE", "FAITH",
+  "GRAND", "HONOR", "IDEAL", "JOLLY", "KNACK", "LOYAL", "MERIT", "NERVE",
+  "ORBIT", "PLUMB", "QUILT", "ROCKY", "SWEPT", "THYME", "URBAN", "VIGOR",
+  "WIELD", "YEARN", "ZIPPY", "AGILE", "BENDY", "CRISP", "DIGIT", "EMBER",
+  "FIELD", "GREAT", "HANDY", "INPUT", "JUDGE", "KNIFE", "LEGAL", "METRO",
+  "OFFER", "PROUD", "QUITE", "RANGE", "SWIFT", "THEME", "VIVID", "WROTE",
+  "ABYSS", "BURST", "CRANE", "DUTCH", "ENTRY", "FALSE", "GENRE", "HORSE",
+  "INDEX", "JUMBO", "KARMA", "LABEL", "MAPLE", "NORTH", "OMEGA", "PARTY",
+  
+  // Medium difficulty
+  "QUEEN", "RADIO", "SALON", "TABLE", "ULTRA", "VALVE", "WHALE", "XENON",
+  "YEAST", "ZERO", "ABIDE", "BATCH", "CABLE", "DAILY", "EARNS", "FAVOR",
+  "GHOST", "HAVEN", "IVORY", "JOUST", "KINKY", "LEMON", "MOUNT", "NASAL",
+  "OVERT", "PIANO", "QUOTA", "RAINY", "SAINT", "TRAIT", "UPSET", "VENOM",
+  "WALTZ", "YACHT", "ZONAL", "ACTOR", "BENCH", "CARGO", "DEMON", "EMBED",
+  "FIBER", "GLASS", "HEDGE", "INLET", "JELLY", "KARMA", "LATCH", "MELON",
+  "NOVEL", "OPERA", "PIXEL", "QUERY", "RATIO", "SOLAR", "TANGO", "UNCLE",
+  "VISIT", "WIDOW", "YIELD", "ZEBRA", "ALARM", "BLEND", "COACH", "DEPTH",
+  "ERROR", "FLAME", "GUARD", "HUMOR", "ICILY", "JUMPS", "LAUGH", "MODAL",
+  
+  // Harder words
+  "NYMPH", "ORDER", "POLAR", "QUIET", "ROYAL", "SPORT", "THIEF", "UNION",
+  "VILLA", "WASTE", "YOUTH", "AUDIT", "BUYER", "CIVIL", "DONOR", "ELITE",
+  "FORUM", "GRAIN", "HAVEN", "ISSUE", "LABOR", "MAYOR", "NICHE", "ORBIT",
+  "PANEL", "QUEST", "RADAR", "SCOPE", "TRIBE", "URBAN", "VIRAL", "WAGON"
 ];
 
 export const TARGET_WORDS_TR = [
+  // Kolay ve orta seviye (sesli uyumlu kelimeler)
   "AFYON", "ASLAN", "BEKÇİ", "BİLGİ", "BÖCEK", "BOMBA", "BUDUN", "BULUT",
   "DENİZ", "ÇELİK", "CEVAP", "ÇIKAR", "DAMLA", "KİTAP", "DOĞRU", "DURUM",
   "EKSEN", "ENLEM", "FASIL", "FİKİR", "FİYAT", "GARİP", "GEÇİT", "GİZLİ",
@@ -34,16 +56,48 @@ export const TARGET_WORDS_TR = [
   "SEBEP", "SEMİZ", "SICAK", "SIFIR", "SİNEK", "SOMUT", "SORUN", "SUYLA",
   "TALAN", "ÇOCUK", "TEMEL", "TOKAT", "TOPAL", "TORUN", "TUTAR", "ÜCRET",
   "UMUMİ", "ÜREME", "VAPUR", "VERİM", "YAKUT", "YAYLA", "YETKİ", "YİĞİT",
-  "YORUM", "YUDUM", "ZAFER", "ZİMBA", "ZİRVE", "ZURNA",
-  // 50 yeni kelime eklendi
-  "AKŞAM", "BAHAR", "CADDE", "DERYA", "EVRAK", "FIRIN", "GÖMEK", "HABER",
-  "İNSAN", "JANLI", "KARAR", "LIMON", "MEYVE", "NEFES", "OKUMA", "PASTA",
-  "RENK", "SAĞIR", "TATLI", "UMMAN", "VATAN", "YAĞMUR", "ZAMAN", "AÇLIK",
-  "BEYAZ", "CEKET", "DÜNYA", "ESKİK", "FENER", "GÜMÜŞ", "HAYAL", "İLİMİ",
-  "KADIN", "LAMBA", "MIKRO", "NÖBET", "OKYAK", "PERDE", "RAFTA", "SİYAH",
-  "TENTE", "UYGUN", "VAKIT", "YALIM", "ZIBIN", "AKÇAY", "BALTA", "CİLVE",
-  "DEĞER", "EMEKÇ", "FANUS", "GEMİÇ", "HUZUR", "İKRAM", "KAĞIT", "LEVHA",
-  "MADEN", "NİŞAN", "ONGUN", "PLAKA", "RADYO", "SİLAH", "TAHTA", "ÜLKER"
+  "YORUM", "YUDUM", "ZAFER", "ZİMBA", "ZİRVE", "ZURNA", "AKŞAM", "BAHAR",
+  "CADDE", "DERYA", "EVRAK", "FIRIN", "GÖMEK", "HABER", "İNSAN", "KARAR",
+  "LIMON", "MEYVE", "NEFES", "OKUMA", "PASTA", "RENK", "TATLI", "VATAN",
+  "ZAMAN", "AÇLIK", "BEYAZ", "CEKET", "DÜNYA", "FENER", "GÜMÜŞ", "HAYAL",
+  "KADIN", "LAMBA", "NÖBET", "PERDE", "SİYAH", "TENTE", "UYGUN", "VAKIT",
+  "BALTA", "DEĞER", "HUZUR", "KAĞIT", "LEVHA", "MADEN", "NİŞAN", "PLAKA",
+  "RADYO", "SİLAH", "TAHTA", "ÜLKER", "AKRAÇ", "AMAÇ", "ANLAÇ", "ARALIK",
+  "ARŞIV", "AYRAÇ", "BAKIR", "BALON", "BANÇO", "BAŞKA", "BATAK", "BATİK",
+  "BELGE", "BELİR", "BENİM", "BETON", "BİRER", "BIRKA", "BIRAK", "BİREK",
+  "BISUR", "BOĞAÇ", "BORAL", "BOŞUK", "BOYAK", "BOZUL", "BUHAR", "BURUN",
+  "BÜYÜK", "CANAN", "CIĞIR", "CILIK", "CIRIT", "CUCUK", "ÇADIR", "ÇAĞLA",
+  "ÇAKAL", "ÇALIK", "ÇAMAÇ", "ÇANAK", "ÇATAL", "ÇATIK", "ÇEKER", "ÇEKIK",
+  "ÇEVRE", "ÇIĞLI", "ÇINAR", "ÇIRAĞ", "DALAK", "DALGA", "DAMAR", "DAMGA",
+  "DENGE", "DEREK", "DERİN", "DERME", "DESTE", "DEVAM", "DEVİR", "DİKEN",
+  
+  // Zor kelimeler (bazıları sesli uyumsuz - vowel disharmony)
+  "AHALI", "ALKOL", "ANLIK", "ANSIZ", "ATLAS", "AVANS", "BAGAJ", "BANKO",
+  "BASIN", "BASİT", "BASMA", "BAZEN", "BEKAR", "BERAT", "BEYAN", "BİDON",
+  "BİLGE", "BİLİM", "BİRAZ", "BİREY", "BİRİM", "BOCAK", "BOHEM", "BONUS",
+  "BORSA", "BOSUN", "BOZUK", "BUGÜN", "BURMA", "BUZUL", "CEHIL", "CESET",
+  "CETVEL", "CİLVE", "CİNSİ", "CUMHA", "DAĞCI", "DARBE", "DENGE", "DERGI",
+  "DERIM", "DERME", "DERNEİ", "DEVRE", "DİKİŞ", "DİLEK", "DİLİM", "DİREK",
+  "DİRİL", "DİŞLİ", "DIZGI", "DOLAM", "DOLAP", "DONAM", "DONUK", "DOSYA",
+  "DUVAR", "DÜĞME", "DÜĞÜM", "DÜŞÜK", "DÜZEN", "EJDER", "EMSAL", "ENGEL",
+  "EYLEM", "FAKAT", "FALAN", "FARKI", "FAYDA", "FAZLA", "FELİS", "FERDI",
+  "FIRMA", "FORMA", "FORUM", "FÜTUR", "GAMZE", "GENÇ", "GERİL", "GEZGN",
+  "GIDIM", "GIRDI", "GİRİŞ", "GORIL", "GÖBEK", "GÖLGE", "GÖREV", "GÖZÜK",
+  "GÜRÜL", "HALEN", "HAMAM", "HAMUR", "HANGI", "HAPİŞ", "HARAÇ", "HAŞAT",
+  "HATIR", "HAVLU", "HAZIR", "HECİN", "HEVES", "HİKME", "HİLAL", "HİSSE",
+  "HIZIR", "HIZLI", "HİZME", "HOPÇA", "İBADE", "İBRET", "İÇLİK", "İFADE",
+  "İHALE", "İHMAL", "İKİNC", "İLAVE", "İLERİ", "İLETİ", "İLGİN", "İLİŞK",
+  "İMAGE", "İMANÇ", "İNDİS", "İPLİK", "İRADE", "İRTİF", "İSKAN", "İSKİM",
+  "İSTAÇ", "İSTEK", "İŞARE", "İŞKAL", "İŞTAH", "İTAAT", "İTİMA", "İZAFE",
+  "JANLI", "KADER", "KADIM", "KAFES", "KALEMİ", "KALIÇ", "KALIP", "KANAL",
+  "KAPAK", "KARAR", "KARŞI", "KASET", "KASIM", "KATIL", "KAVAL", "KAYAK",
+  "KAYIT", "KAZAK", "KEFEN", "KEMER", "KEPÇE", "KEREM", "KEŞKE", "KIBIR",
+  "KIMSE", "KITLE", "KIYAM", "KOLAY", "KOMUT", "KONUT", "KOPYA", "KOŞTU",
+  "KÖPEK", "KÖPRÜ", "KURAL", "KURAÇ", "KURUÇ", "KUSUR", "KUŞÇU", "KUZEN",
+  "LAĞIM", "LAHZA", "LANET", "LEGEN", "LEZZET", "LISAN", "LODOS", "LOKAL",
+  "MACUN", "MAĞMA", "MAHŞE", "MAKUL", "MAMAŞ", "MANAS", "MANGA", "MANIK",
+  "MANYAK", "MARŞ", "MASAL", "MASKE", "MASUÇ", "MATAH", "MAYAŞ", "MAZOT",
+  "MEÇHUL", "MEDYA", "MEFÇI", "MEHIÇ", "MERAÇ", "MERAL", "MESAÎ", "MEŞRU"
 ];
 
 export const TARGET_WORDS: Record<Language, string[]> = {
