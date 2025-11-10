@@ -500,8 +500,8 @@ export default function Game() {
     if (!stats) return;
 
     const attempts = guesses.length;
-    const emoji = gameStatus === "won" ? "✅" : "❌";
-    const text = `WordCast ${stats.today}\n${emoji} ${gameStatus === "won" ? `${attempts}/6` : "X/6"}\n🔥 Streak: ${stats.streak}\n\nPlay daily on Farcaster!`;
+    const won = gameStatus === "won";
+    const text = tf.shareText(totalScore, attempts, stats.streak, won);
 
     try {
       const shared = await shareToCast(text);

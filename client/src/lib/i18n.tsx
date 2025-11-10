@@ -4,6 +4,7 @@ import type { Language } from "@shared/schema";
 interface TranslationFunctions {
   solvedIn: (attempts: number) => string;
   triesLabel: (attempts: number) => string;
+  shareText: (score: number, attempts: number, streak: number, won: boolean) => string;
 }
 
 interface Translations {
@@ -505,10 +506,24 @@ const translationFunctions: Record<Language, TranslationFunctions> = {
   en: {
     solvedIn: (attempts: number) => `You solved it in ${attempts} ${attempts === 1 ? "try" : "tries"}!`,
     triesLabel: (attempts: number) => attempts === 1 ? "try" : "tries",
+    shareText: (score: number, attempts: number, streak: number, won: boolean) => {
+      if (won) {
+        return `I scored ${score} points on WordCast today!\nSolved in ${attempts}/6 tries\nStreak: ${streak}\n\nCompeting for weekly leaderboard!\nTry your luck!`;
+      } else {
+        return `WordCast challenge today: X/6\nStreak: ${streak}\n\nCan you beat this puzzle?\nTry your luck!`;
+      }
+    },
   },
   tr: {
     solvedIn: (attempts: number) => `${attempts} denemede çözdün!`,
     triesLabel: (attempts: number) => "deneme",
+    shareText: (score: number, attempts: number, streak: number, won: boolean) => {
+      if (won) {
+        return `WordCast'te bugün ${score} puan kazandım!\n${attempts}/6 denemede çözdüm\nSeri: ${streak}\n\nHaftalık liderlik için yarışıyorum!\nSen de şansını dene!`;
+      } else {
+        return `WordCast'te bugün: X/6\nSeri: ${streak}\n\nBu bulmacayı çözebilir misin?\nŞansını dene!`;
+      }
+    },
   },
 };
 
