@@ -539,9 +539,9 @@ const translationFunctions: Record<Language, TranslationFunctions> = {
     triesLabel: (attempts: number) => attempts === 1 ? "try" : "tries",
     shareText: (score: number, attempts: number, streak: number, won: boolean) => {
       if (won) {
-        return `I scored ${score} points on WordCast today!\nSolved in ${attempts}/6 tries\nStreak: ${streak}\n\nCompeting for weekly leaderboard!\nTry your luck!`;
+        return `I scored ${score} points on WordCast! 🎯\nSolved in ${attempts}/6 tries | Streak: ${streak}\n\nCan you beat my score?\n\nhttps://farcasterwordle.com/`;
       } else {
-        return `WordCast challenge today: X/6\nStreak: ${streak}\n\nCan you beat this puzzle?\nTry your luck!`;
+        return `WordCast daily challenge: X/6 ❌\nStreak: ${streak}\n\nCan you solve today's puzzle?\n\nhttps://farcasterwordle.com/`;
       }
     },
     encouragementMessage: (attempts: number) => {
@@ -561,9 +561,9 @@ const translationFunctions: Record<Language, TranslationFunctions> = {
     triesLabel: (attempts: number) => "deneme",
     shareText: (score: number, attempts: number, streak: number, won: boolean) => {
       if (won) {
-        return `WordCast'te bugün ${score} puan kazandım!\n${attempts}/6 denemede çözdüm\nSeri: ${streak}\n\nHaftalık liderlik için yarışıyorum!\nSen de şansını dene!`;
+        return `WordCast'te ${score} puan aldım! 🎯\n${attempts}/6 denemede çözdüm | Seri: ${streak}\n\nSen kaç puan yaparsın?\n\nhttps://farcasterwordle.com/`;
       } else {
-        return `WordCast'te bugün: X/6\nSeri: ${streak}\n\nBu bulmacayı çözebilir misin?\nŞansını dene!`;
+        return `WordCast günlük bulmacası: X/6 ❌\nSeri: ${streak}\n\nBugünkü bulmacayı çözebilir misin?\n\nhttps://farcasterwordle.com/`;
       }
     },
     encouragementMessage: (attempts: number) => {
