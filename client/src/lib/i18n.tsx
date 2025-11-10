@@ -18,12 +18,14 @@ interface Translations {
   
   // Game
   gameEnterGuess: string;
+  gameTypePlaceholder: string;
   gameSubmit: string;
   gameHint: string;
   gameHintUsed: string;
   gameInvalidWord: string;
   gameSessionExpired: string;
   gameSessionExpiredDesc: string;
+  gameConnectingWallet: string;
   
   // GameOver Modal
   gameOverCongrats: string;
@@ -52,6 +54,12 @@ interface Translations {
   statsCurrentStreak: string;
   statsMaxStreak: string;
   statsLastPlayed: string;
+  
+  // Stats Display (short labels)
+  statsStreakShort: string;
+  statsMaxShort: string;
+  statsScoreShort: string;
+  statsLeftShort: string;
   
   // Settings Modal
   settingsTitle: string;
@@ -183,12 +191,14 @@ const translations: Record<Language, Translations> = {
     
     // Game
     gameEnterGuess: "Enter your guess",
+    gameTypePlaceholder: "Type...",
     gameSubmit: "Submit",
     gameHint: "Get Hint",
     gameHintUsed: "Hint Used",
     gameInvalidWord: "Not a valid word",
     gameSessionExpired: "Session Expired",
     gameSessionExpiredDesc: "Your game session has expired. Starting a new game...",
+    gameConnectingWallet: "Connecting wallet...",
     
     // GameOver Modal
     gameOverCongrats: "Congratulations!",
@@ -217,6 +227,12 @@ const translations: Record<Language, Translations> = {
     statsCurrentStreak: "Current Streak",
     statsMaxStreak: "Max Streak",
     statsLastPlayed: "Last played:",
+    
+    // Stats Display (short labels)
+    statsStreakShort: "Streak",
+    statsMaxShort: "Max",
+    statsScoreShort: "Score",
+    statsLeftShort: "Left",
     
     // Settings Modal
     settingsTitle: "Settings",
@@ -346,12 +362,14 @@ const translations: Record<Language, Translations> = {
     
     // Game
     gameEnterGuess: "Tahmininizi girin",
+    gameTypePlaceholder: "Yaz...",
     gameSubmit: "Gönder",
     gameHint: "İpucu Al",
     gameHintUsed: "İpucu Kullanıldı",
     gameInvalidWord: "Geçerli bir kelime değil",
     gameSessionExpired: "Oturum Süresi Doldu",
     gameSessionExpiredDesc: "Oyun oturumunuz sona erdi. Yeni oyun başlatılıyor...",
+    gameConnectingWallet: "Cüzdan bağlanıyor...",
     
     // GameOver Modal
     gameOverCongrats: "Tebrikler!",
@@ -380,6 +398,12 @@ const translations: Record<Language, Translations> = {
     statsCurrentStreak: "Mevcut Seri",
     statsMaxStreak: "En Uzun Seri",
     statsLastPlayed: "Son oynanma:",
+    
+    // Stats Display (short labels)
+    statsStreakShort: "Seri",
+    statsMaxShort: "Maks",
+    statsScoreShort: "Puan",
+    statsLeftShort: "Kalan",
     
     // Settings Modal
     settingsTitle: "Ayarlar",

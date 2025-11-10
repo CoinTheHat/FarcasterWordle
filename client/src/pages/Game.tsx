@@ -818,7 +818,7 @@ export default function Game() {
               <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-2 md:p-3 text-center shadow-lg">
                 <div className="flex items-center justify-center gap-1.5 md:gap-2 text-[10px] md:text-sm text-muted-foreground mb-1.5 md:mb-2">
                   <Wallet className="w-3 h-3 md:w-4 md:h-4" />
-                  <span>Connecting wallet...</span>
+                  <span>{t.gameConnectingWallet}</span>
                 </div>
                 <div className="w-full bg-secondary rounded-full h-1 overflow-hidden">
                   <div className="bg-primary h-full w-1/2 animate-pulse"></div>
@@ -842,19 +842,19 @@ export default function Game() {
           <div className="grid grid-cols-4 gap-1.5 md:gap-4 mb-2 md:mb-3 px-2 md:px-4">
             <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-1.5 md:p-4 text-center shadow-lg hover-elevate transition-all">
               <div className="text-lg md:text-3xl font-bold text-primary" data-testid="stat-streak">{stats.streak}</div>
-              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">Streak</div>
+              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">{t.statsStreakShort}</div>
             </div>
             <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-1.5 md:p-4 text-center shadow-lg hover-elevate transition-all">
               <div className="text-lg md:text-3xl font-bold text-primary" data-testid="stat-max-streak">{stats.maxStreak}</div>
-              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">Max</div>
+              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">{t.statsMaxShort}</div>
             </div>
             <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-1.5 md:p-4 text-center shadow-lg hover-elevate transition-all">
               <div className="text-lg md:text-3xl font-bold text-amber-500" data-testid="stat-score">{totalScore}</div>
-              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">Score</div>
+              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">{t.statsScoreShort}</div>
             </div>
             <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-1.5 md:p-4 text-center shadow-lg hover-elevate transition-all">
               <div className="text-lg md:text-3xl font-bold text-primary" data-testid="stat-remaining">{stats.remainingAttempts}</div>
-              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">Left</div>
+              <div className="text-[9px] md:text-xs text-muted-foreground uppercase tracking-wider">{t.statsLeftShort}</div>
             </div>
           </div>
           
@@ -875,7 +875,7 @@ export default function Game() {
               value={currentGuess}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Type..."
+              placeholder={t.gameTypePlaceholder}
               disabled={gameStatus !== "playing" || gameCompleted}
               maxLength={5}
               className="text-center text-xl md:text-2xl font-bold uppercase tracking-widest h-12 md:h-14"
@@ -889,7 +889,7 @@ export default function Game() {
               className="h-12 md:h-14 px-4 md:px-8 text-sm md:text-base"
               data-testid="button-submit"
             >
-              Submit
+              {t.gameSubmit}
             </Button>
           </div>
         </div>

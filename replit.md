@@ -21,7 +21,7 @@ Preferred communication style: Simple, everyday language.
 **Framework & Build System:** React with TypeScript, Vite, Wouter for routing.
 **UI Components & Styling:** TailwindCSS, Shadcn/ui, custom animations, Radix UI primitives.
 **State Management:** TanStack Query for server state, local React state for UI, LocalStorage for user preferences (color-blind mode, language).
-**Internationalization (i18n):** Centralized translation system via I18nProvider context with 130+ translation keys, live language switching (TR/EN) without page reload, localStorage persistence, callback registration system for language change events, comprehensive modal and page translations including SettingsModal with language-reactive updates.
+**Internationalization (i18n):** Centralized translation system via I18nProvider context with 140+ translation keys, live language switching (TR/EN) without page reload, localStorage persistence, callback registration system for language change events, comprehensive modal and page translations including SettingsModal with language-reactive updates. Game UI fully translated including stats cards (Streak/Seri, Max/Maks, Score/Puan, Left/Kalan), input placeholder (Type.../Yaz...), submit button (Submit/Gönder), and wallet connection messages.
 **Game Logic:** Client-side game state, server validation for guesses, session-based random word selection, multi-language support with language-specific word validation (EN: 270 words, TR: 306 words including vowel disharmony words), timezone handling via Luxon (Europe/Istanbul UTC+3).
 
 ### Backend Architecture
@@ -58,12 +58,13 @@ User loads the app, Farcaster context is initialized, and user stats are fetched
 
 **Implementation Details:**
 -   **Provider System:** I18nProvider context wraps the entire app at root level, provides `t` (translations), `tf` (translation functions), `language`, and `setLanguage()`.
--   **Translation Keys:** 130+ keys organized by component/feature (header, game, modals, leaderboard) in `client/src/lib/i18n.tsx`.
--   **Language Storage:** Persisted to localStorage as 'wordcast-language' (default: 'en'), synchronized across tabs/windows.
+-   **Translation Keys:** 140+ keys organized by component/feature (header, game, modals, leaderboard) in `client/src/lib/i18n.tsx`.
+-   **Language Storage:** Persisted to localStorage as 'wordcast-ui-language' (default: 'en'), synchronized across tabs/windows.
 -   **Callback System:** Components can register callbacks via `registerLanguageChange()` to react to language switches (e.g., Game.tsx restarts game session with new language word list).
 -   **Score Scoping:** LocalStorage score keys include language (`wordcast-score-${language}-${date}`) to prevent cross-contamination between languages.
 -   **Live Updates:** All UI components use `t.*` keys and update immediately when language changes, no page reload required.
--   **Supported Languages:** English (en), Turkish (tr) with full modal, page, and game UI coverage.
+-   **Supported Languages:** English (en), Turkish (tr) with complete coverage including game UI, stats cards, input elements, buttons, wallet messages, modals, and all user-facing text.
+-   **Recent Updates (Nov 10, 2025):** Game page fully translated - stats display cards (Streak→Seri, Max→Maks, Score→Puan, Left→Kalan), input placeholder (Type...→Yaz...), submit button (Submit→Gönder), wallet guard screen, and connection status messages now fully bilingual.
 
 ## External Dependencies
 
