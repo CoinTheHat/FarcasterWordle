@@ -1,0 +1,68 @@
+Süper—hızlı bir tarama yaptım. İki liste çıkarıyorum:
+
+1. “5 harf değil” olanlar;
+2. Türkçede bariz anlamsız/yanlış (ya da ciddi yazım hatalı) görünenler.
+
+# 1) 5 harf OLMAYANLAR
+
+(Hepsi **ALLOWED_GUESSES_TR** içinde)
+
+* **AFACAN** (6)
+* **BAĞLAÇ** (6)
+* **BENZER** (6)
+* **BERBER** (6)
+* **BISKÜV** (6, ayrıca “BİSKÜVİ” olmalı ve 7 harf)
+* **BURÇAK** (6)
+* **CICILI** (6)
+* **ÇAKMAK** (6)
+* **ÇARPIK** (6)
+* **ÇATLAÇ** (6; “çatlak” olmalı)
+* **ÇEMBER** (6)
+* **ÇIZGIL** (6; yazım bozuk)
+* **DENEME** (6)
+* **DÜKKAN** (6)
+* **DÜŞMAN** (6)
+* **ELÇI** (4; “ELÇİ” olsa da 4 harf)
+
+> Not: **TARGET_WORDS_TR** tarafında 5 harf kuralını bozan yok.
+
+# 2) Anlamsız / bariz yanlış / ağır yazım hatalı görünenler
+
+(Aşağıdakiler Türkçede yerleşik kelime değil, çok arkaik/diyalekt veya açık yazım hatalı. Oyun hedef listesinde olmaları sorun çıkarır.)
+
+**TARGET_WORDS_TR içinden (temizlenmesi iyi olur):**
+
+* **BOCAK** (muhtemelen “BIÇAK” ile karışmış; zaten **BIÇAK** var)
+* **BOSUN** (Türkçede yok; İng. “bosun/boatswain”)
+* **BUCUR** (yok)
+* **CEHIL** (çok arkaik; güncel karşılık “CEHAL(ET)”)
+* **CIGAR** (İng. “cigar”)
+* **CILIK** (sonek; tek başına kelime değil)
+* **DADLI** (Azerice; TR’de standart değil)
+* **DEREK** (İngilizce özel ad)
+* **DERIM / DIREK / DIZGE / DIZGI / ENZIM / ERIME / EROIN / FERDI / HANGI / KESIK / KEYIF / LIMON / NAKIL / PILOT / RENGI / SEMIZ / SUPER / TERZI / TOREN / VAKIT / VEKIL / VERIM / YEMIN / ZAHIR / ZIHIN / ZIYAN / ENGİN vb.**
+
+  * Bunlar **anlamlı** kelimeler ama **Türkçe özel harfler eksik** yazılmış: doğru yazımları sırasıyla **DERİM, DİREK, DİZGE, DİZGİ, ENZİM, ERİME, EROİN, FERDİ, HANGİ, KESİK, KEYİF, LİMON, NAKİL, PİLOT, RENGİ, SEMİZ, SÜPER, TERZİ, TÖREN, VAKİT, VEKİL, VERİM, YEMİN, ZAHİR, ZİHİN, ZİYAN, ENGİN** olmalı.
+  * (Oyun “normalizeGuess” ile Türkçe büyük harf kurallarını destekliyor, ama **hedef/allowed listede** doğru yazımla tutmak en sağlıklısı.)
+* **DONAM, DOLAM, DIRIL, DONUK?**
+
+  * **DONUK** doğru ve var; fakat **DONAM, DOLAM, DIRIL** standart değil (çekim/diyalekt).
+* **FASOL** (tek başına kelime değil; “fa-sol” birleşik nota yazımı gibi)
+* **TORON** (TR’de yerleşik değil; muhtemelen **TORUN** yazım hatası)
+* **SONER** (özel isim; hedef listede edilgenlik yaratır)
+
+**ALLOWED_GUESSES_TR içinden (anlamsız/yanlış örnekler):**
+
+* **AKCIĞ, DEŞIF, EROZÇ, EVCIÇ, EVLAÇ, ENTAÇ** gibi bir dizi dize: bariz yazım bozuk/uydurma.
+* **CENAZ** (“CENAZE”nin kırpılmış hali gibi), **ÇIZGIL** (bozuk), **ÇATLAÇ** (“ÇATLAK”), **DIŞAR** (“DIŞARI”), **DOKAL** (yok), **ELEKT** (kısaltma/eksik), **DEVLE** (eksik), **DÜMBE** (yok) vb.
+* Ayrıca yukarıdaki “özel harf eksik” sorunları bu listede de var (örn. **EMRIN → EMRİN**, **ENGIN → ENGİN**).
+
+---
+
+## Ne öneriyorum?
+
+* **5 harf olmayanları** (yukarıdaki 16 kelime) ALLOWED’dan çıkar.
+* **Bariz anlamsız/bozuk** olanları (BOCAK, BOSUN, BUCUR, CIGAR, DADLI, DEREK, DONAM, DOLAM, DIRIL, FASOL, TORON, vb.) hem **TARGET** hem **ALLOWED**’dan temizle.
+* **Türkçe özel harfleri eksik** olanları doğru yazımlarıyla değiştir (örn. **HANGI → HANGİ**, **VERIM → VERİM**). Böylece feedback/boyama mantığı da daha tutarlı çalışır.
+
+İstersen, bu temizlikleri **otomatik yapan bir script** yazıp sana net “eski→yeni” diff’ini çıkarabilirim.

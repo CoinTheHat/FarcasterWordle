@@ -1,5 +1,6 @@
 import { createHash } from "crypto";
 import { WORD_SALT } from "../env";
+import { CLEAN_TR_WORDS } from "./words-clean";
 
 export type Language = "en" | "tr";
 
@@ -26,14 +27,14 @@ export const TARGET_WORDS_EN = [
   
   // Medium difficulty
   "QUEEN", "RADIO", "SALON", "TABLE", "ULTRA", "VALVE", "WHALE", "XENON",
-  "YEAST", "ZERO", "ABIDE", "BATCH", "CABLE", "DAILY", "EARNS", "FAVOR",
-  "GHOST", "HAVEN", "IVORY", "JOUST", "KINKY", "LEMON", "MOUNT", "NASAL",
-  "OVERT", "PIANO", "QUOTA", "RAINY", "SAINT", "TRAIT", "UPSET", "VENOM",
-  "WALTZ", "YACHT", "ZONAL", "ACTOR", "BENCH", "CARGO", "DEMON", "EMBED",
-  "FIBER", "GLASS", "HEDGE", "INLET", "JELLY", "KARMA", "LATCH", "MELON",
-  "NOVEL", "OPERA", "PIXEL", "QUERY", "RATIO", "SOLAR", "TANGO", "UNCLE",
-  "VISIT", "WIDOW", "YIELD", "ZEBRA", "ALARM", "BLEND", "COACH", "DEPTH",
-  "ERROR", "FLAME", "GUARD", "HUMOR", "ICILY", "JUMPS", "LAUGH", "MODAL",
+  "YEAST", "ABIDE", "BATCH", "CABLE", "DAILY", "EARNS", "FAVOR", "GHOST",
+  "HAVEN", "IVORY", "JOUST", "KINKY", "LEMON", "MOUNT", "NASAL", "OVERT",
+  "PIANO", "RAINY", "SAINT", "TRAIT", "UPSET", "VENOM", "WALTZ", "YACHT",
+  "ZONAL", "ACTOR", "BENCH", "CARGO", "DEMON", "EMBED", "FIBER", "GLASS",
+  "HEDGE", "INLET", "JELLY", "LATCH", "MELON", "NOVEL", "OPERA",
+  "PIXEL", "RATIO", "SOLAR", "TANGO", "UNCLE", "VISIT", "WIDOW", "ZEBRA",
+  "BLEND", "COACH", "DEPTH", "ERROR", "FLAME", "GUARD", "HUMOR", "ICILY",
+  "JUMPS", "LAUGH", "MODAL", "QUOTA",
   
   // Harder words
   "NYMPH", "ORDER", "POLAR", "QUIET", "ROYAL", "SPORT", "THIEF", "UNION",
@@ -43,54 +44,12 @@ export const TARGET_WORDS_EN = [
   "GIANT", "HASTE", "IDEAS", "KILLS", "LEAST", "MINOR", "NOISE", "PLOTS",
   "QUEUE", "REIGN", "SHARK", "TIGHT", "VOTER", "WELLS", "ZONES", "ADORE",
   "CHESS", "DWELL", "FLARE", "GLAZE", "HARSH", "MOOSE", "NINTH", "PATCH",
-  "QUAKE", "SETUP", "TIDAL", "VIPER", "WHEEL", "ZONES", "ABRUPT", "BLAZE",
-  "CREEP", "DENSE", "EAGER", "FLOOD", "GRASP", "HELPS", "INNER", "JOLTS"
+  "QUAKE", "SETUP", "TIDAL", "VIPER", "WHEEL", "BLAZE", "CREEP", "DENSE",
+  "FLOOD", "GRASP", "HELPS", "INNER", "JOLTS", "ALARM", "WRECK"
 ];
 
-export const TARGET_WORDS_TR = [
-  // Kolay ve orta seviye (sesli uyumlu kelimeler)
-  "AFYON", "ASLAN", "BEKÇİ", "BİLGİ", "BÖCEK", "BOMBA", "BUDUN", "BULUT",
-  "DENİZ", "ÇELİK", "CEVAP", "ÇIKAR", "DAMLA", "KİTAP", "DOĞRU", "DURUM",
-  "EKSEN", "ENLEM", "FASIL", "FİKİR", "FİYAT", "GARİP", "GEÇİT", "GİZLİ",
-  "GÜZEL", "HAYIR", "HEVES", "MUTLU", "PAKET", "İŞLEM", "İZLEK", "KABUK",
-  "KADRO", "KALIN", "KAŞIK", "KAVGA", "KAYIP", "KESİK", "KILIÇ", "KIYMA",
-  "KÖMÜR", "KORKU", "KURAL", "KUŞAK", "BAHÇE", "LODOS", "MAKAM", "MALUM",
-  "MARUL", "MECAZ", "BALIK", "SOKAK", "NABIZ", "NAKİT", "NESİL", "NİYET",
-  "TABLO", "ÖDÜNÇ", "OLMAZ", "ORGAN", "ORTAÇ", "OYNAK", "ÖZLEM", "PARÇA",
-  "PİLAV", "RAKAM", "GÜNEŞ", "RESMİ", "RUTİN", "SABAH", "SAKİN", "SAPAN",
-  "SEBEP", "SEMİZ", "SICAK", "SIFIR", "SİNEK", "SOMUT", "SORUN", "SUYLA",
-  "TALAN", "ÇOCUK", "TEMEL", "TOKAT", "TOPAL", "TORUN", "TUTAR", "ÜCRET",
-  "UMUMİ", "ÜREME", "VAPUR", "VERİM", "YAKUT", "YAYLA", "YETKİ", "YİĞİT",
-  "YORUM", "YUDUM", "ZAFER", "ZİMBA", "ZİRVE", "ZURNA", "AKŞAM", "BAHAR",
-  "CADDE", "DERYA", "EVRAK", "FIRIN", "GÖMEK", "HABER", "İNSAN", "KARAR",
-  "LIMON", "MEYVE", "NEFES", "OKUMA", "PASTA", "RENK", "TATLI", "VATAN",
-  "ZAMAN", "AÇLIK", "BEYAZ", "CEKET", "DÜNYA", "FENER", "GÜMÜŞ", "HAYAL",
-  "KADIN", "LAMBA", "NÖBET", "PERDE", "SİYAH", "TENTE", "UYGUN", "VAKIT",
-  "BALTA", "DEĞER", "HUZUR", "KAĞIT", "LEVHA", "MADEN", "NİŞAN", "PLAKA",
-  "RADYO", "SİLAH", "TAHTA", "ÜLKER", "AKRAÇ", "AMAÇ", "ANLAÇ", "ARALIK",
-  "ARŞIV", "AYRAÇ", "BAKIR", "BALON", "BANÇO", "BAŞKA", "BATAK", "BATİK",
-  "BELGE", "BELİR", "BENİM", "BETON", "BİRER", "BIRKA", "BIRAK", "BİREK",
-  "BISUR", "BOĞAÇ", "BORAL", "BOŞUK", "BOYAK", "BOZUL", "BUHAR", "BURUN",
-  "BÜYÜK", "CANAN", "CIĞIR", "CILIK", "CIRIT", "CUCUK", "ÇADIR", "ÇAĞLA",
-  "ÇAKAL", "ÇALIK", "ÇAMAÇ", "ÇANAK", "ÇATAL", "ÇATIK", "ÇEKER", "ÇEKIK",
-  "ÇEVRE", "ÇIĞLI", "ÇINAR", "ÇIRAĞ", "DALAK", "DALGA", "DAMAR", "DAMGA",
-  "DENGE", "DEREK", "DERİN", "DERME", "DESTE", "DEVAM", "DEVİR", "DİKEN",
-  
-  // Zor kelimeler (bazıları sesli uyumsuz - vowel disharmony)
-  "AHALI", "ALKOL", "ANLIK", "ANSIZ", "ATLAS", "AVANS", "BAGAJ", "BANKO",
-  "BASIN", "BASİT", "BASMA", "BAZEN", "BEKAR", "BERAT", "BEYAN", "BİDON",
-  "BİLGE", "BİLİM", "BİRAZ", "BİREY", "BİRİM", "BOCAK", "BOHEM", "BONUS",
-  "BORSA", "BOSUN", "BOZUK", "BUGÜN", "BURMA", "BUZUL", "CEHIL", "CESET",
-  "CETVEL", "CİLVE", "CİNSİ", "CUMHA", "DAĞCI", "DARBE", "DERGI", "DERIM",
-  "DERME", "DERNEİ", "DEVRE", "DİKİŞ", "DİLEK", "DİLİM", "DİREK", "DİRİL",
-  "DİŞLİ", "DIZGI", "DOLAM", "DOLAP", "DONAM", "DONUK", "DOSYA", "DUVAR",
-  "DÜĞME", "DÜĞÜM", "DÜŞÜK", "DÜZEN", "EJDER", "EMSAL", "ENGEL", "EYLEM",
-  "FAKAT", "FALAN", "FARKI", "FAYDA", "FAZLA", "FELİS", "FERDI", "FIRMA",
-  "FORMA", "FORUM", "FÜTUR", "GAMZE", "GENÇ", "GERİL", "GEZGN", "GIDIM",
-  "GIRDI", "GİRİŞ", "GORIL", "GÖBEK", "GÖLGE", "GÖREV", "GÖZÜK", "GÜRÜL",
-  "HALEN", "HAMAM", "HAMUR", "HANGI", "HAPİŞ", "HARAÇ", "HAŞAT", "HATIR",
-  "HAVLU", "HAZIR", "HİKME", "HİLAL", "HİSSE", "HIZIR", "HIZLI", "HİZME"
-];
+// Use clean, validated Turkish word list
+export const TARGET_WORDS_TR = CLEAN_TR_WORDS;
 
 export const TARGET_WORDS: Record<Language, string[]> = {
   en: TARGET_WORDS_EN,
@@ -130,20 +89,8 @@ export const ALLOWED_GUESSES_EN = [
   "IDEAL", "IMAGE", "INDEX", "INNER", "INPUT", "ISSUE", "JAPAN", "JIMMY"
 ];
 
-export const ALLOWED_GUESSES_TR = [
-  ...TARGET_WORDS_TR,
-  "ACEMİ", "AÇIKIZ", "AÇILIŞ", "ADRES", "AFACAN", "AĞACI", "AHALİ", "AHBAP",
-  "AHLAK", "AHRET", "AİDAT", "AJANS", "AKLIN", "AKŞAM", "AKSİYON", "AKTİF",
-  "ALBAY", "ALÇAK", "ALFABE", "ALICI", "ALINTI", "ALKOL", "AMBAR", "AMİR",
-  "ANANE", "ANCAK", "ANKET", "ANLIK", "ANLAM", "ANSIZ", "ANTİK", "ARADA",
-  "ARACI", "ARAZİ", "ARİFE", "ARKAÇ", "AŞAĞI", "AŞAMA", "ASAYİŞ", "AŞIIR",
-  "ASTAR", "ATAMA", "ATLET", "ATLAS", "AVANS", "AVARE", "AYINÇ", "AYRAÇ",
-  "AZAMİ", "BABAÇ", "BAGAJ", "BAĞIM", "BAKAÇ", "BAKIÇ", "BALCI", "BALKA",
-  "BANKO", "BASIN", "BASİT", "BASMA", "BATAÇ", "BATIK", "BAZEN", "BEKAR",
-  "BEKÇİ", "BENİZ", "BERAT", "BEYAN", "BEYAZ", "BIÇAK", "BİDON", "BİLGE",
-  "BİLİN", "BİLİM", "BİRAZ", "BİREY", "BİRİM", "BOCAK", "BOHEM", "BOYLU",
-  "BONUS", "BORAÇ", "BORSA", "BOSUN", "BOZUK", "BUCUR", "BUDUN", "BUGÜN"
-];
+// Use only clean validated Turkish words - no legacy problematic entries
+export const ALLOWED_GUESSES_TR = [...TARGET_WORDS_TR];
 
 const ALLOWED_GUESSES_EN_SET = new Set(ALLOWED_GUESSES_EN);
 const ALLOWED_GUESSES_TR_SET = new Set(ALLOWED_GUESSES_TR);
@@ -163,6 +110,7 @@ export function getWordOfTheDay(yyyymmdd: string, language: Language = "en"): st
   return words[index];
 }
 
+// Exported version of normalizeGuess (main implementation)
 export function normalizeGuess(guess: string, language: Language = 'en'): string {
   // For Turkish: Use toLocaleUpperCase('tr-TR') to handle Turkish characters properly
   // This ensures ö→Ö, ü→Ü, ğ→Ğ, ş→Ş, ç→Ç, ı→I, i→İ
@@ -246,3 +194,51 @@ export function getRandomWord(language: Language = "en"): string {
   const randomIndex = Math.floor(Math.random() * words.length);
   return words[randomIndex];
 }
+
+// Validate word lists at module load with proper Turkish normalization
+function validateWordList(words: string[], language: string): void {
+  const errors: string[] = [];
+  const seen = new Set<string>();
+  const lang: Language = language.toLowerCase() as Language;
+  
+  words.forEach((word, index) => {
+    // Normalize word using proper Turkish locale + NFC composition
+    const normalized = normalizeGuess(word, lang).normalize('NFC');
+    
+    // Check length on normalized word
+    if (normalized.length !== 5) {
+      errors.push(`${language}[${index}]: "${word}" has ${normalized.length} letters after normalization (must be 5)`);
+    }
+    
+    // Check valid characters on normalized word
+    if (lang === 'tr') {
+      // Allow uppercase Latin + Turkish special chars (Ç, Ğ, İ, Ö, Ş, Ü)
+      if (!/^[A-ZÇĞİÖŞÜ]{5}$/.test(normalized)) {
+        errors.push(`${language}[${index}]: "${word}" (normalized: "${normalized}") contains invalid characters`);
+      }
+    } else {
+      // English: only A-Z
+      if (!/^[A-Z]{5}$/.test(normalized)) {
+        errors.push(`${language}[${index}]: "${word}" contains invalid characters`);
+      }
+    }
+    
+    // Check for duplicates using normalized form
+    if (seen.has(normalized)) {
+      errors.push(`${language}[${index}]: "${word}" (normalized: "${normalized}") is duplicate`);
+    }
+    seen.add(normalized);
+  });
+  
+  if (errors.length > 0) {
+    console.error(`\n❌ Word list validation failed for ${language}:`);
+    errors.forEach(err => console.error(`  - ${err}`));
+    throw new Error(`Invalid ${language} word list: ${errors.length} error(s) found`);
+  }
+  
+  console.log(`✅ ${language.toUpperCase()} word list validated: ${words.length} words`);
+}
+
+// Run validation on module load
+validateWordList(TARGET_WORDS_EN, 'EN');
+validateWordList(TARGET_WORDS_TR, 'TR');
