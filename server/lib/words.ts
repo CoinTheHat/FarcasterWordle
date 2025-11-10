@@ -37,9 +37,14 @@ export const TARGET_WORDS_EN = [
   
   // Harder words
   "NYMPH", "ORDER", "POLAR", "QUIET", "ROYAL", "SPORT", "THIEF", "UNION",
-  "VILLA", "WASTE", "YOUTH", "AUDIT", "BUYER", "CIVIL", "DONOR", "ELITE",
-  "FORUM", "GRAIN", "HAVEN", "ISSUE", "LABOR", "MAYOR", "NICHE", "ORBIT",
-  "PANEL", "QUEST", "RADAR", "SCOPE", "TRIBE", "URBAN", "VIRAL", "WAGON"
+  "VILLA", "WASTE", "AUDIT", "BUYER", "CIVIL", "DONOR", "ELITE", "FORUM",
+  "GRAIN", "ISSUE", "LABOR", "MAYOR", "NICHE", "PANEL", "RADAR", "TRIBE",
+  "VIRAL", "WAGON", "ACIDS", "BEAST", "CEDAR", "DEALT", "EAGER", "FEAST",
+  "GIANT", "HASTE", "IDEAS", "KILLS", "LEAST", "MINOR", "NOISE", "PLOTS",
+  "QUEUE", "REIGN", "SHARK", "TIGHT", "VOTER", "WELLS", "ZONES", "ADORE",
+  "CHESS", "DWELL", "FLARE", "GLAZE", "HARSH", "MOOSE", "NINTH", "PATCH",
+  "QUAKE", "SETUP", "TIDAL", "VIPER", "WHEEL", "ZONES", "ABRUPT", "BLAZE",
+  "CREEP", "DENSE", "EAGER", "FLOOD", "GRASP", "HELPS", "INNER", "JOLTS"
 ];
 
 export const TARGET_WORDS_TR = [
@@ -76,28 +81,15 @@ export const TARGET_WORDS_TR = [
   "BASIN", "BASİT", "BASMA", "BAZEN", "BEKAR", "BERAT", "BEYAN", "BİDON",
   "BİLGE", "BİLİM", "BİRAZ", "BİREY", "BİRİM", "BOCAK", "BOHEM", "BONUS",
   "BORSA", "BOSUN", "BOZUK", "BUGÜN", "BURMA", "BUZUL", "CEHIL", "CESET",
-  "CETVEL", "CİLVE", "CİNSİ", "CUMHA", "DAĞCI", "DARBE", "DENGE", "DERGI",
-  "DERIM", "DERME", "DERNEİ", "DEVRE", "DİKİŞ", "DİLEK", "DİLİM", "DİREK",
-  "DİRİL", "DİŞLİ", "DIZGI", "DOLAM", "DOLAP", "DONAM", "DONUK", "DOSYA",
-  "DUVAR", "DÜĞME", "DÜĞÜM", "DÜŞÜK", "DÜZEN", "EJDER", "EMSAL", "ENGEL",
-  "EYLEM", "FAKAT", "FALAN", "FARKI", "FAYDA", "FAZLA", "FELİS", "FERDI",
-  "FIRMA", "FORMA", "FORUM", "FÜTUR", "GAMZE", "GENÇ", "GERİL", "GEZGN",
-  "GIDIM", "GIRDI", "GİRİŞ", "GORIL", "GÖBEK", "GÖLGE", "GÖREV", "GÖZÜK",
-  "GÜRÜL", "HALEN", "HAMAM", "HAMUR", "HANGI", "HAPİŞ", "HARAÇ", "HAŞAT",
-  "HATIR", "HAVLU", "HAZIR", "HECİN", "HEVES", "HİKME", "HİLAL", "HİSSE",
-  "HIZIR", "HIZLI", "HİZME", "HOPÇA", "İBADE", "İBRET", "İÇLİK", "İFADE",
-  "İHALE", "İHMAL", "İKİNC", "İLAVE", "İLERİ", "İLETİ", "İLGİN", "İLİŞK",
-  "İMAGE", "İMANÇ", "İNDİS", "İPLİK", "İRADE", "İRTİF", "İSKAN", "İSKİM",
-  "İSTAÇ", "İSTEK", "İŞARE", "İŞKAL", "İŞTAH", "İTAAT", "İTİMA", "İZAFE",
-  "JANLI", "KADER", "KADIM", "KAFES", "KALEMİ", "KALIÇ", "KALIP", "KANAL",
-  "KAPAK", "KARAR", "KARŞI", "KASET", "KASIM", "KATIL", "KAVAL", "KAYAK",
-  "KAYIT", "KAZAK", "KEFEN", "KEMER", "KEPÇE", "KEREM", "KEŞKE", "KIBIR",
-  "KIMSE", "KITLE", "KIYAM", "KOLAY", "KOMUT", "KONUT", "KOPYA", "KOŞTU",
-  "KÖPEK", "KÖPRÜ", "KURAL", "KURAÇ", "KURUÇ", "KUSUR", "KUŞÇU", "KUZEN",
-  "LAĞIM", "LAHZA", "LANET", "LEGEN", "LEZZET", "LISAN", "LODOS", "LOKAL",
-  "MACUN", "MAĞMA", "MAHŞE", "MAKUL", "MAMAŞ", "MANAS", "MANGA", "MANIK",
-  "MANYAK", "MARŞ", "MASAL", "MASKE", "MASUÇ", "MATAH", "MAYAŞ", "MAZOT",
-  "MEÇHUL", "MEDYA", "MEFÇI", "MEHIÇ", "MERAÇ", "MERAL", "MESAÎ", "MEŞRU"
+  "CETVEL", "CİLVE", "CİNSİ", "CUMHA", "DAĞCI", "DARBE", "DERGI", "DERIM",
+  "DERME", "DERNEİ", "DEVRE", "DİKİŞ", "DİLEK", "DİLİM", "DİREK", "DİRİL",
+  "DİŞLİ", "DIZGI", "DOLAM", "DOLAP", "DONAM", "DONUK", "DOSYA", "DUVAR",
+  "DÜĞME", "DÜĞÜM", "DÜŞÜK", "DÜZEN", "EJDER", "EMSAL", "ENGEL", "EYLEM",
+  "FAKAT", "FALAN", "FARKI", "FAYDA", "FAZLA", "FELİS", "FERDI", "FIRMA",
+  "FORMA", "FORUM", "FÜTUR", "GAMZE", "GENÇ", "GERİL", "GEZGN", "GIDIM",
+  "GIRDI", "GİRİŞ", "GORIL", "GÖBEK", "GÖLGE", "GÖREV", "GÖZÜK", "GÜRÜL",
+  "HALEN", "HAMAM", "HAMUR", "HANGI", "HAPİŞ", "HARAÇ", "HAŞAT", "HATIR",
+  "HAVLU", "HAZIR", "HİKME", "HİLAL", "HİSSE", "HIZIR", "HIZLI", "HİZME"
 ];
 
 export const TARGET_WORDS: Record<Language, string[]> = {

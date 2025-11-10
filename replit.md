@@ -21,8 +21,8 @@ Preferred communication style: Simple, everyday language.
 **Framework & Build System:** React with TypeScript, Vite, Wouter for routing.
 **UI Components & Styling:** TailwindCSS, Shadcn/ui, custom animations, Radix UI primitives.
 **State Management:** TanStack Query for server state, local React state for UI, LocalStorage for user preferences (color-blind mode, language).
-**Internationalization (i18n):** Centralized translation system via I18nProvider context with 130+ translation keys, live language switching (TR/EN) without page reload, localStorage persistence, callback registration system for language change events, comprehensive modal and page translations.
-**Game Logic:** Client-side game state, server validation for guesses, session-based random word selection, multi-language support with language-specific word validation, timezone handling via Luxon (Europe/Istanbul UTC+3).
+**Internationalization (i18n):** Centralized translation system via I18nProvider context with 130+ translation keys, live language switching (TR/EN) without page reload, localStorage persistence, callback registration system for language change events, comprehensive modal and page translations including SettingsModal with language-reactive updates.
+**Game Logic:** Client-side game state, server validation for guesses, session-based random word selection, multi-language support with language-specific word validation (EN: 270 words, TR: 306 words including vowel disharmony words), timezone handling via Luxon (Europe/Istanbul UTC+3).
 
 ### Backend Architecture
 
