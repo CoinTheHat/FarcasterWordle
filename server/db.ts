@@ -184,10 +184,13 @@ export async function getDailyLeaderboard(yyyymmdd: string, limit: number = 100)
 }
 
 export async function getWeeklyLeaderboard(startDate: string, endDate: string, limit: number = 100): Promise<LeaderboardEntry[]> {
-  const weeklyBestScores = db.$with('weekly_best_scores').as(
+  const weeklyTotalScores = db.$with('weekly_total_scores').as(
     db.select({
       fid: schema.dailyResults.fid,
-      bestScore: sql<number>`MAX(${schema.dailyResults.score})`.as('best_score'),
+      totalScore: sql<number>`SUM(${schema.dailyResults.score})`.as('total_score'),
+      gamesPlayed: sql<number>`COUNT(*)`.as('games_played'),
+      gamesWon: sql<number>`SUM(CASE WHEN ${schema.dailyResults.won} THEN 1 ELSE 0 END)`.as('games_won'),
+      firstPlayedAt: sql<string>`MIN(${schema.dailyResults.createdAt})`.as('first_played_at'),
     })
     .from(schema.dailyResults)
     .where(
@@ -199,45 +202,19 @@ export async function getWeeklyLeaderboard(startDate: string, endDate: string, l
     .groupBy(schema.dailyResults.fid)
   );
 
-  const rankedWeeklyGames = db.$with('ranked_weekly_games').as(
-    db.select({
-      fid: schema.dailyResults.fid,
-      score: schema.dailyResults.score,
-      attempts: schema.dailyResults.attempts,
-      won: schema.dailyResults.won,
-      createdAt: schema.dailyResults.createdAt,
-      rn: sql<number>`ROW_NUMBER() OVER (PARTITION BY ${schema.dailyResults.fid} ORDER BY ${schema.dailyResults.score} DESC, ${schema.dailyResults.attempts} ASC, ${schema.dailyResults.createdAt} ASC)`.as('rn'),
-    })
-    .from(schema.dailyResults)
-    .innerJoin(
-      weeklyBestScores,
-      and(
-        eq(schema.dailyResults.fid, weeklyBestScores.fid),
-        eq(schema.dailyResults.score, weeklyBestScores.bestScore)
-      )
-    )
-    .where(
-      and(
-        sql`${schema.dailyResults.yyyymmdd} >= ${startDate}`,
-        sql`${schema.dailyResults.yyyymmdd} <= ${endDate}`
-      )
-    )
-  );
-
-  const results = await db.with(weeklyBestScores, rankedWeeklyGames)
+  const results = await db.with(weeklyTotalScores)
     .select({
-      fid: rankedWeeklyGames.fid,
+      fid: weeklyTotalScores.fid,
       username: schema.profiles.username,
       walletAddress: schema.profiles.walletAddress,
-      score: rankedWeeklyGames.score,
-      attempts: rankedWeeklyGames.attempts,
-      won: rankedWeeklyGames.won,
-      rank: sql<number>`RANK() OVER (ORDER BY ${rankedWeeklyGames.score} DESC, ${rankedWeeklyGames.attempts} ASC, ${rankedWeeklyGames.createdAt} ASC)`,
+      score: weeklyTotalScores.totalScore,
+      attempts: weeklyTotalScores.gamesPlayed,
+      won: weeklyTotalScores.gamesWon,
+      rank: sql<number>`RANK() OVER (ORDER BY ${weeklyTotalScores.totalScore} DESC, ${weeklyTotalScores.firstPlayedAt} ASC)`,
     })
-    .from(rankedWeeklyGames)
-    .leftJoin(schema.profiles, eq(rankedWeeklyGames.fid, schema.profiles.fid))
-    .where(eq(rankedWeeklyGames.rn, 1))
-    .orderBy(desc(rankedWeeklyGames.score), asc(rankedWeeklyGames.attempts), asc(rankedWeeklyGames.createdAt))
+    .from(weeklyTotalScores)
+    .leftJoin(schema.profiles, eq(weeklyTotalScores.fid, schema.profiles.fid))
+    .orderBy(desc(weeklyTotalScores.totalScore), asc(weeklyTotalScores.firstPlayedAt))
     .limit(limit);
 
   return results.map(row => ({
@@ -246,7 +223,7 @@ export async function getWeeklyLeaderboard(startDate: string, endDate: string, l
     walletAddress: row.walletAddress || null,
     score: row.score,
     attempts: row.attempts,
-    won: row.won,
+    won: row.won > 0 ? 1 : 0,
     rank: Number(row.rank),
   }));
 }
