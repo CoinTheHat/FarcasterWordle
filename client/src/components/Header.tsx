@@ -50,10 +50,6 @@ export function Header({
   const toggleLanguage = () => {
     const newLang: Language = language === "en" ? "tr" : "en";
     setLanguage(newLang);
-    // Also update game language
-    localStorage.setItem("wordcast-language", newLang);
-    // Reload to apply game language change
-    window.location.reload();
   };
 
   return (

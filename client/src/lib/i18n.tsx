@@ -1,5 +1,10 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from "react";
 import type { Language } from "@shared/schema";
+
+interface TranslationFunctions {
+  solvedIn: (attempts: number) => string;
+  triesLabel: (attempts: number) => string;
+}
 
 interface Translations {
   // Header
@@ -284,8 +289,21 @@ const translations: Record<Language, Translations> = {
 interface I18nContextType {
   language: Language;
   t: Translations;
+  tf: TranslationFunctions;
   setLanguage: (lang: Language) => void;
+  registerLanguageChange: (callback: (lang: Language) => void) => () => void;
 }
+
+const translationFunctions: Record<Language, TranslationFunctions> = {
+  en: {
+    solvedIn: (attempts: number) => `You solved it in ${attempts} ${attempts === 1 ? "try" : "tries"}!`,
+    triesLabel: (attempts: number) => attempts === 1 ? "try" : "tries",
+  },
+  tr: {
+    solvedIn: (attempts: number) => `${attempts} denemede çözdün!`,
+    triesLabel: (attempts: number) => "deneme",
+  },
+};
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
@@ -294,11 +312,27 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     const saved = localStorage.getItem("wordcast-ui-language") as Language;
     return saved || "en";
   });
+  
+  // Use ref to store callbacks so they persist across renders without causing re-renders
+  const callbacksRef = useRef<Set<(lang: Language) => void>>(new Set());
 
-  const setLanguage = (lang: Language) => {
+  const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
     localStorage.setItem("wordcast-ui-language", lang);
-  };
+    localStorage.setItem("wordcast-language", lang);
+    
+    // Trigger all callbacks
+    callbacksRef.current.forEach(callback => callback(lang));
+  }, []);
+
+  const registerLanguageChange = useCallback((callback: (lang: Language) => void) => {
+    callbacksRef.current.add(callback);
+    
+    // Return unsubscribe function
+    return () => {
+      callbacksRef.current.delete(callback);
+    };
+  }, []);
 
   useEffect(() => {
     // Sync game language with UI language if not set
@@ -309,7 +343,13 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, [language]);
 
   return (
-    <I18nContext.Provider value={{ language, t: translations[language], setLanguage }}>
+    <I18nContext.Provider value={{ 
+      language, 
+      t: translations[language], 
+      tf: translationFunctions[language],
+      setLanguage,
+      registerLanguageChange 
+    }}>
       {children}
     </I18nContext.Provider>
   );

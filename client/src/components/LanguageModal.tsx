@@ -6,6 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/lib/i18n";
 import type { Language } from "@shared/schema";
 
 interface LanguageModalProps {
@@ -14,13 +15,15 @@ interface LanguageModalProps {
 }
 
 export function LanguageModal({ isOpen, onSelect }: LanguageModalProps) {
+  const { t } = useTranslation();
+  
   return (
     <Dialog open={isOpen} modal>
       <DialogContent className="sm:max-w-md [&>button]:hidden">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-center">Choose Language</DialogTitle>
+          <DialogTitle className="text-2xl text-center">{t.languageChoose}</DialogTitle>
           <DialogDescription className="text-center">
-            Select your preferred language for the word puzzle
+            {t.languageSelect}
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-4 py-4">
