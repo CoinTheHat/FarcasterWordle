@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy, Wallet, Home, Globe } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link, useLocation } from "wouter";
+import { useTranslation } from "@/lib/i18n";
 import type { Language } from "@shared/schema";
 
 interface HeaderProps {
@@ -40,27 +41,35 @@ export function Header({
   const [location] = useLocation();
   const isLeaderboard = location === "/leaderboard";
   const isGame = location === "/";
+  const { language, setLanguage } = useTranslation();
   
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  const toggleLanguage = () => {
+    const newLang: Language = language === "en" ? "tr" : "en";
+    setLanguage(newLang);
+    // Also update game language
+    localStorage.setItem("wordcast-language", newLang);
+    // Reload to apply game language change
+    window.location.reload();
   };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-14 md:h-16 items-center justify-between px-2 md:px-4 max-w-2xl mx-auto gap-1 md:gap-2">
         <div className="flex items-center gap-0.5 md:gap-2">
-          {onLanguageClick && currentLanguage && (
-            <Button
-              size="icon"
-              variant="outline"
-              onClick={onLanguageClick}
-              data-testid="button-language"
-              className="h-8 w-8 md:h-10 md:w-auto md:px-3 md:gap-1.5"
-            >
-              <span className="text-base">{currentLanguage === 'tr' ? '🇹🇷' : '🇺🇸'}</span>
-              <span className="hidden md:inline font-semibold">{currentLanguage.toUpperCase()}</span>
-            </Button>
-          )}
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={toggleLanguage}
+            data-testid="button-language-toggle"
+            className="h-8 w-8 md:h-10 md:w-auto md:px-3 md:gap-1.5"
+          >
+            <span className="text-base">{language === 'tr' ? '🇹🇷' : '🇺🇸'}</span>
+            <span className="hidden md:inline font-semibold">{language.toUpperCase()}</span>
+          </Button>
           
           {isGame && onHelpClick && (
             <>
