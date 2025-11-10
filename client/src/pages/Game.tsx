@@ -7,7 +7,7 @@ import { HowToPlayModal } from "@/components/HowToPlayModal";
 import { LanguageModal } from "@/components/LanguageModal";
 import { initializeFarcaster, shareToCast, copyToClipboard } from "@/lib/fc";
 import { startGame, submitGuess, fetchUserStats, setFid as setApiFid, fetchHint, completeGame, updateUsername as apiUpdateUsername, saveWalletAddress } from "@/lib/api";
-import { getFormattedDate } from "@/lib/date";
+import { getFormattedDate, getTodayDateString } from "@/lib/date";
 import { normalizeGuess, isValidGuess } from "@/lib/words";
 import { useTranslation } from "@/lib/i18n";
 import type { TileFeedback, GameStatus, UserStats, Language } from "@shared/schema";
@@ -39,7 +39,7 @@ export default function Game() {
   const [revealingRow, setRevealingRow] = useState<number | undefined>();
   const [totalScore, setTotalScore] = useState(() => {
     // Load today's score from localStorage if available, scoped by language
-    const today = getFormattedDate();
+    const today = getTodayDateString();
     const savedLang = localStorage.getItem("wordcast-ui-language") || "en";
     const savedScore = localStorage.getItem(`wordcast-score-${savedLang}-${today}`);
     return savedScore ? parseInt(savedScore, 10) : 0;
@@ -80,7 +80,7 @@ export default function Game() {
       setShowGameOver(false);
       
       // Load score for new language from localStorage
-      const today = getFormattedDate();
+      const today = getTodayDateString();
       const newLangScore = localStorage.getItem(`wordcast-score-${newLanguage}-${today}`);
       setTotalScore(newLangScore ? parseInt(newLangScore, 10) : 0);
       
@@ -162,7 +162,7 @@ export default function Game() {
         }
         
         // Load today's score from localStorage for current language
-        const today = getFormattedDate();
+        const today = getTodayDateString();
         const savedScore = localStorage.getItem(`wordcast-score-${language}-${today}`);
         if (savedScore) {
           const scoreValue = parseInt(savedScore, 10);
@@ -263,7 +263,7 @@ export default function Game() {
       } : null);
 
       // Save today's score to localStorage, scoped by language
-      const today = getFormattedDate();
+      const today = getTodayDateString();
       localStorage.setItem(`wordcast-score-${language}-${today}`, totalScore.toString());
 
       toast({
@@ -413,7 +413,7 @@ export default function Game() {
         setTotalScore(newTotalScore);
         
         // Save final score to localStorage, scoped by language
-        const today = getFormattedDate();
+        const today = getTodayDateString();
         localStorage.setItem(`wordcast-score-${language}-${today}`, newTotalScore.toString());
         
         // Refetch user stats to ensure UI reflects persisted database score
@@ -622,7 +622,7 @@ export default function Game() {
 
   const handleLanguageSelect = useCallback((selectedLanguage: Language) => {
     // Load score for selected language from localStorage
-    const today = getFormattedDate();
+    const today = getTodayDateString();
     const newLangScore = localStorage.getItem(`wordcast-score-${selectedLanguage}-${today}`);
     
     // Clear game state when changing language
