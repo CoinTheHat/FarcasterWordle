@@ -116,6 +116,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       today,
       remainingAttempts,
       hasCompletedToday: !!todayResult,
+      todayScore: todayResult?.score || 0,
     });
   });
 

@@ -83,6 +83,7 @@ export interface UserStats {
   today: string;
   remainingAttempts: number;
   hasCompletedToday?: boolean;
+  todayScore?: number;
 }
 
 export const guessRequestSchema = z.object({

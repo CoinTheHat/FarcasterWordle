@@ -161,13 +161,21 @@ export default function Game() {
           return;
         }
         
-        // Load today's score from localStorage for current language
-        const today = getTodayDateString();
-        const savedScore = localStorage.getItem(`wordcast-score-${language}-${today}`);
-        if (savedScore) {
-          const scoreValue = parseInt(savedScore, 10);
-          if (scoreValue > 0) {
-            setTotalScore(scoreValue);
+        // Load today's score from backend (database is source of truth)
+        if (userStats.todayScore !== undefined && userStats.todayScore > 0) {
+          setTotalScore(userStats.todayScore);
+          // Also save to localStorage for consistency
+          const today = getTodayDateString();
+          localStorage.setItem(`wordcast-score-${language}-${today}`, userStats.todayScore.toString());
+        } else {
+          // If no score in backend, check localStorage as fallback
+          const today = getTodayDateString();
+          const savedScore = localStorage.getItem(`wordcast-score-${language}-${today}`);
+          if (savedScore) {
+            const scoreValue = parseInt(savedScore, 10);
+            if (scoreValue > 0) {
+              setTotalScore(scoreValue);
+            }
           }
         }
         
