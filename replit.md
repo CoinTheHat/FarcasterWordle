@@ -21,6 +21,7 @@ Preferred communication style: Simple, everyday language.
 **Framework & Build System:** React with TypeScript, Vite, Wouter for routing.
 **UI Components & Styling:** TailwindCSS, Shadcn/ui, custom animations, Radix UI primitives.
 **State Management:** TanStack Query for server state, local React state for UI, LocalStorage for user preferences (color-blind mode, language).
+**Internationalization (i18n):** Centralized translation system via I18nProvider context with 130+ translation keys, live language switching (TR/EN) without page reload, localStorage persistence, callback registration system for language change events, comprehensive modal and page translations.
 **Game Logic:** Client-side game state, server validation for guesses, session-based random word selection, multi-language support with language-specific word validation, timezone handling via Luxon (Europe/Istanbul UTC+3).
 
 ### Backend Architecture
@@ -52,6 +53,17 @@ Farcaster SDK initializes on app load, extracts FID for authentication (or uses 
 ### Game Flow
 
 User loads the app, Farcaster context is initialized, and user stats are fetched. The game board is set up, and user guesses are sent to the server for validation and feedback. Upon win/loss, streaks are updated, and a modal with share options appears. Scores can be saved to the blockchain via a transaction.
+
+## i18n Architecture
+
+**Implementation Details:**
+-   **Provider System:** I18nProvider context wraps the entire app at root level, provides `t` (translations), `tf` (translation functions), `language`, and `setLanguage()`.
+-   **Translation Keys:** 130+ keys organized by component/feature (header, game, modals, leaderboard) in `client/src/lib/i18n.tsx`.
+-   **Language Storage:** Persisted to localStorage as 'wordcast-language' (default: 'en'), synchronized across tabs/windows.
+-   **Callback System:** Components can register callbacks via `registerLanguageChange()` to react to language switches (e.g., Game.tsx restarts game session with new language word list).
+-   **Score Scoping:** LocalStorage score keys include language (`wordcast-score-${language}-${date}`) to prevent cross-contamination between languages.
+-   **Live Updates:** All UI components use `t.*` keys and update immediately when language changes, no page reload required.
+-   **Supported Languages:** English (en), Turkish (tr) with full modal, page, and game UI coverage.
 
 ## External Dependencies
 

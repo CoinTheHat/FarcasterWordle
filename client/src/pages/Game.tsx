@@ -40,7 +40,7 @@ export default function Game() {
   const [totalScore, setTotalScore] = useState(() => {
     // Load today's score from localStorage if available, scoped by language
     const today = getFormattedDate();
-    const savedLang = localStorage.getItem("wordcast-ui-language") || "en";
+    const savedLang = localStorage.getItem("wordcast-language") || "en";
     const savedScore = localStorage.getItem(`wordcast-score-${savedLang}-${today}`);
     return savedScore ? parseInt(savedScore, 10) : 0;
   });
@@ -611,7 +611,7 @@ export default function Game() {
   const handleLanguageSelect = useCallback((selectedLanguage: Language) => {
     // Clear old language's score from localStorage
     const today = getFormattedDate();
-    const oldLang = localStorage.getItem("wordcast-ui-language") || "en";
+    const oldLang = localStorage.getItem("wordcast-language") || "en";
     localStorage.removeItem(`wordcast-score-${oldLang}-${today}`);
     
     // Clear game state when changing language

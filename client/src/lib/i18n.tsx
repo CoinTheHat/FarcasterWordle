@@ -10,6 +10,7 @@ interface Translations {
   // Header
   headerTitle: string;
   headerScore: string;
+  headerPoints: string;
   headerStats: string;
   headerHelp: string;
   headerSettings: string;
@@ -125,6 +126,43 @@ interface Translations {
   walletConnected: string;
   walletFarcaster: string;
   
+  // Toast Messages - Game
+  toastLanguageChanged: string;
+  toastLanguageSwitched: string;
+  toastError: string;
+  toastRestartFailed: string;
+  toastNoActiveGame: string;
+  toastStartGameFirst: string;
+  toastWalletNotConnected: string;
+  toastConnectWalletFirst: string;
+  toastScoreSaved: string;
+  toastScoreSavedDesc: string;
+  toastTransactionCancelled: string;
+  toastTransactionCancelledDesc: string;
+  toastTransactionFailed: string;
+  toastStartNewGameFailed: string;
+  toastNotEnoughLetters: string;
+  toastNeedMoreLetters: string;
+  toastRefreshPage: string;
+  toastInvalidWord: string;
+  toastOnlyLetters: string;
+  toastGameRestarting: string;
+  toastCopied: string;
+  toastShareResults: string;
+  toastUnableToCopy: string;
+  toastCopyManually: string;
+  toastSharedToFarcaster: string;
+  toastResultsPosted: string;
+  toastUnableToShare: string;
+  toastTryAgain: string;
+  toastHintRevealed: string;
+  toastHintPosition: string;
+  toastFailedToGetHint: string;
+  toastConnectionFailed: string;
+  toastWalletConnected: string;
+  toastWalletSavedForPrizes: string;
+  toastSaveFailed: string;
+  
   // Errors
   errorGeneric: string;
   errorNetwork: string;
@@ -135,6 +173,7 @@ const translations: Record<Language, Translations> = {
     // Header
     headerTitle: "WordCast",
     headerScore: "Score",
+    headerPoints: "pts",
     headerStats: "Stats",
     headerHelp: "Help",
     headerSettings: "Settings",
@@ -149,8 +188,8 @@ const translations: Record<Language, Translations> = {
     gameSessionExpiredDesc: "Your game session has expired. Starting a new game...",
     
     // GameOver Modal
-    gameOverCongrats: "🎉 Congratulations!",
-    gameOverGameOver: "😔 Game Over",
+    gameOverCongrats: "Congratulations!",
+    gameOverGameOver: "Game Over",
     gameOverTryAgain: "Try Again Tomorrow",
     gameOverSolvedIn: "You solved it in",
     gameOverTry: "try",
@@ -160,12 +199,12 @@ const translations: Record<Language, Translations> = {
     gameOverStreak: "Streak",
     gameOverScore: "Score",
     gameOverTryCount: "Tries",
-    gameOverSaveWarning: "⚠️ Save to blockchain to count for leaderboards & streaks!",
+    gameOverSaveWarning: "Save to blockchain to count for leaderboards & streaks!",
     gameOverSaveWarningDesc: "Without saving, you can play again with a new word",
     gameOverSaveToBlockchain: "Save Score to Blockchain",
     gameOverSaving: "Saving...",
     gameOverShareResult: "Share Result",
-    gameOverSaved: "✅ Score saved to blockchain! Come back tomorrow for a new word.",
+    gameOverSaved: "Score saved to blockchain! Come back tomorrow for a new word.",
     gameOverSavedDesc: "Come back tomorrow for a new word.",
     gameOverComeBackTomorrow: "Come back tomorrow for a new word!",
     
@@ -188,11 +227,11 @@ const translations: Record<Language, Translations> = {
     settingsUsernameUpdating: "Updating...",
     settingsUsernameEmpty: "Username cannot be empty",
     settingsUsernameFailed: "Failed to update username",
-    settingsUsernameSuccess: "✓ Username updated successfully",
+    settingsUsernameSuccess: "Username updated successfully",
     settingsWallet: "Wallet",
     settingsWalletDesc: "Connect wallet for weekly leaderboard prizes",
     settingsWalletConnected: "Connected:",
-    settingsWalletSaved: "✓ Wallet saved for prize distribution",
+    settingsWalletSaved: "Wallet saved for prize distribution",
     settingsWalletConnect: "Connect Wallet",
     settingsWalletConnecting: "Connecting...",
     settingsOn: "On",
@@ -250,6 +289,43 @@ const translations: Record<Language, Translations> = {
     walletConnected: "Connected",
     walletFarcaster: "Farcaster Wallet",
     
+    // Toast Messages - Game
+    toastLanguageChanged: "Language Changed",
+    toastLanguageSwitched: "Switched to",
+    toastError: "Error",
+    toastRestartFailed: "Failed to restart game. Please refresh the page.",
+    toastNoActiveGame: "No active game",
+    toastStartGameFirst: "Please start a game first",
+    toastWalletNotConnected: "Wallet not connected",
+    toastConnectWalletFirst: "Please connect your wallet first",
+    toastScoreSaved: "Score saved!",
+    toastScoreSavedDesc: "recorded on blockchain. Streak:",
+    toastTransactionCancelled: "Transaction cancelled",
+    toastTransactionCancelledDesc: "Without saving to blockchain, your score won't count for leaderboards or streaks. Starting a new game with a different word!",
+    toastTransactionFailed: "Transaction failed",
+    toastStartNewGameFailed: "Failed to start new game. Please refresh the page.",
+    toastNotEnoughLetters: "Not enough letters",
+    toastNeedMoreLetters: "more letter",
+    toastRefreshPage: "Please refresh the page",
+    toastInvalidWord: "Invalid word",
+    toastOnlyLetters: "Please enter only letters (A-Z)",
+    toastGameRestarting: "Game Restarting",
+    toastCopied: "Copied to clipboard!",
+    toastShareResults: "Share your results!",
+    toastUnableToCopy: "Unable to copy",
+    toastCopyManually: "Please copy manually",
+    toastSharedToFarcaster: "Shared to Farcaster!",
+    toastResultsPosted: "Your results have been posted",
+    toastUnableToShare: "Unable to share",
+    toastTryAgain: "Please try again",
+    toastHintRevealed: "Hint Revealed!",
+    toastHintPosition: "Position",
+    toastFailedToGetHint: "Failed to get hint",
+    toastConnectionFailed: "Connection Failed",
+    toastWalletConnected: "Wallet Connected",
+    toastWalletSavedForPrizes: "Your wallet address has been saved for prize distribution!",
+    toastSaveFailed: "Save Failed",
+    
     // Errors
     errorGeneric: "Something went wrong",
     errorNetwork: "Network error. Please try again.",
@@ -258,6 +334,7 @@ const translations: Record<Language, Translations> = {
     // Header
     headerTitle: "WordCast",
     headerScore: "Skor",
+    headerPoints: "puan",
     headerStats: "İstatistikler",
     headerHelp: "Yardım",
     headerSettings: "Ayarlar",
@@ -272,8 +349,8 @@ const translations: Record<Language, Translations> = {
     gameSessionExpiredDesc: "Oyun oturumunuz sona erdi. Yeni oyun başlatılıyor...",
     
     // GameOver Modal
-    gameOverCongrats: "🎉 Tebrikler!",
-    gameOverGameOver: "😔 Oyun Bitti",
+    gameOverCongrats: "Tebrikler!",
+    gameOverGameOver: "Oyun Bitti",
     gameOverTryAgain: "Yarın Tekrar Dene",
     gameOverSolvedIn: "Kelimeyi çözdün:",
     gameOverTry: "denemede",
@@ -283,12 +360,12 @@ const translations: Record<Language, Translations> = {
     gameOverStreak: "Seri",
     gameOverScore: "Skor",
     gameOverTryCount: "Deneme",
-    gameOverSaveWarning: "⚠️ Sıralama ve serilere sayılması için blockchain'e kaydet!",
+    gameOverSaveWarning: "Sıralama ve serilere sayılması için blockchain'e kaydet!",
     gameOverSaveWarningDesc: "Kaydetmeden yeni bir kelime ile tekrar oynayabilirsin",
     gameOverSaveToBlockchain: "Skoru Blockchain'e Kaydet",
     gameOverSaving: "Kaydediliyor...",
     gameOverShareResult: "Sonucu Paylaş",
-    gameOverSaved: "✅ Skor blockchain'e kaydedildi! Yeni kelime için yarın gel.",
+    gameOverSaved: "Skor blockchain'e kaydedildi! Yeni kelime için yarın gel.",
     gameOverSavedDesc: "Yeni kelime için yarın gel.",
     gameOverComeBackTomorrow: "Yeni kelime için yarın gel!",
     
@@ -311,11 +388,11 @@ const translations: Record<Language, Translations> = {
     settingsUsernameUpdating: "Güncelleniyor...",
     settingsUsernameEmpty: "Kullanıcı adı boş olamaz",
     settingsUsernameFailed: "Kullanıcı adı güncellenemedi",
-    settingsUsernameSuccess: "✓ Kullanıcı adı başarıyla güncellendi",
+    settingsUsernameSuccess: "Kullanıcı adı başarıyla güncellendi",
     settingsWallet: "Cüzdan",
     settingsWalletDesc: "Haftalık sıralama ödülleri için cüzdan bağlayın",
     settingsWalletConnected: "Bağlandı:",
-    settingsWalletSaved: "✓ Cüzdan ödül dağıtımı için kaydedildi",
+    settingsWalletSaved: "Cüzdan ödül dağıtımı için kaydedildi",
     settingsWalletConnect: "Cüzdan Bağla",
     settingsWalletConnecting: "Bağlanıyor...",
     settingsOn: "Açık",
@@ -372,6 +449,43 @@ const translations: Record<Language, Translations> = {
     walletConnect: "Cüzdan Bağla",
     walletConnected: "Bağlandı",
     walletFarcaster: "Farcaster Cüzdanı",
+    
+    // Toast Messages - Game
+    toastLanguageChanged: "Dil Değiştirildi",
+    toastLanguageSwitched: "Dil değiştirildi:",
+    toastError: "Hata",
+    toastRestartFailed: "Oyun yeniden başlatılamadı. Lütfen sayfayı yenileyin.",
+    toastNoActiveGame: "Aktif oyun yok",
+    toastStartGameFirst: "Lütfen önce bir oyun başlatın",
+    toastWalletNotConnected: "Cüzdan bağlı değil",
+    toastConnectWalletFirst: "Lütfen önce cüzdanınızı bağlayın",
+    toastScoreSaved: "Skor kaydedildi!",
+    toastScoreSavedDesc: "blockchain'e kaydedildi. Seri:",
+    toastTransactionCancelled: "İşlem iptal edildi",
+    toastTransactionCancelledDesc: "Blockchain'e kaydetmeden skorunuz sıralama ve serilere sayılmaz. Farklı bir kelime ile yeni oyun başlatılıyor!",
+    toastTransactionFailed: "İşlem başarısız",
+    toastStartNewGameFailed: "Yeni oyun başlatılamadı. Lütfen sayfayı yenileyin.",
+    toastNotEnoughLetters: "Yeterli harf yok",
+    toastNeedMoreLetters: "harf daha",
+    toastRefreshPage: "Lütfen sayfayı yenileyin",
+    toastInvalidWord: "Geçersiz kelime",
+    toastOnlyLetters: "Lütfen sadece harf girin (A-Z veya Türkçe karakterler)",
+    toastGameRestarting: "Oyun Yenileniyor",
+    toastCopied: "Panoya kopyalandı!",
+    toastShareResults: "Sonuçlarınızı paylaşın!",
+    toastUnableToCopy: "Kopyalanamadı",
+    toastCopyManually: "Lütfen manuel olarak kopyalayın",
+    toastSharedToFarcaster: "Farcaster'a paylaşıldı!",
+    toastResultsPosted: "Sonuçlarınız paylaşıldı",
+    toastUnableToShare: "Paylaşılamadı",
+    toastTryAgain: "Lütfen tekrar deneyin",
+    toastHintRevealed: "İpucu Gösterildi!",
+    toastHintPosition: "Konum",
+    toastFailedToGetHint: "İpucu alınamadı",
+    toastConnectionFailed: "Bağlantı Başarısız",
+    toastWalletConnected: "Cüzdan Bağlandı",
+    toastWalletSavedForPrizes: "Cüzdan adresiniz ödül dağıtımı için kaydedildi!",
+    toastSaveFailed: "Kaydetme Başarısız",
     
     // Errors
     errorGeneric: "Bir şeyler yanlış gitti",

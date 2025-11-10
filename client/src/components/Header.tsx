@@ -41,7 +41,7 @@ export function Header({
   const [location] = useLocation();
   const isLeaderboard = location === "/leaderboard";
   const isGame = location === "/";
-  const { language, setLanguage } = useTranslation();
+  const { t, language, setLanguage } = useTranslation();
   
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -109,7 +109,7 @@ export function Header({
         <div className="flex flex-col items-center flex-1 min-w-0">
           <Link href="/">
             <h1 className="text-lg md:text-2xl font-bold tracking-tight cursor-pointer hover:text-primary transition-colors whitespace-nowrap" data-testid="text-title">
-              WordCast
+              {t.headerTitle}
             </h1>
           </Link>
           {todayDate && (
@@ -121,7 +121,7 @@ export function Header({
                 <>
                   <span className="text-[10px] md:text-xs text-muted-foreground">•</span>
                   <p className="text-[10px] md:text-xs font-semibold text-primary whitespace-nowrap" data-testid="text-score">
-                    {totalScore} pts
+                    {totalScore} {t.headerPoints}
                   </p>
                 </>
               )}
