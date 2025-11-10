@@ -2,6 +2,7 @@ import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import ws from "ws";
 import * as schema from "@shared/schema";
+import type { LeaderboardEntry } from "@shared/schema";
 import { eq, and, desc, asc, sql, count } from "drizzle-orm";
 
 neonConfig.webSocketConstructor = ws;
@@ -19,15 +20,6 @@ export const db = drizzle({ client: pool, schema });
 export type Profile = typeof schema.profiles.$inferSelect;
 export type DailyResult = typeof schema.dailyResults.$inferSelect;
 export type Streak = typeof schema.streaks.$inferSelect;
-
-export interface LeaderboardEntry {
-  fid: number;
-  username: string | null;
-  score: number;
-  attempts: number;
-  won: boolean;
-  rank: number;
-}
 
 // Database functions
 export async function getOrCreateProfile(fid: number): Promise<Profile> {
@@ -178,7 +170,75 @@ export async function getDailyLeaderboard(yyyymmdd: string, limit: number = 100)
     username: row.username || null,
     score: row.score,
     attempts: row.attempts,
-    won: row.won,
+    won: row.won ? 1 : 0,
+    rank: Number(row.rank),
+  }));
+}
+
+export async function getWeeklyLeaderboardOld(startDate: string, endDate: string, limit: number = 100): Promise<LeaderboardEntry[]> {
+  const weeklyBestScores = db.$with('weekly_best_scores').as(
+    db.select({
+      fid: schema.dailyResults.fid,
+      bestScore: sql<number>`MAX(${schema.dailyResults.score})`.as('best_score'),
+    })
+    .from(schema.dailyResults)
+    .where(
+      and(
+        sql`${schema.dailyResults.yyyymmdd} >= ${startDate}`,
+        sql`${schema.dailyResults.yyyymmdd} <= ${endDate}`
+      )
+    )
+    .groupBy(schema.dailyResults.fid)
+  );
+
+  const rankedWeeklyGames = db.$with('ranked_weekly_games').as(
+    db.select({
+      fid: schema.dailyResults.fid,
+      score: schema.dailyResults.score,
+      attempts: schema.dailyResults.attempts,
+      won: schema.dailyResults.won,
+      createdAt: schema.dailyResults.createdAt,
+      rn: sql<number>`ROW_NUMBER() OVER (PARTITION BY ${schema.dailyResults.fid} ORDER BY ${schema.dailyResults.score} DESC, ${schema.dailyResults.attempts} ASC, ${schema.dailyResults.createdAt} ASC)`.as('rn'),
+    })
+    .from(schema.dailyResults)
+    .innerJoin(
+      weeklyBestScores,
+      and(
+        eq(schema.dailyResults.fid, weeklyBestScores.fid),
+        eq(schema.dailyResults.score, weeklyBestScores.bestScore)
+      )
+    )
+    .where(
+      and(
+        sql`${schema.dailyResults.yyyymmdd} >= ${startDate}`,
+        sql`${schema.dailyResults.yyyymmdd} <= ${endDate}`
+      )
+    )
+  );
+
+  const results = await db.with(weeklyBestScores, rankedWeeklyGames)
+    .select({
+      fid: rankedWeeklyGames.fid,
+      username: schema.profiles.username,
+      walletAddress: schema.profiles.walletAddress,
+      score: rankedWeeklyGames.score,
+      attempts: rankedWeeklyGames.attempts,
+      won: rankedWeeklyGames.won,
+      rank: sql<number>`RANK() OVER (ORDER BY ${rankedWeeklyGames.score} DESC, ${rankedWeeklyGames.attempts} ASC, ${rankedWeeklyGames.createdAt} ASC)`,
+    })
+    .from(rankedWeeklyGames)
+    .leftJoin(schema.profiles, eq(rankedWeeklyGames.fid, schema.profiles.fid))
+    .where(eq(rankedWeeklyGames.rn, 1))
+    .orderBy(desc(rankedWeeklyGames.score), asc(rankedWeeklyGames.attempts), asc(rankedWeeklyGames.createdAt))
+    .limit(limit);
+
+  return results.map(row => ({
+    fid: row.fid,
+    username: row.username || null,
+    walletAddress: row.walletAddress || null,
+    score: row.score,
+    attempts: row.attempts,
+    won: row.won ? 1 : 0,
     rank: Number(row.rank),
   }));
 }
@@ -223,7 +283,7 @@ export async function getWeeklyLeaderboard(startDate: string, endDate: string, l
     walletAddress: row.walletAddress || null,
     score: row.score,
     attempts: row.attempts,
-    won: row.won > 0 ? 1 : 0,
+    won: (row.won as number) > 0 ? 1 : 0,
     rank: Number(row.rank),
   }));
 }
@@ -277,7 +337,7 @@ export async function getBestScoresLeaderboard(limit: number = 100): Promise<Lea
     username: row.username || null,
     score: row.score,
     attempts: row.attempts,
-    won: row.won,
+    won: row.won ? 1 : 0,
     rank: Number(row.rank),
   }));
 }
