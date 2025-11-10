@@ -89,7 +89,9 @@ export const ALLOWED_GUESSES_EN = [
   "IDEAL", "IMAGE", "INDEX", "INNER", "INPUT", "ISSUE", "JAPAN", "JIMMY"
 ];
 
-// Use only clean validated Turkish words - no legacy problematic entries
+// Turkish guess list - currently using cleaned target list
+// TODO: Expand with broader validated Turkish 5-letter dictionary
+// For MVP: using curated list ensures no inappropriate/foreign words
 export const ALLOWED_GUESSES_TR = [...TARGET_WORDS_TR];
 
 const ALLOWED_GUESSES_EN_SET = new Set(ALLOWED_GUESSES_EN);
