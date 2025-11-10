@@ -25,36 +25,53 @@ interface Translations {
   
   // GameOver Modal
   gameOverCongrats: string;
+  gameOverGameOver: string;
   gameOverTryAgain: string;
+  gameOverSolvedIn: string;
+  gameOverTry: string;
+  gameOverTries: string;
+  gameOverBetterLuck: string;
+  gameOverTheWordWas: string;
+  gameOverStreak: string;
   gameOverScore: string;
-  gameOverAttempts: string;
-  gameOverSolution: string;
-  gameOverShareTitle: string;
-  gameOverShareDesc: string;
-  gameOverShare: string;
-  gameOverCopied: string;
-  gameOverSaveScore: string;
+  gameOverTryCount: string;
+  gameOverSaveWarning: string;
+  gameOverSaveWarningDesc: string;
+  gameOverSaveToBlockchain: string;
   gameOverSaving: string;
-  gameOverConnectWallet: string;
-  gameOverConnecting: string;
-  gameOverClose: string;
+  gameOverShareResult: string;
+  gameOverSaved: string;
+  gameOverSavedDesc: string;
+  gameOverComeBackTomorrow: string;
   
   // Stats Modal
   statsTitle: string;
-  statsStreak: string;
+  statsDescription: string;
+  statsCurrentStreak: string;
   statsMaxStreak: string;
-  statsTodayScore: string;
-  statsClose: string;
+  statsLastPlayed: string;
   
   // Settings Modal
   settingsTitle: string;
+  settingsDescription: string;
   settingsColorBlind: string;
   settingsColorBlindDesc: string;
   settingsUsername: string;
+  settingsUsernameDesc: string;
   settingsUsernamePlaceholder: string;
-  settingsSave: string;
-  settingsSaving: string;
-  settingsClose: string;
+  settingsUsernameButton: string;
+  settingsUsernameUpdating: string;
+  settingsUsernameEmpty: string;
+  settingsUsernameFailed: string;
+  settingsUsernameSuccess: string;
+  settingsWallet: string;
+  settingsWalletDesc: string;
+  settingsWalletConnected: string;
+  settingsWalletSaved: string;
+  settingsWalletConnect: string;
+  settingsWalletConnecting: string;
+  settingsOn: string;
+  settingsOff: string;
   
   // How to Play Modal
   howToPlayTitle: string;
@@ -118,37 +135,54 @@ const translations: Record<Language, Translations> = {
     gameSessionExpiredDesc: "Your game session has expired. Starting a new game...",
     
     // GameOver Modal
-    gameOverCongrats: "Congratulations!",
+    gameOverCongrats: "🎉 Congratulations!",
+    gameOverGameOver: "😔 Game Over",
     gameOverTryAgain: "Try Again Tomorrow",
+    gameOverSolvedIn: "You solved it in",
+    gameOverTry: "try",
+    gameOverTries: "tries",
+    gameOverBetterLuck: "Better luck tomorrow!",
+    gameOverTheWordWas: "The word was:",
+    gameOverStreak: "Streak",
     gameOverScore: "Score",
-    gameOverAttempts: "Attempts",
-    gameOverSolution: "Solution",
-    gameOverShareTitle: "Share your result",
-    gameOverShareDesc: "Share your achievement on Farcaster",
-    gameOverShare: "Share to Cast",
-    gameOverCopied: "Copied to clipboard!",
-    gameOverSaveScore: "Save Score to Leaderboard",
+    gameOverTryCount: "Tries",
+    gameOverSaveWarning: "⚠️ Save to blockchain to count for leaderboards & streaks!",
+    gameOverSaveWarningDesc: "Without saving, you can play again with a new word",
+    gameOverSaveToBlockchain: "Save Score to Blockchain",
     gameOverSaving: "Saving...",
-    gameOverConnectWallet: "Connect Wallet",
-    gameOverConnecting: "Connecting...",
-    gameOverClose: "Close",
+    gameOverShareResult: "Share Result",
+    gameOverSaved: "✅ Score saved to blockchain! Come back tomorrow for a new word.",
+    gameOverSavedDesc: "Come back tomorrow for a new word.",
+    gameOverComeBackTomorrow: "Come back tomorrow for a new word!",
     
     // Stats Modal
     statsTitle: "Statistics",
-    statsStreak: "Current Streak",
+    statsDescription: "Your WordCast performance",
+    statsCurrentStreak: "Current Streak",
     statsMaxStreak: "Max Streak",
-    statsTodayScore: "Today's Score",
-    statsClose: "Close",
+    statsLastPlayed: "Last played:",
     
     // Settings Modal
     settingsTitle: "Settings",
+    settingsDescription: "Customize your experience",
     settingsColorBlind: "Color Blind Mode",
     settingsColorBlindDesc: "High contrast colors",
     settingsUsername: "Username",
-    settingsUsernamePlaceholder: "Enter username",
-    settingsSave: "Save",
-    settingsSaving: "Saving...",
-    settingsClose: "Close",
+    settingsUsernameDesc: "Display name for leaderboard (letters, numbers, -, _)",
+    settingsUsernamePlaceholder: "Enter your username",
+    settingsUsernameButton: "Update Username",
+    settingsUsernameUpdating: "Updating...",
+    settingsUsernameEmpty: "Username cannot be empty",
+    settingsUsernameFailed: "Failed to update username",
+    settingsUsernameSuccess: "✓ Username updated successfully",
+    settingsWallet: "Wallet",
+    settingsWalletDesc: "Connect wallet for weekly leaderboard prizes",
+    settingsWalletConnected: "Connected:",
+    settingsWalletSaved: "✓ Wallet saved for prize distribution",
+    settingsWalletConnect: "Connect Wallet",
+    settingsWalletConnecting: "Connecting...",
+    settingsOn: "On",
+    settingsOff: "Off",
     
     // How to Play Modal
     howToPlayTitle: "How to Play",
@@ -210,37 +244,54 @@ const translations: Record<Language, Translations> = {
     gameSessionExpiredDesc: "Oyun oturumunuz sona erdi. Yeni oyun başlatılıyor...",
     
     // GameOver Modal
-    gameOverCongrats: "Tebrikler!",
+    gameOverCongrats: "🎉 Tebrikler!",
+    gameOverGameOver: "😔 Oyun Bitti",
     gameOverTryAgain: "Yarın Tekrar Dene",
+    gameOverSolvedIn: "Kelimeyi çözdün:",
+    gameOverTry: "denemede",
+    gameOverTries: "denemede",
+    gameOverBetterLuck: "Yarın daha iyi şans!",
+    gameOverTheWordWas: "Kelime buydu:",
+    gameOverStreak: "Seri",
     gameOverScore: "Skor",
-    gameOverAttempts: "Deneme",
-    gameOverSolution: "Çözüm",
-    gameOverShareTitle: "Sonucunu paylaş",
-    gameOverShareDesc: "Başarını Farcaster'da paylaş",
-    gameOverShare: "Cast'e Paylaş",
-    gameOverCopied: "Panoya kopyalandı!",
-    gameOverSaveScore: "Skoru Liderlik Tablosuna Kaydet",
+    gameOverTryCount: "Deneme",
+    gameOverSaveWarning: "⚠️ Sıralama ve serilere sayılması için blockchain'e kaydet!",
+    gameOverSaveWarningDesc: "Kaydetmeden yeni bir kelime ile tekrar oynayabilirsin",
+    gameOverSaveToBlockchain: "Skoru Blockchain'e Kaydet",
     gameOverSaving: "Kaydediliyor...",
-    gameOverConnectWallet: "Cüzdan Bağla",
-    gameOverConnecting: "Bağlanıyor...",
-    gameOverClose: "Kapat",
+    gameOverShareResult: "Sonucu Paylaş",
+    gameOverSaved: "✅ Skor blockchain'e kaydedildi! Yeni kelime için yarın gel.",
+    gameOverSavedDesc: "Yeni kelime için yarın gel.",
+    gameOverComeBackTomorrow: "Yeni kelime için yarın gel!",
     
     // Stats Modal
     statsTitle: "İstatistikler",
-    statsStreak: "Güncel Seri",
-    statsMaxStreak: "Maksimum Seri",
-    statsTodayScore: "Bugünün Skoru",
-    statsClose: "Kapat",
+    statsDescription: "WordCast performansın",
+    statsCurrentStreak: "Mevcut Seri",
+    statsMaxStreak: "En Uzun Seri",
+    statsLastPlayed: "Son oynanma:",
     
     // Settings Modal
     settingsTitle: "Ayarlar",
+    settingsDescription: "Deneyiminizi özelleştirin",
     settingsColorBlind: "Renk Körlüğü Modu",
     settingsColorBlindDesc: "Yüksek kontrastlı renkler",
     settingsUsername: "Kullanıcı Adı",
-    settingsUsernamePlaceholder: "Kullanıcı adı girin",
-    settingsSave: "Kaydet",
-    settingsSaving: "Kaydediliyor...",
-    settingsClose: "Kapat",
+    settingsUsernameDesc: "Sıralama için görünen ad (harf, rakam, -, _)",
+    settingsUsernamePlaceholder: "Kullanıcı adınızı girin",
+    settingsUsernameButton: "Kullanıcı Adını Güncelle",
+    settingsUsernameUpdating: "Güncelleniyor...",
+    settingsUsernameEmpty: "Kullanıcı adı boş olamaz",
+    settingsUsernameFailed: "Kullanıcı adı güncellenemedi",
+    settingsUsernameSuccess: "✓ Kullanıcı adı başarıyla güncellendi",
+    settingsWallet: "Cüzdan",
+    settingsWalletDesc: "Haftalık sıralama ödülleri için cüzdan bağlayın",
+    settingsWalletConnected: "Bağlandı:",
+    settingsWalletSaved: "✓ Cüzdan ödül dağıtımı için kaydedildi",
+    settingsWalletConnect: "Cüzdan Bağla",
+    settingsWalletConnecting: "Bağlanıyor...",
+    settingsOn: "Açık",
+    settingsOff: "Kapalı",
     
     // How to Play Modal
     howToPlayTitle: "Nasıl Oynanır",

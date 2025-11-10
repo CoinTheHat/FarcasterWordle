@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Share2, TrendingUp, Trophy, Flame, Loader2, Wallet } from "lucide-react";
+import { useTranslation } from "@/lib/i18n";
 
 interface GameOverModalProps {
   isOpen: boolean;
@@ -41,24 +42,26 @@ export function GameOverModal({
   onShare,
   onSaveScore,
 }: GameOverModalProps) {
+  const { t } = useTranslation();
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-sm" data-testid="modal-gameover">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">
-            {won ? "🎉 Congratulations!" : "😔 Game Over"}
+            {won ? t.gameOverCongrats : t.gameOverGameOver}
           </DialogTitle>
           <DialogDescription className="text-center text-base">
             {won
-              ? `You solved it in ${attempts} ${attempts === 1 ? "try" : "tries"}!`
-              : "Better luck tomorrow!"}
+              ? `${t.gameOverSolvedIn} ${attempts} ${attempts === 1 ? t.gameOverTry : t.gameOverTries}!`
+              : t.gameOverBetterLuck}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
           {!won && solution && (
             <div className="bg-muted/50 backdrop-blur-sm border border-border rounded-lg p-4 text-center">
-              <p className="text-sm text-muted-foreground mb-2">The word was:</p>
+              <p className="text-sm text-muted-foreground mb-2">{t.gameOverTheWordWas}</p>
               <p className="text-3xl font-bold tracking-widest text-primary" data-testid="text-solution">
                 {solution.toUpperCase()}
               </p>
@@ -69,7 +72,7 @@ export function GameOverModal({
             <div className="flex flex-col items-center gap-2">
               <div className="flex items-center gap-1 text-muted-foreground">
                 <Flame className="w-4 h-4" />
-                <span className="text-xs uppercase font-medium">Streak</span>
+                <span className="text-xs uppercase font-medium">{t.gameOverStreak}</span>
               </div>
               <div className="text-3xl font-bold" data-testid="text-current-streak">
                 {streak}
@@ -79,7 +82,7 @@ export function GameOverModal({
             <div className="flex flex-col items-center gap-2">
               <div className="flex items-center gap-1 text-muted-foreground">
                 <Trophy className="w-4 h-4" />
-                <span className="text-xs uppercase font-medium">Score</span>
+                <span className="text-xs uppercase font-medium">{t.gameOverScore}</span>
               </div>
               <div className="text-3xl font-bold text-primary" data-testid="text-total-score">
                 {totalScore}
@@ -89,7 +92,7 @@ export function GameOverModal({
             <div className="flex flex-col items-center gap-2">
               <div className="flex items-center gap-1 text-muted-foreground">
                 <TrendingUp className="w-4 h-4" />
-                <span className="text-xs uppercase font-medium">Tries</span>
+                <span className="text-xs uppercase font-medium">{t.gameOverTryCount}</span>
               </div>
               <div className="text-3xl font-bold" data-testid="text-attempts">
                 {won ? attempts : "-"}
@@ -102,10 +105,10 @@ export function GameOverModal({
               <>
                 <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 text-center">
                   <p className="text-sm text-amber-600 dark:text-amber-400 font-medium">
-                    ⚠️ Save to blockchain to count for leaderboards & streaks!
+                    {t.gameOverSaveWarning}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Without saving, you can play again with a new word
+                    {t.gameOverSaveWarningDesc}
                   </p>
                 </div>
                 <Button
@@ -118,12 +121,12 @@ export function GameOverModal({
                   {isSavingScore ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      Saving...
+                      {t.gameOverSaving}
                     </>
                   ) : (
                     <>
                       <Trophy className="w-5 h-5" />
-                      Save Score to Blockchain
+                      {t.gameOverSaveToBlockchain}
                     </>
                   )}
                 </Button>
@@ -137,13 +140,13 @@ export function GameOverModal({
               data-testid="button-share"
             >
               <Share2 className="w-5 h-5" />
-              Share Result
+              {t.gameOverShareResult}
             </Button>
 
             {gameCompleted && (
               <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 text-center">
                 <p className="text-sm text-green-600 dark:text-green-400 font-medium">
-                  ✅ Score saved to blockchain! Come back tomorrow for a new word.
+                  {t.gameOverSaved}
                 </p>
               </div>
             )}
@@ -151,7 +154,7 @@ export function GameOverModal({
 
           {!won && (
             <p className="text-sm text-center text-muted-foreground">
-              Come back tomorrow for a new word!
+              {t.gameOverComeBackTomorrow}
             </p>
           )}
         </div>
@@ -169,12 +172,14 @@ interface StatsModalProps {
 }
 
 export function StatsModal({ isOpen, onClose, streak, maxStreak, lastPlayed }: StatsModalProps) {
+  const { t } = useTranslation();
+  
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-sm" data-testid="modal-stats">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Statistics</DialogTitle>
-          <DialogDescription>Your WordCast performance</DialogDescription>
+          <DialogTitle className="text-2xl font-bold">{t.statsTitle}</DialogTitle>
+          <DialogDescription>{t.statsDescription}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -185,7 +190,7 @@ export function StatsModal({ isOpen, onClose, streak, maxStreak, lastPlayed }: S
                 {streak}
               </div>
               <div className="text-xs uppercase font-medium text-muted-foreground">
-                Current Streak
+                {t.statsCurrentStreak}
               </div>
             </div>
 
@@ -195,14 +200,14 @@ export function StatsModal({ isOpen, onClose, streak, maxStreak, lastPlayed }: S
                 {maxStreak}
               </div>
               <div className="text-xs uppercase font-medium text-muted-foreground">
-                Max Streak
+                {t.statsMaxStreak}
               </div>
             </div>
           </div>
 
           {lastPlayed && (
             <div className="text-center text-sm text-muted-foreground">
-              Last played: {lastPlayed}
+              {t.statsLastPlayed} {lastPlayed}
             </div>
           )}
         </div>
@@ -234,6 +239,7 @@ export function SettingsModal({
   onWalletConnect,
   isConnectingWallet = false,
 }: SettingsModalProps) {
+  const { t } = useTranslation();
   const [username, setUsername] = useState(currentUsername || "");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -247,7 +253,7 @@ export function SettingsModal({
 
   const handleSaveUsername = async () => {
     if (!username.trim()) {
-      setError("Username cannot be empty");
+      setError(t.settingsUsernameEmpty);
       return;
     }
 
@@ -260,7 +266,7 @@ export function SettingsModal({
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err: any) {
-      setError(err.message || "Failed to update username");
+      setError(err.message || t.settingsUsernameFailed);
     } finally {
       setIsSaving(false);
     }
@@ -270,16 +276,16 @@ export function SettingsModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-sm" data-testid="modal-settings">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Settings</DialogTitle>
-          <DialogDescription>Customize your experience</DialogDescription>
+          <DialogTitle className="text-2xl font-bold">{t.settingsTitle}</DialogTitle>
+          <DialogDescription>{t.settingsDescription}</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           <div className="space-y-3 p-4 rounded-lg border">
             <div className="flex flex-col gap-1">
-              <span className="font-medium">Username</span>
+              <span className="font-medium">{t.settingsUsername}</span>
               <span className="text-sm text-muted-foreground">
-                Display name for leaderboard (letters, numbers, -, _)
+                {t.settingsUsernameDesc}
               </span>
             </div>
             <div className="flex gap-2">
@@ -287,7 +293,7 @@ export function SettingsModal({
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter username"
+                placeholder={t.settingsUsernamePlaceholder}
                 maxLength={20}
                 className="flex-1 h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 data-testid="input-username"
@@ -298,7 +304,7 @@ export function SettingsModal({
                 size="sm"
                 data-testid="button-save-username"
               >
-                {isSaving ? "Saving..." : "Save"}
+                {isSaving ? t.settingsUsernameUpdating : t.settingsUsernameButton}
               </Button>
             </div>
             {error && (
@@ -308,16 +314,16 @@ export function SettingsModal({
             )}
             {success && (
               <p className="text-sm text-green-600 dark:text-green-400" data-testid="text-username-success">
-                ✓ Username updated successfully
+                {t.settingsUsernameSuccess}
               </p>
             )}
           </div>
 
           <div className="space-y-3 p-4 rounded-lg border">
             <div className="flex flex-col gap-1">
-              <span className="font-medium">Wallet Address</span>
+              <span className="font-medium">{t.settingsWallet}</span>
               <span className="text-sm text-muted-foreground">
-                Connect wallet for weekly leaderboard prizes
+                {t.settingsWalletDesc}
               </span>
             </div>
             {currentWalletAddress ? (
@@ -328,11 +334,11 @@ export function SettingsModal({
                     {currentWalletAddress.slice(0, 6)}...{currentWalletAddress.slice(-4)}
                   </span>
                   <Badge variant="secondary" className="text-xs">
-                    Connected
+                    {t.settingsWalletConnected.replace(":", "")}
                   </Badge>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  ✓ Wallet saved for prize distribution
+                  {t.settingsWalletSaved}
                 </p>
               </div>
             ) : (
@@ -346,12 +352,12 @@ export function SettingsModal({
                 {isConnectingWallet ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Connecting...
+                    {t.settingsWalletConnecting}
                   </>
                 ) : (
                   <>
                     <Wallet className="w-4 h-4" />
-                    Connect Wallet
+                    {t.settingsWalletConnect}
                   </>
                 )}
               </Button>
@@ -360,9 +366,9 @@ export function SettingsModal({
 
           <div className="flex items-center justify-between p-4 rounded-lg border">
             <div className="flex flex-col gap-1">
-              <span className="font-medium">Color Blind Mode</span>
+              <span className="font-medium">{t.settingsColorBlind}</span>
               <span className="text-sm text-muted-foreground">
-                Add patterns to tiles for better visibility
+                {t.settingsColorBlindDesc}
               </span>
             </div>
             <Button
@@ -371,7 +377,7 @@ export function SettingsModal({
               onClick={() => onColorBlindToggle(!colorBlindMode)}
               data-testid="toggle-colorblind"
             >
-              {colorBlindMode ? "On" : "Off"}
+              {colorBlindMode ? t.settingsOn : t.settingsOff}
             </Button>
           </div>
         </div>

@@ -934,7 +934,6 @@ export default function Game() {
       <HowToPlayModal
         open={showHelp}
         onClose={() => setShowHelp(false)}
-        language={language || "en"}
       />
 
       <LanguageModal

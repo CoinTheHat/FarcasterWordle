@@ -5,15 +5,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import type { Language } from "@shared/schema";
+import { useTranslation } from "@/lib/i18n";
 
 interface HowToPlayModalProps {
   open: boolean;
   onClose: () => void;
-  language: Language;
 }
 
-export function HowToPlayModal({ open, onClose, language }: HowToPlayModalProps) {
+export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
+  const { language } = useTranslation();
   const content = {
     tr: {
       title: "Nasıl Oynanır?",
