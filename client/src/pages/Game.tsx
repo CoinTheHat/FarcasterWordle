@@ -40,7 +40,7 @@ export default function Game() {
   const [totalScore, setTotalScore] = useState(() => {
     // Load today's score from localStorage if available, scoped by language
     const today = getFormattedDate();
-    const savedLang = localStorage.getItem("wordcast-language") || "en";
+    const savedLang = localStorage.getItem("wordcast-ui-language") || "en";
     const savedScore = localStorage.getItem(`wordcast-score-${savedLang}-${today}`);
     return savedScore ? parseInt(savedScore, 10) : 0;
   });
@@ -79,8 +79,10 @@ export default function Game() {
       setHintUsed(false);
       setShowGameOver(false);
       
-      // Reset score for new language
-      setTotalScore(0);
+      // Load score for new language from localStorage
+      const today = getFormattedDate();
+      const newLangScore = localStorage.getItem(`wordcast-score-${newLanguage}-${today}`);
+      setTotalScore(newLangScore ? parseInt(newLangScore, 10) : 0);
       
       // Fetch fresh stats and start new game
       const userStats = await fetchUserStats();
@@ -609,10 +611,9 @@ export default function Game() {
   };
 
   const handleLanguageSelect = useCallback((selectedLanguage: Language) => {
-    // Clear old language's score from localStorage
+    // Load score for selected language from localStorage
     const today = getFormattedDate();
-    const oldLang = localStorage.getItem("wordcast-language") || "en";
-    localStorage.removeItem(`wordcast-score-${oldLang}-${today}`);
+    const newLangScore = localStorage.getItem(`wordcast-score-${selectedLanguage}-${today}`);
     
     // Clear game state when changing language
     setSessionId(null);
@@ -621,12 +622,11 @@ export default function Game() {
     setLetterStates(new Map());
     setGameStatus("playing");
     setSolution("");
-    setTotalScore(0);
+    setTotalScore(newLangScore ? parseInt(newLangScore, 10) : 0);
     setGameCompleted(false);
     setHintUsed(false);
     
     setLanguage(selectedLanguage);
-    localStorage.setItem("wordcast-language", selectedLanguage);
     setShowLanguageModal(false);
   }, [setLanguage]);
 
