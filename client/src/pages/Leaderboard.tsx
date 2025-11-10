@@ -7,10 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Award, Flame, Wallet } from "lucide-react";
 import type { LeaderboardResponse } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/lib/i18n";
 
 export default function Leaderboard() {
   const [period, setPeriod] = useState<"daily" | "weekly" | "best-scores">("daily");
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const { data: leaderboardData, isLoading } = useQuery<LeaderboardResponse>({
     queryKey: ["/api/leaderboard", period],
@@ -38,10 +40,10 @@ export default function Leaderboard() {
   };
 
   const getRankBadge = (rank: number) => {
-    if (rank === 1) return <Badge variant="default" className="bg-yellow-500 hover:bg-yellow-600">1st</Badge>;
-    if (rank === 2) return <Badge variant="secondary">2nd</Badge>;
-    if (rank === 3) return <Badge variant="secondary">3rd</Badge>;
-    return <Badge variant="outline">{rank}th</Badge>;
+    if (rank === 1) return <Badge variant="default" className="bg-yellow-500 hover:bg-yellow-600">{t.leaderboard1st}</Badge>;
+    if (rank === 2) return <Badge variant="secondary">{t.leaderboard2nd}</Badge>;
+    if (rank === 3) return <Badge variant="secondary">{t.leaderboard3rd}</Badge>;
+    return <Badge variant="outline">{rank}{t.leaderboardTh}</Badge>;
   };
 
   return (
@@ -51,10 +53,10 @@ export default function Leaderboard() {
       <main className="flex-1 container max-w-4xl mx-auto px-4 py-6 space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight" data-testid="text-leaderboard-title">
-            Leaderboard
+            {t.leaderboardTitle}
           </h1>
           <p className="text-muted-foreground text-sm md:text-base">
-            See how you rank against other players
+            {t.leaderboardDesc}
           </p>
         </div>
 
@@ -63,10 +65,10 @@ export default function Leaderboard() {
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Trophy className="w-5 h-5 text-yellow-500" />
-                Last Week's Winners
+                {t.leaderboardLastWeek}
               </CardTitle>
               <p className="text-xs text-muted-foreground">
-                Top 3 players from previous week
+                {t.leaderboardLastWeekDesc}
               </p>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -84,7 +86,7 @@ export default function Leaderboard() {
                     
                     <div className="flex-1 min-w-0">
                       <div className="font-semibold text-sm md:text-base truncate">
-                        {entry.username || `Player ${entry.fid}`}
+                        {entry.username || `${t.leaderboardPlayer} ${entry.fid}`}
                       </div>
                       {entry.walletAddress ? (
                         <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
@@ -93,14 +95,14 @@ export default function Leaderboard() {
                             onClick={() => {
                               navigator.clipboard.writeText(entry.walletAddress!);
                               toast({
-                                title: "Copied!",
-                                description: "Wallet address copied to clipboard",
+                                title: t.leaderboardCopied,
+                                description: t.leaderboardCopyDesc,
                                 duration: 2000,
                               });
                             }}
                             className="font-mono hover:text-foreground transition-colors group flex items-center gap-1"
                             data-testid={`last-week-wallet-${entry.rank}`}
-                            title="Click to copy full address"
+                            title={t.leaderboardClickToCopy}
                           >
                             <span className="hidden md:inline">{entry.walletAddress}</span>
                             <span className="md:hidden">{entry.walletAddress.slice(0, 6)}...{entry.walletAddress.slice(-4)}</span>
@@ -119,12 +121,12 @@ export default function Leaderboard() {
                             </svg>
                           </button>
                           <Badge variant="default" className="text-[10px] px-1.5 py-0 bg-yellow-500 hover:bg-yellow-600">
-                            Prize Winner
+                            {t.leaderboardPrizeWinner}
                           </Badge>
                         </div>
                       ) : (
                         <div className="text-xs text-muted-foreground mt-1">
-                          No wallet connected
+                          {t.leaderboardNoWallet}
                         </div>
                       )}
                     </div>
@@ -135,7 +137,7 @@ export default function Leaderboard() {
                       {entry.score}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      points
+                      {t.leaderboardPoints}
                     </div>
                   </div>
                 </div>
@@ -147,13 +149,13 @@ export default function Leaderboard() {
         <Tabs value={period} onValueChange={(v) => setPeriod(v as "daily" | "weekly" | "best-scores")} className="w-full">
           <TabsList className="grid w-full grid-cols-3 mb-6">
             <TabsTrigger value="daily" data-testid="tab-daily">
-              Daily
+              {t.leaderboardDaily}
             </TabsTrigger>
             <TabsTrigger value="weekly" data-testid="tab-weekly">
-              Weekly
+              {t.leaderboardWeekly}
             </TabsTrigger>
             <TabsTrigger value="best-scores" data-testid="tab-best-scores">
-              Best Scores
+              {t.leaderboardBestScores}
             </TabsTrigger>
           </TabsList>
 
@@ -171,7 +173,7 @@ export default function Leaderboard() {
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Flame className="w-5 h-5 text-primary" />
-                    Top Players
+                    {t.leaderboardTopPlayers}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
@@ -189,11 +191,11 @@ export default function Leaderboard() {
                         
                         <div className="flex-1 min-w-0">
                           <div className="font-semibold text-sm md:text-base truncate" data-testid={`text-username-${entry.rank}`}>
-                            {entry.username || `Player ${entry.fid}`}
+                            {entry.username || `${t.leaderboardPlayer} ${entry.fid}`}
                           </div>
                           <div className="text-xs md:text-sm text-muted-foreground">
-                            {period === "best-scores" ? "Best Score" : entry.won > 0 ? `${entry.won} win${entry.won > 1 ? 's' : ''}` : 'No wins'}
-                            {period === "daily" && ` • ${entry.attempts} attempt${entry.attempts > 1 ? 's' : ''}`}
+                            {period === "best-scores" ? t.leaderboardBestScore : entry.won > 0 ? `${entry.won} ${entry.won > 1 ? t.leaderboardWins : t.leaderboardWin}` : t.leaderboardNoWins}
+                            {period === "daily" && ` • ${entry.attempts} ${entry.attempts > 1 ? t.leaderboardAttempts : t.leaderboardAttempt}`}
                           </div>
                           {period === "weekly" && entry.rank <= 3 && entry.walletAddress && (
                             <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">
@@ -202,7 +204,7 @@ export default function Leaderboard() {
                                 {entry.walletAddress.slice(0, 6)}...{entry.walletAddress.slice(-4)}
                               </span>
                               <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                                Prize
+                                {t.leaderboardPrize}
                               </Badge>
                             </div>
                           )}
@@ -214,7 +216,7 @@ export default function Leaderboard() {
                           {entry.score}
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          points
+                          {t.leaderboardPoints}
                         </div>
                       </div>
                     </div>
@@ -225,7 +227,7 @@ export default function Leaderboard() {
               <Card>
                 <CardContent className="py-12 text-center text-muted-foreground">
                   <Trophy className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No scores yet. Be the first to play!</p>
+                  <p>{t.leaderboardNoScores}</p>
                 </CardContent>
               </Card>
             )}

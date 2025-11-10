@@ -105,6 +105,20 @@ interface Translations {
   leaderboardPoints: string;
   leaderboardCopied: string;
   leaderboardCopyDesc: string;
+  leaderboardClickToCopy: string;
+  leaderboardPlayer: string;
+  leaderboardBestScore: string;
+  leaderboardWin: string;
+  leaderboardWins: string;
+  leaderboardNoWins: string;
+  leaderboardAttempt: string;
+  leaderboardAttempts: string;
+  leaderboardPrize: string;
+  leaderboardNoScores: string;
+  leaderboard1st: string;
+  leaderboard2nd: string;
+  leaderboard3rd: string;
+  leaderboardTh: string;
   
   // Wallet
   walletConnect: string;
@@ -216,6 +230,20 @@ const translations: Record<Language, Translations> = {
     leaderboardPoints: "points",
     leaderboardCopied: "Copied!",
     leaderboardCopyDesc: "Wallet address copied to clipboard",
+    leaderboardClickToCopy: "Click to copy full address",
+    leaderboardPlayer: "Player",
+    leaderboardBestScore: "Best Score",
+    leaderboardWin: "win",
+    leaderboardWins: "wins",
+    leaderboardNoWins: "No wins",
+    leaderboardAttempt: "attempt",
+    leaderboardAttempts: "attempts",
+    leaderboardPrize: "Prize",
+    leaderboardNoScores: "No scores yet. Be the first to play!",
+    leaderboard1st: "1st",
+    leaderboard2nd: "2nd",
+    leaderboard3rd: "3rd",
+    leaderboardTh: "th",
     
     // Wallet
     walletConnect: "Connect Wallet",
@@ -325,6 +353,20 @@ const translations: Record<Language, Translations> = {
     leaderboardPoints: "puan",
     leaderboardCopied: "Kopyalandı!",
     leaderboardCopyDesc: "Cüzdan adresi panoya kopyalandı",
+    leaderboardClickToCopy: "Tam adresi kopyalamak için tıklayın",
+    leaderboardPlayer: "Oyuncu",
+    leaderboardBestScore: "En İyi Skor",
+    leaderboardWin: "galibiyet",
+    leaderboardWins: "galibiyet",
+    leaderboardNoWins: "Galibiyet yok",
+    leaderboardAttempt: "deneme",
+    leaderboardAttempts: "deneme",
+    leaderboardPrize: "Ödül",
+    leaderboardNoScores: "Henüz skor yok. İlk oynayan sen ol!",
+    leaderboard1st: "1.",
+    leaderboard2nd: "2.",
+    leaderboard3rd: "3.",
+    leaderboardTh: ".",
     
     // Wallet
     walletConnect: "Cüzdan Bağla",
