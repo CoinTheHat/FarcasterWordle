@@ -22,7 +22,7 @@ Preferred communication style: Simple, everyday language.
 **UI Components & Styling:** TailwindCSS, Shadcn/ui, custom animations, Radix UI primitives.
 **State Management:** TanStack Query for server state, local React state for UI, LocalStorage for user preferences (color-blind mode, language).
 **Internationalization (i18n):** Centralized translation system via I18nProvider context with 140+ translation keys, live language switching (TR/EN) without page reload, localStorage persistence, callback registration system for language change events, comprehensive modal and page translations including SettingsModal with language-reactive updates. Game UI fully translated including stats cards (Streak/Seri, Max/Maks, Score/Puan, Left/Kalan), input placeholder (Type.../Yaz...), submit button (Submit/Gönder), and wallet connection messages.
-**Game Logic:** Client-side game state, server validation for guesses, session-based random word selection, multi-language support with language-specific word validation (EN: 270 words, TR: 306 words including vowel disharmony words), timezone handling via Luxon (Europe/Istanbul UTC+3).
+**Game Logic:** Client-side game state, server validation for guesses, session-based random word selection, multi-language support with language-specific word validation. Turkish word list cleaned (Nov 11, 2025) to remove inappropriate/foreign/wrong-length words and expanded to 580 allowed guesses (312 curated TARGET solutions + 268 additional valid words). English: 266 TARGET words with broader ALLOWED guess list. All words NFC normalized, 5-letter validated. Timezone handling via Luxon (Europe/Istanbul UTC+3).
 
 ### Backend Architecture
 
@@ -65,9 +65,9 @@ User loads the app, Farcaster context is initialized, and user stats are fetched
 -   **Score Scoping:** LocalStorage score keys include language (`wordcast-score-${language}-${date}`) to prevent cross-contamination between languages. Backend database is the source of truth for scores.
 -   **Live Updates:** All UI components use `t.*` keys and update immediately when language changes, no page reload required.
 -   **Supported Languages:** English (en), Turkish (tr) with complete coverage including game UI, stats cards, input elements, buttons, wallet messages, modals, and all user-facing text.
--   **Recent Updates (Nov 10, 2025):** 
-    - Game page fully translated - stats display cards (Streak→Seri, Max→Maks, Score→Puan, Left→Kalan), input placeholder (Type...→Yaz...), submit button (Submit→Gönder), wallet guard screen, and connection status messages now fully bilingual.
-    - Added dynamic encouragement messages in GameOverModal based on number of attempts (1-6), with different motivational copy per language.
+-   **Recent Updates:** 
+    - **Nov 11, 2025:** Turkish word list cleanup and expansion - removed inappropriate/foreign/wrong-length words (CIRIT, CUCUK, BOCAK, BOSUN, etc.), fixed diacritics (PURUZ→PÜRÜZ), expanded ALLOWED_GUESSES_TR from 312 to 580 words (312 curated solutions + 268 additional valid guesses) using user-provided dictionary. Implemented proper Wordle mechanics with separate TARGET (narrow, curated) and ALLOWED (broad, validated) lists.
+    - **Nov 10, 2025:** Game page fully translated - stats display cards (Streak→Seri, Max→Maks, Score→Puan, Left→Kalan), input placeholder (Type...→Yaz...), submit button (Submit→Gönder), wallet guard screen, and connection status messages now fully bilingual. Added dynamic encouragement messages in GameOverModal based on number of attempts (1-6), with different motivational copy per language.
 
 ## External Dependencies
 

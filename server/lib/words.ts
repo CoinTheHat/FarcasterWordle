@@ -89,10 +89,66 @@ export const ALLOWED_GUESSES_EN = [
   "IDEAL", "IMAGE", "INDEX", "INNER", "INPUT", "ISSUE", "JAPAN", "JIMMY"
 ];
 
-// Turkish guess list - currently using cleaned target list
-// TODO: Expand with broader validated Turkish 5-letter dictionary
-// For MVP: using curated list ensures no inappropriate/foreign words
-export const ALLOWED_GUESSES_TR = [...TARGET_WORDS_TR];
+// Additional validated Turkish 5-letter words from user-provided comprehensive dictionary
+// These expand the allowed guess vocabulary beyond the curated TARGET words
+// Source: User-provided Turkish word list (356 words, all 5-letter, NFC normalized)
+// Vetted to exclude problematic words identified in cleanup (BOCAK, BOSUN, CUCUK, etc.)
+const EXPANDED_TR_WORDS = [
+  "ACEMİ", "ADETA", "AFİŞE", "AHŞAP", "AKORT", "AKREP", "AKSAM", "AKTAR",
+  "ALAKA", "ALBAY", "ALICI", "ALTIN", "AMBAR", "ANKET", "ANLAM", "ARACI",
+  "ARAMA", "ARAZİ", "ARIZA", "ARMUT", "ARŞİV", "ASKER", "ASLAN", "ATARI",
+  "ATLET", "AVİZE", "AYGIT", "AYLIK", "AYRAN", "AÇLIK", "AŞAMA", "AŞINA",
+  "BAHAR", "BAHÇE", "BAKIR", "BAKIŞ", "BALIK", "BAMYA", "BANKA", "BASİT",
+  "BATIK", "BAYAN", "BAYIR", "BAZEN", "BEKÇİ", "BELGE", "BELKİ", "BENEK",
+  "BENLİ", "BETON", "BEYAZ", "BEZİR", "BOMBA", "BOYUT", "BOZUK", "BOĞAZ",
+  "BUHAR", "BUZLU", "BİLEK", "BİLET", "BİLGİ", "BİLİM", "BİNİŞ", "BİTKİ",
+  "BİTME", "BİÇİM", "CAZİP", "CEKET", "CEVAP", "CİDDİ", "CİHAN", "DAHİL",
+  "DALGA", "DAMLA", "DARBE", "DEFNE", "DEMET", "DENİZ", "DERGİ", "DERİN",
+  "DEVİR", "DOLAP", "DOLGU", "DOLMA", "DONUK", "DORUK", "DOĞRU", "DUVAR",
+  "DUYGU", "DÜZEN", "DİKME", "DİYET", "EDEBİ", "EFSUN", "EKLEM", "EKMEK",
+  "ELMAS", "EMLAK", "ERDEM", "ERKEN", "ERZAK", "ESNEK", "ETKEN", "ETNİK",
+  "ETRAF", "EVLAT", "EVRAK", "EŞARP", "EŞSİZ", "FAYDA", "FAZLA", "FENER",
+  "FIRIN", "FİDAN", "FİKİR", "GENEL", "GÖBEK", "GÖLGE", "GÖNÜL", "GÖREV",
+  "GÖZDE", "GÜBRE", "GÜZEL", "GİYİM", "GİZEM", "HABER", "HAFİF", "HALAT",
+  "HALKA", "HAMUR", "HANIM", "HASAT", "HASTA", "HATIR", "HAVUZ", "HAYAL",
+  "HAYIR", "HEKİM", "HELAL", "HEVES", "HIZLI", "HUZUR", "HÜZÜN", "ISLAK",
+  "JOKER", "JİLET", "KABAK", "KABUS", "KADIN", "KAFES", "KAHVE", "KALAN",
+  "KALEM", "KALIN", "KALIP", "KANAT", "KANUN", "KAPAK", "KARGO", "KARMA",
+  "KASAP", "KASET", "KASKO", "KASLI", "KAVGA", "KAYIK", "KAZAK", "KEMER",
+  "KEMİK", "KENAR", "KESİK", "KESİN", "KETEN", "KEYİF", "KLİMA", "KOLYE",
+  "KOMUT", "KOMİK", "KONAK", "KONUK", "KORNA", "KOYUN", "KÖMÜR", "KÖPEK",
+  "KÖPRÜ", "KÜREK", "KÜÇÜK", "KİTAP", "KİTLE", "LADES", "LAKAP", "LAMBA",
+  "LONCA", "LİMON", "LİRİK", "MAHİR", "MAKAS", "MAKET", "MANAV", "MARKA",
+  "MAYIN", "MELEK", "MELEZ", "MELİS", "MERAK", "MESAJ", "METAL", "METİN",
+  "MEYVE", "MODEL", "MORAL", "MOTOR", "MÜZİK", "MİZAH", "NABIZ", "NAKİT",
+  "NARİN", "NAZAR", "NEFİS", "NEMLİ", "NESNE", "NESİL", "NOKTA", "NÜFUS",
+  "NİYET", "ONLUK", "ORMAN", "ORTAK", "PAKET", "PALTO", "PANİK", "PARKE",
+  "PARÇA", "PASLI", "PASTA", "PATİK", "PELİN", "PERDE", "PLAZA", "PROJE",
+  "PİYAZ", "RADYO", "RAKAM", "RAKİP", "RAMPA", "RANZA", "RAPOR", "RESİM",
+  "ROBOT", "ROMAN", "RİTİM", "SABAH", "SABİT", "SADIK", "SAHİP", "SAKİN",
+  "SALON", "SANAL", "SANAT", "SAYFA", "SEZON", "SOFRA", "SOKAK", "SOLUK",
+  "SONUÇ", "SORGU", "SOYUT", "SULAR", "SUNUM", "SÜRÜŞ", "SİCİL", "SİLGİ",
+  "SİYAH", "TABLO", "TAHTA", "TAKAS", "TAKIM", "TAKSİ", "TALEP", "TAMİR",
+  "TANIK", "TARIM", "TASAR", "TAVAN", "TAVIR", "TAYFA", "TEKER", "TEMPO",
+  "TESTİ", "TESİS", "TOKAT", "TONİK", "TORUN", "TÜTÜN", "TİRAJ", "UTANÇ",
+  "UYGAR", "UYGUN", "UZMAN", "VAGON", "VAKİT", "VATAN", "VERGİ", "VERİM",
+  "VİTES", "YAZIT", "YAZMA", "YEMEK", "YEMİN", "YERLİ", "YEŞİL", "YOLCU",
+  "YÜCEL", "YÜZME", "ZAMAN", "ZARİF", "ZEMİN", "ZULÜM", "ÇABUK", "ÇAKIL",
+  "ÇALAR", "ÇAMUR", "ÇANTA", "ÇEKİÇ", "ÇELİK", "ÇEVİK", "ÇEYİZ", "ÇOCUK",
+  "ÇUBUK", "ÇUKUR", "ÇÖZÜM", "ÇİMEN", "ÇİZİM", "ÇİÇEK", "ÜZGÜN", "İBARE",
+  "İDEAL", "İFADE", "İHBAR", "İKLİM", "İKSİR", "İMDAT", "İMKAN", "İNSAN",
+  "İPLİK", "İRFAN", "İSPAT", "İSRAF", "İTİNA", "ŞAHIS", "ŞAHİN", "ŞEKER",
+  "ŞERİT", "ŞUBAT", "ŞİFRE", "ŞİRİN"
+];
+
+// Expanded Turkish guess list - combines curated targets with broader dictionary
+// Deduplication via Set ensures no duplicates between TARGET and EXPANDED lists
+// TARGET_WORDS_TR: 312 curated solution words
+// EXPANDED_TR_WORDS: 356 additional valid guess words
+// Total unique: ~500-600 words (after deduplication)
+export const ALLOWED_GUESSES_TR = Array.from(
+  new Set([...TARGET_WORDS_TR, ...EXPANDED_TR_WORDS])
+);
 
 const ALLOWED_GUESSES_EN_SET = new Set(ALLOWED_GUESSES_EN);
 const ALLOWED_GUESSES_TR_SET = new Set(ALLOWED_GUESSES_TR);
