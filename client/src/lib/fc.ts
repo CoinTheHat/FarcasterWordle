@@ -71,7 +71,8 @@ export async function initializeFarcaster(): Promise<FarcasterContext> {
 export async function shareToCast(text: string): Promise<boolean> {
   try {
     const encodedText = encodeURIComponent(text);
-    const composeUrl = `https://warpcast.com/~/compose?text=${encodedText}`;
+    const embedUrl = encodeURIComponent('https://farcasterwordle.com/');
+    const composeUrl = `https://warpcast.com/~/compose?text=${encodedText}&embeds[]=${embedUrl}`;
     
     if (import.meta.env.DEV) {
       window.open(composeUrl, '_blank', 'noopener,noreferrer');

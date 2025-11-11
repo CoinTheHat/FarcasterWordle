@@ -66,7 +66,9 @@ User loads the app, Farcaster context is initialized, and user stats are fetched
 -   **Live Updates:** All UI components use `t.*` keys and update immediately when language changes, no page reload required.
 -   **Supported Languages:** English (en), Turkish (tr) with complete coverage including game UI, stats cards, input elements, buttons, wallet messages, modals, and all user-facing text.
 -   **Recent Updates:** 
-    - **Nov 11, 2025:** Turkish word list cleanup and expansion - removed inappropriate/foreign/wrong-length words (CIRIT, CUCUK, BOCAK, BOSUN, etc.), fixed diacritics (PURUZ→PÜRÜZ), expanded ALLOWED_GUESSES_TR from 312 to 580 words (312 curated solutions + 268 additional valid guesses) using user-provided dictionary. Implemented proper Wordle mechanics with separate TARGET (narrow, curated) and ALLOWED (broad, validated) lists.
+    - **Nov 11, 2025:** 
+      - Turkish word list cleanup and expansion - removed inappropriate/foreign/wrong-length words (CIRIT, CUCUK, BOCAK, BOSUN, etc.), fixed diacritics (PURUZ→PÜRÜZ), expanded ALLOWED_GUESSES_TR from 312 to 580 words (312 curated solutions + 268 additional valid guesses) using user-provided dictionary. Implemented proper Wordle mechanics with separate TARGET (narrow, curated) and ALLOWED (broad, validated) lists.
+      - Farcaster share link fix - added embeds[] parameter to Warpcast compose URL (https://warpcast.com/~/compose?text=...&embeds[]=https://farcasterwordle.com/) to enable miniapp recognition instead of plain text link.
     - **Nov 10, 2025:** Game page fully translated - stats display cards (Streak→Seri, Max→Maks, Score→Puan, Left→Kalan), input placeholder (Type...→Yaz...), submit button (Submit→Gönder), wallet guard screen, and connection status messages now fully bilingual. Added dynamic encouragement messages in GameOverModal based on number of attempts (1-6), with different motivational copy per language.
 
 ## External Dependencies
