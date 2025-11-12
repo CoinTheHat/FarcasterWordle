@@ -578,16 +578,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  async function calculateWeeklyRewards(startDate: string, endDate: string) {
+    const weekStartFormatted = startDate.slice(0, 4) + '-' + startDate.slice(4, 6) + '-' + startDate.slice(6, 8);
+    const weekEndFormatted = endDate.slice(0, 4) + '-' + endDate.slice(4, 6) + '-' + endDate.slice(6, 8);
+    
+    const leaderboard = await getWeeklyLeaderboard(startDate, endDate, 100);
+    const rewardAmounts = [10, 5, 3];
+    
+    const topThreeWithWallets = leaderboard.filter(entry => entry.rank <= 3 && entry.walletAddress).slice(0, 3);
+    const topThreeWithoutWallets = leaderboard.filter(entry => entry.rank <= 3 && !entry.walletAddress);
+    
+    const winners = topThreeWithWallets.map((winner) => ({
+      fid: winner.fid,
+      username: winner.username,
+      walletAddress: winner.walletAddress,
+      rank: winner.rank,
+      totalScore: winner.score,
+      rewardAmountUsd: rewardAmounts[winner.rank - 1],
+      missingWallet: false,
+    }));
+    
+    const missingWallets = topThreeWithoutWallets.map((winner) => ({
+      fid: winner.fid,
+      username: winner.username,
+      walletAddress: null,
+      rank: winner.rank,
+      totalScore: winner.score,
+      rewardAmountUsd: rewardAmounts[winner.rank - 1],
+      missingWallet: true,
+    }));
+    
+    const topThreeWithWalletsCheck = topThreeWithWallets.slice(0, 3);
+    const distributionChecks = await Promise.all(
+      topThreeWithWalletsCheck.map(w => getWeeklyReward(w.fid, weekStartFormatted))
+    );
+    const alreadyDistributed = distributionChecks.some(r => r && r.status === 'sent');
+    
+    return {
+      weekStart: weekStartFormatted,
+      weekEnd: weekEndFormatted,
+      winners,
+      missingWallets,
+      alreadyDistributed,
+    };
+  }
+
+  app.get("/api/admin/preview-weekly-rewards", requireAdminAuth, async (req: Request, res: Response) => {
+    try {
+      const { startDate, endDate } = getLastWeekDateRange();
+      const preview = await calculateWeeklyRewards(startDate, endDate);
+      res.json(preview);
+    } catch (error: any) {
+      console.error("Preview error:", error);
+      res.status(500).json({ error: error.message || "Preview failed" });
+    }
+  });
+
   app.post("/api/admin/distribute-weekly-rewards", requireAdminAuth, async (req: Request, res: Response) => {
     try {
       const { startDate, endDate } = getLastWeekDateRange();
-      const weekStartFormatted = startDate.slice(0, 4) + '-' + startDate.slice(4, 6) + '-' + startDate.slice(6, 8);
-      const weekEndFormatted = endDate.slice(0, 4) + '-' + endDate.slice(4, 6) + '-' + endDate.slice(6, 8);
+      const preview = await calculateWeeklyRewards(startDate, endDate);
       
-      const leaderboard = await getWeeklyLeaderboard(startDate, endDate, 100);
-      const topThree = leaderboard.filter(entry => entry.rank <= 3 && entry.walletAddress).slice(0, 3);
+      if (preview.alreadyDistributed) {
+        res.json({
+          success: false,
+          message: "Rewards for this week have already been distributed",
+          distributed: [],
+        });
+        return;
+      }
 
-      if (topThree.length === 0) {
+      if (preview.winners.length === 0) {
         res.json({
           success: true,
           message: "No eligible winners with wallet addresses",
@@ -599,12 +660,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const rewardAmounts = [10, 5, 3];
       const results = [];
 
-      for (let i = 0; i < topThree.length; i++) {
-        const winner = topThree[i];
-        const rank = i + 1;
-        const amountUsd = rewardAmounts[i];
+      for (let i = 0; i < preview.winners.length; i++) {
+        const winner = preview.winners[i];
+        const rank = winner.rank;
+        const amountUsd = winner.rewardAmountUsd;
 
-        const existingReward = await getWeeklyReward(winner.fid, weekStartFormatted);
+        const existingReward = await getWeeklyReward(winner.fid, preview.weekStart);
         
         if (existingReward && existingReward.status === 'sent') {
           results.push({
@@ -621,15 +682,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (!existingReward) {
           const newReward = await createWeeklyReward(
             winner.fid,
-            weekStartFormatted,
-            weekEndFormatted,
+            preview.weekStart,
+            preview.weekEnd,
             rank,
             amountUsd
           );
           rewardId = newReward.id;
         }
 
-        const memo = `${rank}. Reward - Week ${weekStartFormatted} Rank #${rank}`;
+        const memo = `${rank}. Reward - Week ${preview.weekStart} Rank #${rank}`;
         const transferResult = await sendReward(winner.walletAddress!, amountUsd, memo);
 
         if (transferResult.success) {
@@ -657,8 +718,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.json({
         success: true,
-        weekStart: weekStartFormatted,
-        weekEnd: weekEndFormatted,
+        weekStart: preview.weekStart,
+        weekEnd: preview.weekEnd,
         distributed: results,
       });
     } catch (error: any) {

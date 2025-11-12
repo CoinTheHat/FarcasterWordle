@@ -1,9 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Trophy, Wallet, DollarSign, Loader2 } from "lucide-react";
+import { Trophy, Wallet, DollarSign, Loader2, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
+interface Winner {
+  fid: number;
+  username: string | null;
+  walletAddress: string | null;
+  rank: number;
+  totalScore: number;
+  rewardAmountUsd: number;
+  missingWallet: boolean;
+}
+
+interface PreviewResult {
+  weekStart: string;
+  weekEnd: string;
+  winners: Winner[];
+  missingWallets: Winner[];
+  alreadyDistributed: boolean;
+}
 
 export default function Admin() {
   const [adminToken, setAdminToken] = useState("");
@@ -12,7 +32,49 @@ export default function Admin() {
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
   const [result, setResult] = useState<any>(null);
+  const [preview, setPreview] = useState<PreviewResult | null>(null);
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (adminToken) {
+      fetchPreview();
+      fetchRewardHistory();
+    }
+  }, [adminToken]);
+
+  const fetchPreview = async () => {
+    if (!adminToken) return;
+
+    setIsLoadingPreview(true);
+    try {
+      const response = await fetch("/api/admin/preview-weekly-rewards", {
+        headers: {
+          "x-admin-token": adminToken,
+        },
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setPreview(data);
+      } else {
+        toast({
+          title: "Error",
+          description: data.error || "Failed to load preview",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to load preview",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingPreview(false);
+    }
+  };
 
   const fetchBalance = async () => {
     if (!adminToken) {
@@ -68,6 +130,24 @@ export default function Admin() {
       return;
     }
 
+    if (preview?.alreadyDistributed) {
+      toast({
+        title: "Error",
+        description: "Rewards have already been distributed for this week",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (preview && preview.winners.length === 0) {
+      toast({
+        title: "Error",
+        description: "No eligible winners to distribute rewards",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsDistributing(true);
     setResult(null);
     
@@ -89,6 +169,7 @@ export default function Admin() {
           description: `Distributed rewards to ${data.distributed.length} winners`,
         });
         fetchRewardHistory();
+        fetchPreview();
       } else {
         toast({
           title: "Error",
@@ -184,9 +265,105 @@ export default function Admin() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          {isLoadingPreview && (
+            <div className="flex items-center justify-center p-4">
+              <Loader2 className="w-6 h-6 animate-spin" />
+            </div>
+          )}
+
+          {preview && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Week: {preview.weekStart} - {preview.weekEnd}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={fetchPreview}
+                  disabled={isLoadingPreview}
+                  data-testid="button-refresh-preview"
+                >
+                  {isLoadingPreview ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "Refresh"
+                  )}
+                </Button>
+              </div>
+
+              {preview.alreadyDistributed && (
+                <Alert>
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    Rewards have already been distributed for this week
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {preview.missingWallets.length > 0 && (
+                <Alert variant="destructive">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertDescription>
+                    {preview.missingWallets.length} winner(s) missing wallet address
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {preview.winners.length > 0 && (
+                <div className="border rounded-lg">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Rank</TableHead>
+                        <TableHead>Username / FID</TableHead>
+                        <TableHead>Wallet Address</TableHead>
+                        <TableHead className="text-right">Reward</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {preview.winners.map((winner) => (
+                        <TableRow key={winner.fid}>
+                          <TableCell>#{winner.rank}</TableCell>
+                          <TableCell>
+                            {winner.username || `FID: ${winner.fid}`}
+                          </TableCell>
+                          <TableCell className="font-mono text-xs">
+                            {winner.walletAddress 
+                              ? `${winner.walletAddress.slice(0, 6)}...${winner.walletAddress.slice(-4)}`
+                              : <span className="text-muted-foreground italic">No wallet</span>
+                            }
+                          </TableCell>
+                          <TableCell className="text-right font-semibold">
+                            {winner.rewardAmountUsd} USDC
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+
+              {preview.missingWallets.length > 0 && (
+                <details className="text-sm">
+                  <summary className="cursor-pointer text-muted-foreground">
+                    Show {preview.missingWallets.length} winner(s) without wallet
+                  </summary>
+                  <div className="mt-2 space-y-1 pl-4">
+                    {preview.missingWallets.map((winner) => (
+                      <div key={winner.fid} className="text-muted-foreground">
+                        #{winner.rank} - {winner.username || `FID: ${winner.fid}`} - {winner.rewardAmountUsd} USDC
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              )}
+            </div>
+          )}
+
           <Button
             onClick={distributeRewards}
-            disabled={!adminToken || isDistributing}
+            disabled={!adminToken || isDistributing || preview?.alreadyDistributed || preview?.winners.length === 0}
             className="w-full"
             size="lg"
             data-testid="button-distribute-rewards"
