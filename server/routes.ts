@@ -605,45 +605,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const amountUsd = rewardAmounts[i];
 
         const existingReward = await getWeeklyReward(winner.fid, weekStartFormatted);
-        if (existingReward) {
+        
+        if (existingReward && existingReward.status === 'sent') {
           results.push({
             fid: winner.fid,
             rank,
-            status: "already_distributed",
+            status: "already_sent",
             existingTxHash: existingReward.txHash,
           });
           continue;
         }
 
-        const reward = await createWeeklyReward(
-          winner.fid,
-          weekStartFormatted,
-          weekEndFormatted,
-          rank,
-          amountUsd
-        );
+        let rewardId = existingReward?.id;
+        
+        if (!existingReward) {
+          const newReward = await createWeeklyReward(
+            winner.fid,
+            weekStartFormatted,
+            weekEndFormatted,
+            rank,
+            amountUsd
+          );
+          rewardId = newReward.id;
+        }
 
         const memo = `${rank}. Reward - Week ${weekStartFormatted} Rank #${rank}`;
         const transferResult = await sendReward(winner.walletAddress!, amountUsd, memo);
 
         if (transferResult.success) {
-          await updateWeeklyRewardStatus(reward.id, 'sent', transferResult.txHash);
+          await updateWeeklyRewardStatus(rewardId!, 'sent', transferResult.txHash);
           results.push({
             fid: winner.fid,
             username: winner.username,
             rank,
             amountUsd,
-            status: "sent",
+            status: existingReward ? "retry_success" : "sent",
             txHash: transferResult.txHash,
           });
         } else {
-          await updateWeeklyRewardStatus(reward.id, 'failed', undefined, transferResult.error);
+          await updateWeeklyRewardStatus(rewardId!, 'failed', undefined, transferResult.error);
           results.push({
             fid: winner.fid,
             username: winner.username,
             rank,
             amountUsd,
-            status: "failed",
+            status: existingReward ? "retry_failed" : "failed",
             error: transferResult.error,
           });
         }

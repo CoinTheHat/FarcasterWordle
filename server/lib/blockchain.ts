@@ -32,7 +32,21 @@ export async function sendReward(
       transport: http(BASE_RPC_URL),
     });
 
-    const amountEth = parseEther((amountUsd * 0.001).toString());
+    const rewardAmounts: { [key: number]: string } = {
+      10: '0.01',
+      5: '0.005',
+      3: '0.003',
+    };
+
+    const amountEthString = rewardAmounts[amountUsd] || '0';
+    if (amountEthString === '0') {
+      return {
+        success: false,
+        error: `Invalid reward amount: ${amountUsd}`,
+      };
+    }
+
+    const amountEth = parseEther(amountEthString);
 
     const hash = await walletClient.sendTransaction({
       to: toAddress as `0x${string}`,
@@ -40,7 +54,7 @@ export async function sendReward(
       data: `0x${Buffer.from(memo).toString('hex')}` as `0x${string}`,
     });
 
-    console.log(`Reward sent: ${formatEther(amountEth)} ETH to ${toAddress}`);
+    console.log(`Reward sent: ${formatEther(amountEth)} ETH (~$${amountUsd}) to ${toAddress}`);
     console.log(`TX Hash: ${hash}`);
     console.log(`Memo: ${memo}`);
 
