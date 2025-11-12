@@ -42,10 +42,21 @@ export function GameOverModal({
   onShare,
   onSaveScore,
 }: GameOverModalProps) {
-  const { t, tf } = useTranslation();
+  const { t, tf, language } = useTranslation();
+  const [showWarning, setShowWarning] = useState(false);
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open && !gameCompleted && walletConnected && totalScore > 0 && !isSavingScore) {
+      // User is trying to close modal without saving score
+      setShowWarning(true);
+      setTimeout(() => setShowWarning(false), 3000);
+      return;
+    }
+    onClose();
+  };
   
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-sm" data-testid="modal-gameover">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">
@@ -106,6 +117,20 @@ export function GameOverModal({
           </div>
 
           <div className="space-y-3">
+            {showWarning && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 text-center animate-pulse">
+                <p className="text-sm text-red-600 dark:text-red-400 font-bold">
+                  ⚠️ {language === 'tr' ? 'Puan blockchain\'e kaydedilmedi!' : 'Score not saved to blockchain!'}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'tr' 
+                    ? 'TX onaylamadan modal kapatılamaz. Puanınız haftalık ödüllere sayılmaz!'
+                    : 'Cannot close without TX confirmation. Your score won\'t count for weekly rewards!'
+                  }
+                </p>
+              </div>
+            )}
+            
             {!gameCompleted && walletConnected && onSaveScore && totalScore > 0 && (
               <>
                 <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 text-center">

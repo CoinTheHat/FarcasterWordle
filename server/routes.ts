@@ -396,17 +396,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     const today = getTodayDateString();
-    const todayResult = await getDailyResult(fid, today);
-
-    // Result is now saved during /api/guess when game ends
-    // This endpoint just marks TX as completed
-    if (!todayResult) {
-      res.status(400).json({ error: "No game result found for today" });
-      return;
-    }
-
-    if (activeGame.completed) {
-      // Idempotent: already marked as completed
+    
+    // Check if already saved to prevent duplicates
+    const existingResult = await getDailyResult(fid, today);
+    if (existingResult) {
       const streak = await getOrCreateStreak(fid);
       res.json({
         success: true,
@@ -417,16 +410,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
-    // Mark session as completed (TX successful)
-    const streak = await getOrCreateStreak(fid);
-    activeGame.completed = true;
-    activeGame.completedAt = new Date().toISOString();
+    // SECURITY FIX: Save score ONLY after TX validation
+    const finalScore = activeGame.finalScore || 0;
+    
+    try {
+      await createDailyResult(fid, today, activeGame.attemptsUsed, activeGame.won, finalScore);
+      
+      // Update streak (based on consecutive days played, not won)
+      const streak = await getOrCreateStreak(fid);
+      let newCurrentStreak = streak.currentStreak;
+      let newMaxStreak = streak.maxStreak;
 
-    res.json({
-      success: true,
-      streak: streak.currentStreak,
-      maxStreak: streak.maxStreak,
-    });
+      if (isConsecutiveDay(streak.lastPlayedYyyymmdd, today)) {
+        newCurrentStreak = streak.currentStreak + 1;
+      } else {
+        newCurrentStreak = 1;
+      }
+      newMaxStreak = Math.max(newMaxStreak, newCurrentStreak);
+
+      await updateStreak(fid, newCurrentStreak, newMaxStreak, today);
+
+      // Mark session as completed
+      activeGame.completed = true;
+      activeGame.completedAt = new Date().toISOString();
+
+      res.json({
+        success: true,
+        streak: newCurrentStreak,
+        maxStreak: newMaxStreak,
+      });
+    } catch (error: any) {
+      // Handle unique constraint violation (race condition)
+      if (error?.code === '23505') {
+        const streak = await getOrCreateStreak(fid);
+        res.json({
+          success: true,
+          streak: streak.currentStreak,
+          maxStreak: streak.maxStreak,
+          message: "Score already saved (idempotent)",
+        });
+      } else {
+        throw error;
+      }
+    }
   });
 
   app.get("/api/hint", requireAuth, (req: AuthRequest, res: Response) => {
