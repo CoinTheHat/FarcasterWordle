@@ -37,9 +37,14 @@ export default function Admin() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (adminToken) {
-      fetchPreview();
-      fetchRewardHistory();
+    // Only fetch when token is valid length (at least 10 chars)
+    if (adminToken && adminToken.length > 10) {
+      const timeoutId = setTimeout(() => {
+        fetchPreview();
+        fetchRewardHistory();
+      }, 500); // Debounce 500ms
+      
+      return () => clearTimeout(timeoutId);
     }
   }, [adminToken]);
 
