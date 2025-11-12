@@ -55,7 +55,24 @@ Farcaster SDK initializes on app load, extracts FID for authentication (or uses 
 
 ### Game Flow
 
-User loads the app, Farcaster context is initialized, and user stats are fetched. The game board is set up, and user guesses are sent to the server for validation and feedback. Upon win/loss, streaks are updated, and a modal with share options appears. Scores can be saved to the blockchain via a transaction.
+User loads the app, Farcaster context is initialized, and user stats are fetched. The game board is set up, and user guesses are sent to the server for validation and feedback. Upon win/loss, game results are stored in session memory (not database). A modal appears with share options and blockchain TX requirement. **Scores are ONLY saved to database after valid transaction hash submission** to `/api/complete-game` endpoint. This prevents users from earning weekly rewards without blockchain participation.
+
+### Score Persistence Security
+
+**TX-Gated Score Saving (Nov 12, 2025):**
+-   **Problem:** Users could earn weekly USDC rewards without blockchain participation
+-   **Solution:** Scores only saved to `daily_results` and `streaks` tables after TX hash validation
+-   **Architecture:**
+    -   `/api/guess`: Validates guesses, calculates score, stores result in session memory ONLY
+    -   `/api/complete-game`: Requires valid TX hash, then saves score to database
+    -   GameOverModal: Prevents modal close without TX submission, shows bilingual warning
+-   **TX Validation:** Format validation (`0x` + 64 hex characters) provides strong protection against casual exploitation
+-   **Security Trade-off:** TX hash format validated but NOT verified on-chain for performance/simplicity
+    -   Sophisticated attackers could generate fake TX hashes
+    -   Acceptable risk: Most users submit genuine transactions
+    -   Future enhancement: Add Base RPC verification if fraud becomes significant
+-   **UX Protection:** Modal close blocked until TX submitted, animated warning in both languages
+-   **Idempotency:** Duplicate TX hash submissions prevented by unique database constraint
 
 ## i18n Architecture
 
@@ -151,4 +168,7 @@ User loads the app, Farcaster context is initialized, and user stats are fetched
 -   **Transfer Method:** `writeContract` with USDC ERC20 `transfer` function
 
 ### Recent Updates
--   **Nov 12, 2025:** Migrated from ETH to USDC for exact dollar-value guarantees. USDC is a stablecoin (1 USDC = $1) eliminating price volatility concerns. Admin panel updated to show USDC balances and amounts.
+-   **Nov 12, 2025:** 
+    - **Security Enhancement:** Implemented TX-gated score saving - scores now only persist to database after valid transaction hash submission to prevent USDC reward fraud. Format validation provides strong protection against casual exploitation while maintaining performance.
+    - **Admin Panel Optimization:** Added 500ms debounce and 10-character minimum to token input, preventing excessive API calls during typing.
+    - **Reward Migration:** Migrated from ETH to USDC for exact dollar-value guarantees. USDC is a stablecoin (1 USDC = $1) eliminating price volatility concerns. Admin panel updated to show USDC balances and amounts.
