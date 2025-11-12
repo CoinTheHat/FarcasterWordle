@@ -34,6 +34,7 @@ interface ActiveGame {
   guesses: string[];
   attemptsUsed: number;
   won: boolean | null;
+  finalScore?: number;
   createdAt: string;
   completed: boolean;
   completedAt?: string;
@@ -341,51 +342,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       finalScore = calculateLossScore(feedback);
     }
 
-    // CRITICAL FIX: Check if result already saved (multi-session protection)
-    const today = getTodayDateString();
-    const existingResult = await getDailyResult(fid, today);
-    
-    if (existingResult) {
-      // User already completed today's game in another session
-      res.status(400).json({ 
-        error: "Already completed today's game",
-        gameOver: true,
-      });
-      return;
-    }
-
     if (gameOver) {
       activeGame.won = won;
-      
-      // CRITICAL FIX: Save game result immediately when game ends
-      // Use try-catch to handle unique constraint violations gracefully
-      try {
-        await createDailyResult(fid, today, activeGame.attemptsUsed, won, finalScore);
-        
-        // Update streak (based on consecutive days played, not won)
-        const streak = await getOrCreateStreak(fid);
-        let newCurrentStreak = streak.currentStreak;
-        let newMaxStreak = streak.maxStreak;
-
-        if (isConsecutiveDay(streak.lastPlayedYyyymmdd, today)) {
-          newCurrentStreak = streak.currentStreak + 1;
-        } else {
-          newCurrentStreak = 1;
-        }
-        newMaxStreak = Math.max(newMaxStreak, newCurrentStreak);
-
-        await updateStreak(fid, newCurrentStreak, newMaxStreak, today);
-      } catch (error: any) {
-        // If unique constraint violation, game was already saved (race condition)
-        // This is fine - just continue
-        if (error?.code !== '23505') {
-          throw error;
-        }
-      }
-      
-      // CRITICAL FIX: Mark session as completed to prevent stale session reuse
-      activeGame.completed = true;
-      activeGame.completedAt = new Date().toISOString();
+      activeGame.finalScore = finalScore;
     }
 
     res.json({
