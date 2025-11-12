@@ -8,7 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function Admin() {
   const [adminToken, setAdminToken] = useState("");
   const [isDistributing, setIsDistributing] = useState(false);
-  const [balance, setBalance] = useState<string | null>(null);
+  const [usdcBalance, setUsdcBalance] = useState<string | null>(null);
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
   const [history, setHistory] = useState<any[]>([]);
   const [result, setResult] = useState<any>(null);
@@ -35,10 +35,10 @@ export default function Admin() {
       const data = await response.json();
       
       if (response.ok) {
-        setBalance(data.balance);
+        setUsdcBalance(data.usdcBalance || '0');
         toast({
           title: "Balance Loaded",
-          description: `${data.balance} ETH`,
+          description: `${data.usdcBalance || '0'} USDC`,
         });
       } else {
         toast({
@@ -162,7 +162,7 @@ export default function Admin() {
               ) : (
                 <Wallet className="w-4 h-4" />
               )}
-              {balance !== null ? `${balance} ETH` : "Check Balance"}
+              {usdcBalance !== null ? `${usdcBalance} USDC` : "Check Balance"}
             </Button>
           </div>
         </CardContent>
@@ -175,11 +175,11 @@ export default function Admin() {
             Distribute Last Week Rewards
           </CardTitle>
           <CardDescription>
-            Automatically sends:
+            Automatically sends USDC (stablecoin):
             <ul className="list-disc list-inside mt-2">
-              <li>1st Place: $10 (0.010 ETH)</li>
-              <li>2nd Place: $5 (0.005 ETH)</li>
-              <li>3rd Place: $3 (0.003 ETH)</li>
+              <li>1st Place: 10 USDC ($10)</li>
+              <li>2nd Place: 5 USDC ($5)</li>
+              <li>3rd Place: 3 USDC ($3)</li>
             </ul>
           </CardDescription>
         </CardHeader>
@@ -214,7 +214,7 @@ export default function Admin() {
                 {result.distributed.map((r: any, i: number) => (
                   <div key={i} className="text-sm p-2 bg-background rounded">
                     <div className="font-medium">
-                      #{r.rank} {r.username || `FID: ${r.fid}`} - ${r.amountUsd}
+                      #{r.rank} {r.username || `FID: ${r.fid}`} - {r.amountUsd} USDC
                     </div>
                     <div className="text-xs text-muted-foreground">
                       Status: {r.status}
@@ -251,7 +251,7 @@ export default function Admin() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-semibold">${reward.amountUsd}</div>
+                    <div className="font-semibold">{reward.amountUsd} USDC</div>
                     <div
                       className={`text-xs ${
                         reward.status === "sent"
