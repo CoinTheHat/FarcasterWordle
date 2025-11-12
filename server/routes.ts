@@ -13,10 +13,16 @@ import {
   getWeeklyLeaderboard,
   getWeeklyLeaderboardOld,
   getBestScoresLeaderboard,
+  createWeeklyReward,
+  updateWeeklyRewardStatus,
+  getWeeklyReward,
+  getPendingWeeklyRewards,
+  getWeeklyRewardsHistory,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo, getLastWeekDateRange, getCurrentWeekDateRange } from "./lib/date";
 import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateWinScore, calculateLossScore, getRandomWord, type Language } from "./lib/words";
 import { randomBytes } from "crypto";
+import { sendReward, getWalletBalance } from "./lib/blockchain";
 
 const MAX_ATTEMPTS = 6;
 
@@ -69,6 +75,23 @@ function requireAuth(req: AuthRequest, res: Response, next: () => void) {
   }
 
   req.fid = fid;
+  next();
+}
+
+function requireAdminAuth(req: Request, res: Response, next: () => void) {
+  const adminToken = req.headers["x-admin-token"];
+  const expectedToken = process.env.ADMIN_SECRET_TOKEN;
+
+  if (!expectedToken) {
+    res.status(500).json({ error: "Admin authentication not configured" });
+    return;
+  }
+
+  if (adminToken !== expectedToken) {
+    res.status(403).json({ error: "Forbidden: Invalid admin token" });
+    return;
+  }
+
   next();
 }
 
@@ -553,6 +576,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
       endDate,
       leaderboard: topThree,
     });
+  });
+
+  app.post("/api/admin/distribute-weekly-rewards", requireAdminAuth, async (req: Request, res: Response) => {
+    try {
+      const { startDate, endDate } = getLastWeekDateRange();
+      const weekStartFormatted = startDate.slice(0, 4) + '-' + startDate.slice(4, 6) + '-' + startDate.slice(6, 8);
+      const weekEndFormatted = endDate.slice(0, 4) + '-' + endDate.slice(4, 6) + '-' + endDate.slice(6, 8);
+      
+      const leaderboard = await getWeeklyLeaderboard(startDate, endDate, 100);
+      const topThree = leaderboard.filter(entry => entry.rank <= 3 && entry.walletAddress).slice(0, 3);
+
+      if (topThree.length === 0) {
+        res.json({
+          success: true,
+          message: "No eligible winners with wallet addresses",
+          distributed: [],
+        });
+        return;
+      }
+
+      const rewardAmounts = [10, 5, 3];
+      const results = [];
+
+      for (let i = 0; i < topThree.length; i++) {
+        const winner = topThree[i];
+        const rank = i + 1;
+        const amountUsd = rewardAmounts[i];
+
+        const existingReward = await getWeeklyReward(winner.fid, weekStartFormatted);
+        if (existingReward) {
+          results.push({
+            fid: winner.fid,
+            rank,
+            status: "already_distributed",
+            existingTxHash: existingReward.txHash,
+          });
+          continue;
+        }
+
+        const reward = await createWeeklyReward(
+          winner.fid,
+          weekStartFormatted,
+          weekEndFormatted,
+          rank,
+          amountUsd
+        );
+
+        const memo = `${rank}. Reward - Week ${weekStartFormatted} Rank #${rank}`;
+        const transferResult = await sendReward(winner.walletAddress!, amountUsd, memo);
+
+        if (transferResult.success) {
+          await updateWeeklyRewardStatus(reward.id, 'sent', transferResult.txHash);
+          results.push({
+            fid: winner.fid,
+            username: winner.username,
+            rank,
+            amountUsd,
+            status: "sent",
+            txHash: transferResult.txHash,
+          });
+        } else {
+          await updateWeeklyRewardStatus(reward.id, 'failed', undefined, transferResult.error);
+          results.push({
+            fid: winner.fid,
+            username: winner.username,
+            rank,
+            amountUsd,
+            status: "failed",
+            error: transferResult.error,
+          });
+        }
+      }
+
+      res.json({
+        success: true,
+        weekStart: weekStartFormatted,
+        weekEnd: weekEndFormatted,
+        distributed: results,
+      });
+    } catch (error: any) {
+      console.error("Weekly reward distribution error:", error);
+      res.status(500).json({ error: error.message || "Distribution failed" });
+    }
+  });
+
+  app.get("/api/admin/weekly-rewards", requireAdminAuth, async (req: Request, res: Response) => {
+    const limit = parseInt(req.query.limit as string) || 50;
+    const rewards = await getWeeklyRewardsHistory(limit);
+    res.json({ rewards });
+  });
+
+  app.get("/api/admin/wallet-balance", requireAdminAuth, async (req: Request, res: Response) => {
+    const result = await getWalletBalance();
+    res.json(result);
   });
 
   app.get("/version.json", (req: Request, res: Response) => {

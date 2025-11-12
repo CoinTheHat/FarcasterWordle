@@ -20,6 +20,7 @@ export const db = drizzle({ client: pool, schema });
 export type Profile = typeof schema.profiles.$inferSelect;
 export type DailyResult = typeof schema.dailyResults.$inferSelect;
 export type Streak = typeof schema.streaks.$inferSelect;
+export type WeeklyReward = typeof schema.weeklyRewards.$inferSelect;
 
 // Database functions
 export async function getOrCreateProfile(fid: number): Promise<Profile> {
@@ -340,4 +341,71 @@ export async function getBestScoresLeaderboard(limit: number = 100): Promise<Lea
     won: row.won ? 1 : 0,
     rank: Number(row.rank),
   }));
+}
+
+export async function createWeeklyReward(
+  fid: number,
+  weekStart: string,
+  weekEnd: string,
+  rank: number,
+  amountUsd: number
+): Promise<WeeklyReward> {
+  const [reward] = await db.insert(schema.weeklyRewards)
+    .values({
+      fid,
+      weekStart,
+      weekEnd,
+      rank,
+      amountUsd,
+      status: 'pending',
+    })
+    .returning();
+
+  return reward;
+}
+
+export async function updateWeeklyRewardStatus(
+  id: number,
+  status: string,
+  txHash?: string,
+  errorMessage?: string
+): Promise<void> {
+  await db.update(schema.weeklyRewards)
+    .set({
+      status,
+      txHash: txHash || null,
+      errorMessage: errorMessage || null,
+      distributedAt: status === 'sent' ? new Date() : null,
+    })
+    .where(eq(schema.weeklyRewards.id, id));
+}
+
+export async function getWeeklyReward(
+  fid: number,
+  weekStart: string
+): Promise<WeeklyReward | null> {
+  const results = await db.select()
+    .from(schema.weeklyRewards)
+    .where(
+      and(
+        eq(schema.weeklyRewards.fid, fid),
+        eq(schema.weeklyRewards.weekStart, weekStart)
+      )
+    );
+
+  return results.length > 0 ? results[0] : null;
+}
+
+export async function getPendingWeeklyRewards(): Promise<WeeklyReward[]> {
+  return await db.select()
+    .from(schema.weeklyRewards)
+    .where(eq(schema.weeklyRewards.status, 'pending'))
+    .orderBy(asc(schema.weeklyRewards.createdAt));
+}
+
+export async function getWeeklyRewardsHistory(limit: number = 50): Promise<WeeklyReward[]> {
+  return await db.select()
+    .from(schema.weeklyRewards)
+    .orderBy(desc(schema.weeklyRewards.createdAt))
+    .limit(limit);
 }

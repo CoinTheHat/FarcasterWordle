@@ -34,6 +34,25 @@ export const streaks = pgTable("streaks", {
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
+export const weeklyRewards = pgTable("weekly_rewards", {
+  id: serial("id").primaryKey(),
+  fid: integer("fid").notNull(),
+  weekStart: text("week_start").notNull(),
+  weekEnd: text("week_end").notNull(),
+  rank: integer("rank").notNull(),
+  amountUsd: integer("amount_usd").notNull(),
+  txHash: text("tx_hash"),
+  status: text("status").notNull().default("pending"),
+  errorMessage: text("error_message"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  distributedAt: timestamp("distributed_at"),
+}, (table) => ({
+  uniqueFidWeek: {
+    columns: [table.fid, table.weekStart],
+    isUnique: true,
+  },
+}));
+
 // Insert Schemas
 export const insertProfileSchema = createInsertSchema(profiles).omit({
   createdAt: true,
@@ -49,6 +68,12 @@ export const insertStreakSchema = createInsertSchema(streaks).omit({
   updatedAt: true,
 });
 
+export const insertWeeklyRewardSchema = createInsertSchema(weeklyRewards).omit({
+  id: true,
+  createdAt: true,
+  distributedAt: true,
+});
+
 // Types
 export type Profile = typeof profiles.$inferSelect;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
@@ -58,6 +83,9 @@ export type InsertDailyResult = z.infer<typeof insertDailyResultSchema>;
 
 export type Streak = typeof streaks.$inferSelect;
 export type InsertStreak = z.infer<typeof insertStreakSchema>;
+
+export type WeeklyReward = typeof weeklyRewards.$inferSelect;
+export type InsertWeeklyReward = z.infer<typeof insertWeeklyRewardSchema>;
 
 // Game Types
 export type TileFeedback = "correct" | "present" | "absent" | "empty";
