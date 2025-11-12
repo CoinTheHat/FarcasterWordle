@@ -37,6 +37,7 @@ Preferred communication style: Simple, everyday language.
 -   **profiles:** Stores Farcaster user identifiers (`fid`), `created_at`, and `last_seen_at`.
 -   **daily_results:** Records game outcomes per user per day, including `fid`, `yyyymmdd`, `attempts`, `won`, and `created_at`, with a unique constraint on (fid, yyyymmdd).
 -   **streaks:** Tracks `current_streak`, `max_streak`, `last_played_yyyymmdd`, and `updated_at` for each user.
+-   **weekly_rewards:** Tracks weekly reward distributions including `fid`, `week_start`, `week_end`, `rank`, `amount_usd`, `tx_hash`, `status`, `memo`, and `created_at`, with a unique constraint on (fid, week_start).
 
 ### API Endpoints
 
@@ -45,6 +46,8 @@ Preferred communication style: Simple, everyday language.
 -   **POST /api/guess:** Validates a user's guess, provides feedback, and updates game status within the session.
 -   **POST /api/complete-game:** Marks a game session as completed, validates transaction hash, and updates `daily_results` and `streaks`.
 -   **GET /api/board:** Provides game board statistics for analytics.
+-   **GET /api/admin/balance:** Retrieves USDC balance of sponsor wallet (requires `x-admin-token` header).
+-   **POST /api/admin/distribute-weekly-rewards:** Calculates top 3 players from previous week and distributes USDC rewards (requires `x-admin-token` header, manual trigger only).
 
 ### Authentication Flow
 
@@ -90,3 +93,62 @@ User loads the app, Farcaster context is initialized, and user stats are fetched
 **Type Safety:**
 -   `Zod` for runtime schema validation.
 -   `TypeScript` strict mode across the codebase.
+
+**Blockchain Integration:**
+-   `viem` for Base network interaction and USDC transfers.
+-   Base USDC contract: `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`.
+
+## Weekly Reward System
+
+**Overview:** WordCast distributes weekly USDC rewards to the top 3 players every Monday based on the previous week's cumulative scores (Monday-Sunday).
+
+**Reward Structure:**
+-   1st Place: 10 USDC ($10)
+-   2nd Place: 5 USDC ($5)
+-   3rd Place: 3 USDC ($3)
+
+**Architecture:**
+
+### Leaderboard Calculation
+-   **Time Period:** Monday 00:00 - Sunday 23:59 (Europe/Istanbul UTC+3)
+-   **Scoring Method:** Sum of all daily scores for the week (not best single score)
+-   **Eligibility:** Must have valid Farcaster wallet address registered
+-   **Ranking:** Ties broken by earliest game completion timestamp
+
+### Distribution Flow
+1. Admin accesses `/admin` panel using `ADMIN_SECRET_TOKEN`
+2. Views previous week's top 3 leaderboard
+3. Checks sponsor wallet USDC balance
+4. Manually triggers "Distribute Last Week Rewards" button
+5. Backend sends USDC transfers to winner wallets via Base network
+6. Transaction hashes recorded in `weekly_rewards` table
+7. Status tracking: `pending` → `sent` (or `failed` for errors)
+
+### Retry Mechanism
+-   Failed transfers can be retried via same button
+-   Only rewards with status `sent` are skipped
+-   Statuses: `pending`, `sent`, `failed`, `retry_success`, `retry_failed`, `already_sent`
+
+### Security & Configuration
+-   **ADMIN_SECRET_TOKEN:** Secret password for admin panel access (user-defined)
+-   **SPONSOR_WALLET_PRIVATE_KEY:** Private key for wallet holding USDC on Base network
+-   **Memo Storage:** Transfer memos stored in database (format: "Rank #N - Week [dates]")
+-   **Idempotency:** Unique constraint on (fid, week_start) prevents duplicate distributions
+
+### Admin Panel Features
+-   URL: `https://farcasterwordle.com/admin`
+-   USDC balance checker
+-   Previous week leaderboard preview
+-   Manual distribution trigger with confirmation
+-   Distribution history viewer
+-   Retry failed transfers
+
+### Technical Implementation
+-   **Blockchain Library:** viem for ERC20 USDC transfers
+-   **USDC Decimals:** 6 (standard for USDC on Base)
+-   **Network:** Base mainnet (Chain ID: 8453)
+-   **RPC:** `https://mainnet.base.org` (configurable via `BASE_RPC_URL`)
+-   **Transfer Method:** `writeContract` with USDC ERC20 `transfer` function
+
+### Recent Updates
+-   **Nov 12, 2025:** Migrated from ETH to USDC for exact dollar-value guarantees. USDC is a stablecoin (1 USDC = $1) eliminating price volatility concerns. Admin panel updated to show USDC balances and amounts.
