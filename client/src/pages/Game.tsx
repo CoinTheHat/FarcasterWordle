@@ -240,7 +240,7 @@ export default function Game() {
       const timer = setTimeout(() => {
         setShowGameOver(false);
         // Modal kapatıldıktan sonra handleCloseModal otomatik yeni oyun başlatacak
-      }, 10000);
+      }, 5000);
       
       return () => clearTimeout(timer);
     }
@@ -967,10 +967,12 @@ export default function Game() {
       <GameOverModal
         isOpen={showGameOver}
         onClose={async () => {
+          console.log("Modal onClose called", { gameCompleted, isPracticeMode, language });
           setShowGameOver(false);
           
           // If daily game completed OR practice mode (even without TX), start new practice game
           if ((gameCompleted || isPracticeMode) && language) {
+            console.log("Starting new practice game...");
             try {
               // Clear game state
               setGuesses([]);
@@ -985,9 +987,15 @@ export default function Game() {
               
               // Start new practice game
               const gameSession = await startGame(language);
+              console.log("New practice game started:", gameSession);
               setSessionId(gameSession.sessionId);
               setIsPracticeMode(true);
               setGameCompleted(false); // Reset - TX not sent yet for new game
+              
+              // Focus input after a short delay to ensure DOM is ready
+              setTimeout(() => {
+                inputRef.current?.focus();
+              }, 100);
             } catch (err) {
               console.error("Failed to start practice game:", err);
               toast({
@@ -997,6 +1005,8 @@ export default function Game() {
                 duration: 3000,
               });
             }
+          } else {
+            console.log("Not starting new game - conditions not met:", { gameCompleted, isPracticeMode, language });
           }
         }}
         won={gameStatus === "won"}
