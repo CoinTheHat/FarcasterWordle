@@ -228,8 +228,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     activeGames.forEach((game, sid) => {
       if (game.fid === fid) {
-        if (game.completed) {
-          // Clean up completed sessions
+        // Clean up completed or used-up sessions (6 attempts exhausted)
+        if (game.completed || game.attemptsUsed >= MAX_ATTEMPTS) {
           activeGames.delete(sid);
         } else if (!existingSession) {
           // Found active session - reuse it (only set first match)
