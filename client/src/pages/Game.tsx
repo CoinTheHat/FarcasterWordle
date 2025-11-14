@@ -933,7 +933,7 @@ export default function Game() {
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               placeholder={t.gameTypePlaceholder}
-              disabled={gameStatus !== "playing" || gameCompleted}
+              disabled={gameStatus !== "playing"}
               maxLength={5}
               className="text-center text-xl md:text-2xl font-bold uppercase tracking-widest h-12 md:h-14"
               data-testid="input-guess"
@@ -941,7 +941,7 @@ export default function Game() {
             />
             <Button
               onClick={handleEnter}
-              disabled={gameStatus !== "playing" || currentGuess.length !== 5 || gameCompleted}
+              disabled={gameStatus !== "playing" || currentGuess.length !== 5}
               size="lg"
               className="h-12 md:h-14 px-4 md:px-8 text-sm md:text-base"
               data-testid="button-submit"
