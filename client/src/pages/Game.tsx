@@ -946,7 +946,37 @@ export default function Game() {
 
       <GameOverModal
         isOpen={showGameOver}
-        onClose={() => setShowGameOver(false)}
+        onClose={async () => {
+          setShowGameOver(false);
+          
+          // If daily game completed, start new practice game (unlimited)
+          if (gameCompleted && language) {
+            try {
+              // Clear game state
+              setGuesses([]);
+              setCurrentGuess("");
+              setFeedback([]);
+              setLetterStates(new Map());
+              setGameStatus("playing");
+              setSolution("");
+              setRevealingRow(undefined);
+              setHintUsed(false);
+              
+              // Start new practice game
+              const gameSession = await startGame(language);
+              setSessionId(gameSession.sessionId);
+              setIsPracticeMode(true);
+            } catch (err) {
+              console.error("Failed to start practice game:", err);
+              toast({
+                title: "Error",
+                description: "Failed to start practice mode. Please refresh.",
+                variant: "destructive",
+                duration: 3000,
+              });
+            }
+          }
+        }}
         won={gameStatus === "won"}
         attempts={guesses.length}
         solution={solution}
