@@ -38,6 +38,7 @@ interface ActiveGame {
   createdAt: string;
   completed: boolean;
   completedAt?: string;
+  isPracticeMode: boolean;
 }
 
 const activeGames = new Map<string, ActiveGame>();
@@ -214,12 +215,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
     
-    // CRITICAL FIX: Block if user already has today's result (skip in development for testing)
+    // Check if user already completed today's game
     const todayResult = await getDailyResult(fid, today);
-    if (todayResult && process.env.NODE_ENV !== 'development') {
-      res.status(400).json({ error: "Already completed today's game" });
-      return;
-    }
+    const isPracticeMode = !!todayResult && process.env.NODE_ENV !== 'development';
 
     // CRITICAL FIX: Check for existing active (non-completed) session
     // This prevents multiple session exploit
@@ -272,6 +270,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       won: null,
       createdAt: new Date().toISOString(),
       completed: false,
+      isPracticeMode,
     };
     
     activeGames.set(sessionId, activeGame);
@@ -279,6 +278,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({
       sessionId,
       maxAttempts: MAX_ATTEMPTS,
+      isPracticeMode,
       ...(process.env.NODE_ENV === 'development' ? { solution } : {}),
     });
   });
