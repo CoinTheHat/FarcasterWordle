@@ -1,5 +1,8 @@
 # WordCast - Farcaster Daily Word Puzzle Mini-App
 
+**Version:** 2.0.0 (November 2025)  
+**Latest Feature:** Unlimited Practice Mode - Play as many times as you want! Only first game counts for leaderboards.
+
 ## Overview
 WordCast is a production-ready, multi-language (Turkish/English) Wordle-style daily word game designed as a Farcaster Mini-App. It allows players to guess a 5-letter word in 6 attempts, with the word changing daily. The application supports Farcaster authentication, tracks device-independent progress and streaks, and facilitates social sharing. A robust scoring system is integrated with blockchain transactions on the Base network for saving scores to a leaderboard, enabling weekly USDC rewards for top players. The project aims to provide an engaging and competitive daily puzzle experience within the Farcaster ecosystem, leveraging blockchain for transparent rewards and score persistence.
 

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Share2, TrendingUp, Trophy, Flame, Loader2, Wallet } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
+import { APP_VERSION, RELEASE_NOTES } from "@/lib/version";
 
 interface GameOverModalProps {
   isOpen: boolean;
@@ -425,6 +426,18 @@ export function SettingsModal({
             >
               {colorBlindMode ? t.settingsOn : t.settingsOff}
             </Button>
+          </div>
+
+          <div className="p-4 rounded-lg bg-muted/50 border-2 border-primary/20">
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-bold text-primary">WordCast v{APP_VERSION}</span>
+              <Badge variant="secondary" className="text-xs font-bold">
+                {language === "tr" ? "Yeni" : "New"}
+              </Badge>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {RELEASE_NOTES["2.0.0"]}
+            </p>
           </div>
         </div>
       </DialogContent>
