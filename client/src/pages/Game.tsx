@@ -969,8 +969,8 @@ export default function Game() {
         onClose={async () => {
           setShowGameOver(false);
           
-          // If daily game completed, start new practice game (unlimited)
-          if (gameCompleted && language) {
+          // If daily game completed OR practice mode (even without TX), start new practice game
+          if ((gameCompleted || isPracticeMode) && language) {
             try {
               // Clear game state
               setGuesses([]);
@@ -986,6 +986,7 @@ export default function Game() {
               const gameSession = await startGame(language);
               setSessionId(gameSession.sessionId);
               setIsPracticeMode(true);
+              setGameCompleted(true); // Mark as completed to show practice banner
             } catch (err) {
               console.error("Failed to start practice game:", err);
               toast({

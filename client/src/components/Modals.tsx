@@ -51,11 +51,18 @@ export function GameOverModal({
   const handleOpenChange = (open: boolean) => {
     if (!open && !gameCompleted && walletConnected && totalScore > 0 && !isSavingScore) {
       // User is trying to close modal without saving score
-      setShowWarning(true);
-      setTimeout(() => setShowWarning(false), 3000);
-      return;
+      if (isPracticeMode) {
+        // Practice mode: Allow closing without TX, will restart game
+        onClose();
+      } else {
+        // First game: Show warning and prevent closing
+        setShowWarning(true);
+        setTimeout(() => setShowWarning(false), 3000);
+        return;
+      }
+    } else {
+      onClose();
     }
-    onClose();
   };
   
   return (
