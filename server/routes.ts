@@ -400,12 +400,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // Check if already saved to prevent duplicates
     const existingResult = await getDailyResult(fid, today);
     if (existingResult) {
+      // Practice mode: TX validated but score not saved (already played today)
       const streak = await getOrCreateStreak(fid);
       res.json({
         success: true,
+        isPracticeMode: true,
         streak: streak.currentStreak,
         maxStreak: streak.maxStreak,
-        message: "Score already saved (idempotent)",
+        message: "Practice mode - TX validated but score not saved (already played today)",
       });
       return;
     }
@@ -445,9 +447,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const streak = await getOrCreateStreak(fid);
         res.json({
           success: true,
+          isPracticeMode: true,
           streak: streak.currentStreak,
           maxStreak: streak.maxStreak,
-          message: "Score already saved (idempotent)",
+          message: "Practice mode - score already saved (race condition)",
         });
       } else {
         throw error;
