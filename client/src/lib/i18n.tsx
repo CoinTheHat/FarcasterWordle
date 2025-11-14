@@ -27,6 +27,8 @@ interface Translations {
   gameSessionExpired: string;
   gameSessionExpiredDesc: string;
   gameConnectingWallet: string;
+  gamePracticeMode: string;
+  gamePracticeModeDesc: string;
   
   // GameOver Modal
   gameOverCongrats: string;
@@ -48,6 +50,9 @@ interface Translations {
   gameOverSaved: string;
   gameOverSavedDesc: string;
   gameOverComeBackTomorrow: string;
+  gameOverPracticeMode: string;
+  gameOverPracticeModeDesc: string;
+  gameOverPracticeTxValidated: string;
   
   // Stats Modal
   statsTitle: string;
@@ -200,6 +205,8 @@ const translations: Record<Language, Translations> = {
     gameSessionExpired: "Session Expired",
     gameSessionExpiredDesc: "Your game session has expired. Starting a new game...",
     gameConnectingWallet: "Connecting wallet...",
+    gamePracticeMode: "🎮 Practice Mode",
+    gamePracticeModeDesc: "You've already played today! This game won't count towards leaderboard.",
     
     // GameOver Modal
     gameOverCongrats: "Congratulations!",
@@ -221,6 +228,9 @@ const translations: Record<Language, Translations> = {
     gameOverSaved: "Score saved to blockchain! Come back tomorrow for a new word.",
     gameOverSavedDesc: "Come back tomorrow for a new word.",
     gameOverComeBackTomorrow: "Come back tomorrow for a new word!",
+    gameOverPracticeMode: "🎮 Practice Mode Complete!",
+    gameOverPracticeModeDesc: "This was a practice game - no points added to leaderboard.",
+    gameOverPracticeTxValidated: "Transaction validated! You can play again for fun.",
     
     // Stats Modal
     statsTitle: "Statistics",
@@ -371,6 +381,8 @@ const translations: Record<Language, Translations> = {
     gameSessionExpired: "Oturum Süresi Doldu",
     gameSessionExpiredDesc: "Oyun oturumunuz sona erdi. Yeni oyun başlatılıyor...",
     gameConnectingWallet: "Cüzdan bağlanıyor...",
+    gamePracticeMode: "🎮 Pratik Modu",
+    gamePracticeModeDesc: "Bugün zaten oynadınız! Bu oyun liderlik tablosunda sayılmayacak.",
     
     // GameOver Modal
     gameOverCongrats: "Tebrikler!",
@@ -392,6 +404,9 @@ const translations: Record<Language, Translations> = {
     gameOverSaved: "Skor blockchain'e kaydedildi! Yeni kelime için yarın gel.",
     gameOverSavedDesc: "Yeni kelime için yarın gel.",
     gameOverComeBackTomorrow: "Yeni kelime için yarın gel!",
+    gameOverPracticeMode: "🎮 Pratik Modu Tamamlandı!",
+    gameOverPracticeModeDesc: "Bu bir pratik oyundu - liderlik tablosuna puan eklenmedi.",
+    gameOverPracticeTxValidated: "İşlem onaylandı! Eğlence için tekrar oynayabilirsin.",
     
     // Stats Modal
     statsTitle: "İstatistikler",
