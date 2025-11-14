@@ -264,28 +264,36 @@ export default function Game() {
 
       setGameCompleted(true);
       setIsPracticeMode(result.isPracticeMode || false);
-      setStats(prev => prev ? {
-        ...prev,
-        streak: result.streak,
-        maxStreak: result.maxStreak,
-        remainingAttempts: 0,
-      } : null);
 
       // Save today's score to localStorage, scoped by language
       const today = getTodayDateString();
       localStorage.setItem(`wordcast-score-${language}-${today}`, totalScore.toString());
 
-      if (result.isPracticeMode) {
+      // Refetch stats from backend to ensure fresh data including hasCompletedToday
+      try {
+        const freshStats = await fetchUserStats();
+        setStats(freshStats);
+        
+        if (result.isPracticeMode) {
+          toast({
+            title: t.gameOverPracticeMode,
+            description: t.gameOverPracticeTxValidated,
+            duration: 3000,
+          });
+        } else {
+          toast({
+            title: "Score saved!",
+            description: `Score ${totalScore} recorded on blockchain. Streak: ${freshStats.streak}`,
+            duration: 3000,
+          });
+        }
+      } catch (statsErr) {
+        console.error("Failed to refetch stats after save:", statsErr);
         toast({
-          title: t.gameOverPracticeMode,
-          description: t.gameOverPracticeTxValidated,
-          duration: 3000,
-        });
-      } else {
-        toast({
-          title: "Score saved!",
-          description: `Score ${totalScore} recorded on blockchain. Streak: ${result.streak}`,
-          duration: 3000,
+          title: "Warning",
+          description: "Score saved but stats refresh failed. Please reload the page.",
+          variant: "destructive",
+          duration: 4000,
         });
       }
     } catch (err) {
