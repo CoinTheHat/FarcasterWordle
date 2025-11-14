@@ -236,15 +236,15 @@ export default function Game() {
 
   // Auto-close modal and start new game after TX validation in practice mode
   useEffect(() => {
-    if (gameCompleted && isPracticeMode && showGameOver) {
+    if (gameCompleted && isPracticeMode && showGameOver && !isSavingScore) {
       const timer = setTimeout(() => {
         setShowGameOver(false);
         // Modal kapatıldıktan sonra handleCloseModal otomatik yeni oyun başlatacak
-      }, 3000);
+      }, 10000);
       
       return () => clearTimeout(timer);
     }
-  }, [gameCompleted, isPracticeMode, showGameOver]);
+  }, [gameCompleted, isPracticeMode, showGameOver, isSavingScore]);
 
   const handleSaveScore = useCallback(async () => {
     if (!sessionId) {
