@@ -15,13 +15,14 @@ Preferred communication style: Simple, everyday language.
 The frontend is built with React, TypeScript, and Vite, utilizing Wouter for routing. UI components are styled with TailwindCSS, Shadcn/ui, and Radix UI primitives, featuring custom animations. State management employs TanStack Query for server state, local React state for UI, and LocalStorage for user preferences (e.g., color-blind mode, language). Internationalization is handled via an `I18nProvider` context, supporting live language switching (TR/EN) with over 140 translation keys and persistence via localStorage. Game logic is client-side with server-side validation for guesses, supporting language-specific word lists and timezone handling (Europe/Istanbul UTC+3) via Luxon. A "Practice Mode" allows unlimited play after the first daily game, with clear UX indicators differentiating it from score-contributing games.
 
 ### Backend
-The backend uses Node.js with Express, featuring custom middleware for Farcaster FID authentication. Data persistence is managed with SQLite (`better-sqlite3`) for user profiles, daily results, and streaks, while active game sessions are stored in an in-memory Map. The system includes anti-cheat measures, server-side word validation, and idempotent transaction handling. Business logic encompasses session-based random word selection, language-specific word lists, streak calculation, and profile management. All server-side date operations use the Europe/Istanbul timezone (UTC+3) for consistent daily boundaries and word rotation. Scores are only saved to the database after a valid blockchain transaction hash is submitted, ensuring participation for leaderboard eligibility.
+The backend uses Node.js with Express, featuring custom middleware for Farcaster FID authentication. Data persistence is managed with PostgreSQL (Neon) for user profiles, daily results, streaks, weekly rewards, and practice results, while active game sessions are stored in an in-memory Map. The system includes anti-cheat measures, server-side word validation, and idempotent transaction handling. Business logic encompasses session-based random word selection, language-specific word lists, streak calculation, and profile management. All server-side date operations use the Europe/Istanbul timezone (UTC+3) for consistent daily boundaries and word rotation. Scores are only saved to the database after a valid blockchain transaction hash is submitted, ensuring participation for leaderboard eligibility. Practice mode results are tracked separately for future analytics without affecting leaderboards or streaks.
 
 ### Database Schema
--   **profiles:** Stores Farcaster `fid`, `created_at`, `last_seen_at`.
--   **daily_results:** Records `fid`, `yyyymmdd`, `attempts`, `won`, `created_at` (unique on fid, yyyymmdd).
+-   **profiles:** Stores Farcaster `fid`, `username`, `wallet_address`, `created_at`, `last_seen_at`.
+-   **daily_results:** Records `fid`, `yyyymmdd`, `attempts`, `won`, `score`, `created_at` (unique on fid, yyyymmdd).
 -   **streaks:** Tracks `current_streak`, `max_streak`, `last_played_yyyymmdd`, `updated_at`.
--   **weekly_rewards:** Logs `fid`, `week_start`, `week_end`, `rank`, `amount_usd`, `tx_hash`, `status`, `memo`, `created_at` (unique on fid, week_start).
+-   **weekly_rewards:** Logs `fid`, `week_start`, `week_end`, `rank`, `amount_usd`, `tx_hash`, `status`, `error_message`, `created_at`, `distributed_at` (unique on fid, week_start).
+-   **practice_results:** Tracks `fid`, `yyyymmdd`, `attempt_number`, `attempts`, `won`, `score`, `tx_hash`, `created_at` (unique on fid, yyyymmdd, attempt_number) - stores unlimited practice games for future analytics.
 
 ### API Endpoints
 -   `/api/me`: Retrieves user stats, creates/updates profile.

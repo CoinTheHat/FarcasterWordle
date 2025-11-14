@@ -21,6 +21,7 @@ export type Profile = typeof schema.profiles.$inferSelect;
 export type DailyResult = typeof schema.dailyResults.$inferSelect;
 export type Streak = typeof schema.streaks.$inferSelect;
 export type WeeklyReward = typeof schema.weeklyRewards.$inferSelect;
+export type PracticeResult = typeof schema.practiceResults.$inferSelect;
 
 // Database functions
 export async function getOrCreateProfile(fid: number): Promise<Profile> {
@@ -408,4 +409,41 @@ export async function getWeeklyRewardsHistory(limit: number = 50): Promise<Weekl
     .from(schema.weeklyRewards)
     .orderBy(desc(schema.weeklyRewards.createdAt))
     .limit(limit);
+}
+
+export async function getPracticeResultCount(fid: number, yyyymmdd: string): Promise<number> {
+  const results = await db.select({ count: count() })
+    .from(schema.practiceResults)
+    .where(
+      and(
+        eq(schema.practiceResults.fid, fid),
+        eq(schema.practiceResults.yyyymmdd, yyyymmdd)
+      )
+    );
+  
+  return Number(results[0]?.count || 0);
+}
+
+export async function createPracticeResult(
+  fid: number,
+  yyyymmdd: string,
+  attemptNumber: number,
+  attempts: number,
+  won: boolean,
+  score: number,
+  txHash: string | null = null
+): Promise<PracticeResult> {
+  const [result] = await db.insert(schema.practiceResults)
+    .values({
+      fid,
+      yyyymmdd,
+      attemptNumber,
+      attempts,
+      won,
+      score,
+      txHash,
+    })
+    .returning();
+
+  return result;
 }

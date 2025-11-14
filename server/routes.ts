@@ -18,6 +18,8 @@ import {
   getWeeklyReward,
   getPendingWeeklyRewards,
   getWeeklyRewardsHistory,
+  getPracticeResultCount,
+  createPracticeResult,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo, getLastWeekDateRange, getCurrentWeekDateRange } from "./lib/date";
 import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateWinScore, calculateLossScore, getRandomWord, type Language } from "./lib/words";
@@ -409,9 +411,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const existingResult = await getDailyResult(fid, today);
     const actualIsPracticeMode = !!existingResult && activeGame.isPracticeMode;
     
-    // PRACTICE MODE: Validate TX but don't save to leaderboard/streaks
+    // PRACTICE MODE: Validate TX and save to practice_results (for future analytics)
     if (actualIsPracticeMode) {
       const streak = await getOrCreateStreak(fid);
+      
+      // Save practice result to database
+      try {
+        const practiceCount = await getPracticeResultCount(fid, today);
+        const attemptNumber = practiceCount + 1;
+        
+        await createPracticeResult(
+          fid,
+          today,
+          attemptNumber,
+          activeGame.attemptsUsed,
+          activeGame.won,
+          finalScore,
+          txHash
+        );
+      } catch (practiceErr) {
+        console.error("Failed to save practice result:", practiceErr);
+        // Continue anyway - practice results are optional for now
+      }
       
       // Mark session as completed
       activeGame.completed = true;
