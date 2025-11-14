@@ -134,14 +134,14 @@ export function GameOverModal({
               </div>
             )}
             
-            {!gameCompleted && walletConnected && onSaveScore && totalScore > 0 && (
+            {walletConnected && onSaveScore && totalScore > 0 && (!gameCompleted || (isPracticeMode && gameCompleted)) && (
               <>
                 <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 text-center">
                   <p className="text-sm text-amber-600 dark:text-amber-400 font-medium">
-                    {t.gameOverSaveWarning}
+                    {isPracticeMode ? (language === 'tr' ? 'Pratik oyun - TX doğrulaması gerekli' : 'Practice game - TX validation required') : t.gameOverSaveWarning}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {t.gameOverSaveWarningDesc}
+                    {isPracticeMode ? (language === 'tr' ? 'Liderlik tablosuna kaydedilmeyecek' : 'Won\'t be saved to leaderboard') : t.gameOverSaveWarningDesc}
                   </p>
                 </div>
                 <Button
@@ -159,7 +159,7 @@ export function GameOverModal({
                   ) : (
                     <>
                       <Trophy className="w-5 h-5" />
-                      {t.gameOverSaveToBlockchain}
+                      {isPracticeMode ? (language === 'tr' ? 'TX Gönder & Devam Et' : 'Send TX & Continue') : t.gameOverSaveToBlockchain}
                     </>
                   )}
                 </Button>
