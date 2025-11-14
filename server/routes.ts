@@ -244,10 +244,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const sessionDate = existingSession.createdAt ? existingSession.createdAt.substring(0, 10).replace(/-/g, '') : '';
       
       if (sessionDate === today && existingSession.language === language) {
-        // Session is from today and same language, safe to reuse
+        // Session is from today and same language - re-validate isPracticeMode
+        // (in case day boundary crossed since session creation)
+        const todayResultCheck = await getDailyResult(fid, today);
+        const currentIsPracticeMode = !!todayResultCheck && process.env.NODE_ENV !== 'development';
+        existingSession.isPracticeMode = currentIsPracticeMode;
+        
         res.json({
           sessionId: existingSessionId,
           maxAttempts: MAX_ATTEMPTS,
+          isPracticeMode: currentIsPracticeMode,
           resumed: true,
         });
         return;
@@ -396,12 +402,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     const today = getTodayDateString();
+    const finalScore = activeGame.finalScore || 0;
     
-    // Check if already saved to prevent duplicates
+    // CRITICAL: Re-validate isPracticeMode against current DB state
+    // This prevents stale flags from discarding legitimate daily wins
     const existingResult = await getDailyResult(fid, today);
-    if (existingResult) {
-      // Practice mode: TX validated but score not saved (already played today)
+    const actualIsPracticeMode = !!existingResult && activeGame.isPracticeMode;
+    
+    // PRACTICE MODE: Validate TX but don't save to leaderboard/streaks
+    if (actualIsPracticeMode) {
       const streak = await getOrCreateStreak(fid);
+      
+      // Mark session as completed
+      activeGame.completed = true;
+      activeGame.completedAt = new Date().toISOString();
+      
       res.json({
         success: true,
         isPracticeMode: true,
@@ -411,9 +426,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       return;
     }
+    
+    // Safety check: duplicate result (race condition or server restart)
+    if (existingResult) {
+      const streak = await getOrCreateStreak(fid);
+      res.json({
+        success: true,
+        isPracticeMode: true,
+        streak: streak.currentStreak,
+        maxStreak: streak.maxStreak,
+        message: "Duplicate: Score already saved today (ranked game completed earlier)",
+      });
+      return;
+    }
 
     // SECURITY FIX: Save score ONLY after TX validation
-    const finalScore = activeGame.finalScore || 0;
     
     try {
       await createDailyResult(fid, today, activeGame.attemptsUsed, activeGame.won, finalScore);
