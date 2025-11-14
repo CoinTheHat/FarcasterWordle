@@ -10,8 +10,8 @@ export interface FarcasterContext {
 export async function initializeFarcaster(): Promise<FarcasterContext> {
   // In development, use real FID from env or mock FID for testing
   if (import.meta.env.DEV) {
-    const devFid = import.meta.env.VITE_DEV_FID 
-      ? parseInt(import.meta.env.VITE_DEV_FID, 10) 
+    const devFid = import.meta.env.VITE_DEV_FID
+      ? parseInt(import.meta.env.VITE_DEV_FID, 10)
       : 12345;
     console.log("Development mode: using FID", devFid);
     return {
@@ -24,9 +24,11 @@ export async function initializeFarcaster(): Promise<FarcasterContext> {
 
   try {
     const context = await sdk.context;
-    
+
     if (!context?.user?.fid) {
-      console.log("Not in Farcaster context, using fallback FID for web access");
+      console.log(
+        "Not in Farcaster context, using fallback FID for web access",
+      );
       return {
         fid: 12345,
         walletAddress: null,
@@ -42,8 +44,11 @@ export async function initializeFarcaster(): Promise<FarcasterContext> {
     // This is just for logging/debugging
     let walletAddress: string | null = null;
     const contextAny = context as any;
-    
-    if (contextAny.user?.verifiedAddresses && contextAny.user.verifiedAddresses.length > 0) {
+
+    if (
+      contextAny.user?.verifiedAddresses &&
+      contextAny.user.verifiedAddresses.length > 0
+    ) {
       walletAddress = contextAny.user.verifiedAddresses[0];
       console.log("Farcaster verified address:", walletAddress);
     } else if (contextAny.user?.custodyAddress) {
@@ -58,7 +63,10 @@ export async function initializeFarcaster(): Promise<FarcasterContext> {
       error: null,
     };
   } catch (error) {
-    console.error("Farcaster SDK initialization error, using fallback FID:", error);
+    console.error(
+      "Farcaster SDK initialization error, using fallback FID:",
+      error,
+    );
     return {
       fid: 12345,
       walletAddress: null,
@@ -71,20 +79,20 @@ export async function initializeFarcaster(): Promise<FarcasterContext> {
 export async function shareToCast(text: string): Promise<boolean> {
   try {
     const encodedText = encodeURIComponent(text);
-    const embedUrl = encodeURIComponent('https://farcasterwordle.com/');
+    const embedUrl = encodeURIComponent("https://farcasterwordle.com");
     const composeUrl = `https://warpcast.com/~/compose?text=${encodedText}&embeds[]=${embedUrl}`;
-    
+
     if (import.meta.env.DEV) {
-      window.open(composeUrl, '_blank', 'noopener,noreferrer');
+      window.open(composeUrl, "_blank", "noopener,noreferrer");
       return true;
     }
-    
+
     try {
       await sdk.actions.openUrl(composeUrl);
       return true;
     } catch (sdkError) {
       console.log("SDK openUrl failed, using window.open:", sdkError);
-      window.open(composeUrl, '_blank', 'noopener,noreferrer');
+      window.open(composeUrl, "_blank", "noopener,noreferrer");
       return true;
     }
   } catch (error) {
