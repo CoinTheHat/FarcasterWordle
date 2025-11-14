@@ -234,6 +234,18 @@ export default function Game() {
     attemptAutoConnect();
   }, [isConnected, hasAttemptedAutoConnect, connectors, connect]);
 
+  // Auto-close modal and start new game after TX validation in practice mode
+  useEffect(() => {
+    if (gameCompleted && isPracticeMode && showGameOver) {
+      const timer = setTimeout(() => {
+        setShowGameOver(false);
+        // Modal kapatıldıktan sonra handleCloseModal otomatik yeni oyun başlatacak
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [gameCompleted, isPracticeMode, showGameOver]);
+
   const handleSaveScore = useCallback(async () => {
     if (!sessionId) {
       toast({
