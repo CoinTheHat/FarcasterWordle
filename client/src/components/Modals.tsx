@@ -23,6 +23,7 @@ interface GameOverModalProps {
   walletConnected?: boolean;
   isSavingScore?: boolean;
   gameCompleted?: boolean;
+  isPracticeMode?: boolean;
   onShare: () => void;
   onSaveScore?: () => void;
 }
@@ -39,6 +40,7 @@ export function GameOverModal({
   walletConnected = false,
   isSavingScore = false,
   gameCompleted = false,
+  isPracticeMode = false,
   onShare,
   onSaveScore,
 }: GameOverModalProps) {
@@ -173,10 +175,24 @@ export function GameOverModal({
               {t.gameOverShareResult}
             </Button>
 
-            {gameCompleted && (
+            {gameCompleted && !isPracticeMode && (
               <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3 text-center">
                 <p className="text-sm text-green-600 dark:text-green-400 font-medium">
                   {t.gameOverSaved}
+                </p>
+              </div>
+            )}
+            
+            {gameCompleted && isPracticeMode && (
+              <div className="bg-purple-500/10 border border-purple-500/30 rounded-lg p-3 text-center" data-testid="banner-practice-complete">
+                <p className="text-sm text-purple-600 dark:text-purple-400 font-bold">
+                  {t.gameOverPracticeMode}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t.gameOverPracticeModeDesc}
+                </p>
+                <p className="text-xs text-green-600 dark:text-green-400 mt-2">
+                  ✅ {t.gameOverPracticeTxValidated}
                 </p>
               </div>
             )}

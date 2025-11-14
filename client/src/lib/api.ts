@@ -66,8 +66,10 @@ export async function submitGuess(guess: string, sessionId: string): Promise<Gue
 
 export interface CompleteGameResponse {
   success: boolean;
+  isPracticeMode?: boolean;
   streak: number;
   maxStreak: number;
+  message?: string;
 }
 
 export async function completeGame(sessionId: string, txHash: string): Promise<CompleteGameResponse> {

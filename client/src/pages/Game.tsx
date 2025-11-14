@@ -46,6 +46,7 @@ export default function Game() {
   });
   const [gameCompleted, setGameCompleted] = useState(false);
   const [isSavingScore, setIsSavingScore] = useState(false);
+  const [isPracticeMode, setIsPracticeMode] = useState(false);
   
   const [showGameOver, setShowGameOver] = useState(false);
   const [showStats, setShowStats] = useState(false);
@@ -262,6 +263,7 @@ export default function Game() {
       const result = await completeGame(sessionId, hash);
 
       setGameCompleted(true);
+      setIsPracticeMode(result.isPracticeMode || false);
       setStats(prev => prev ? {
         ...prev,
         streak: result.streak,
@@ -273,11 +275,19 @@ export default function Game() {
       const today = getTodayDateString();
       localStorage.setItem(`wordcast-score-${language}-${today}`, totalScore.toString());
 
-      toast({
-        title: "Score saved!",
-        description: `Score ${totalScore} recorded on blockchain. Streak: ${result.streak}`,
-        duration: 3000,
-      });
+      if (result.isPracticeMode) {
+        toast({
+          title: t.gameOverPracticeMode,
+          description: t.gameOverPracticeTxValidated,
+          duration: 3000,
+        });
+      } else {
+        toast({
+          title: "Score saved!",
+          description: `Score ${totalScore} recorded on blockchain. Streak: ${result.streak}`,
+          duration: 3000,
+        });
+      }
     } catch (err) {
       console.error("Blockchain save error:", err);
       console.error("Error details:", {
@@ -938,6 +948,7 @@ export default function Game() {
         walletConnected={isConnected}
         isSavingScore={isSavingScore}
         gameCompleted={gameCompleted}
+        isPracticeMode={isPracticeMode}
         onShare={handleShare}
         onSaveScore={handleSaveScore}
       />
