@@ -32,6 +32,7 @@ export async function fetchUserStats(): Promise<UserStats> {
 export interface StartGameResponse {
   sessionId: string;
   maxAttempts: number;
+  isPracticeMode?: boolean;
 }
 
 export async function startGame(language: string = "en"): Promise<StartGameResponse> {

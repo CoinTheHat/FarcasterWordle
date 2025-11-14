@@ -92,15 +92,17 @@ export default function Game() {
       const today = getTodayDateString();
       localStorage.setItem(`wordcast-score-${newLanguage}-${today}`, backendScore.toString());
       
-      if (userStats.remainingAttempts > 0 || import.meta.env.MODE === 'development') {
-        const gameSession = await startGame(newLanguage);
-        setSessionId(gameSession.sessionId);
-        setGameCompleted(false); // Reset completed state for new session
+      // Backend handles practice mode - always try to start game
+      const gameSession = await startGame(newLanguage);
+      setSessionId(gameSession.sessionId);
+      
+      // Set state based on backend response
+      if (gameSession.isPracticeMode) {
+        setIsPracticeMode(true);
+        setGameCompleted(true); // Show practice banner
       } else {
-        // No attempts left - set to completed and clear session
-        setGameCompleted(true);
-        setSessionId(null);
-        setGameStatus("lost");
+        setGameCompleted(false);
+        setIsPracticeMode(false);
       }
 
       toast({
@@ -187,12 +189,18 @@ export default function Game() {
           return;
         }
         
-        // In development, allow starting new games even when remainingAttempts === 0
-        if (userStats.remainingAttempts === 0 && import.meta.env.MODE !== 'development') {
-          setGameCompleted(true);
+        // Backend now handles practice mode automatically
+        // Start game regardless of remainingAttempts - backend will set isPracticeMode flag
+        const gameSession = await startGame(language);
+        setSessionId(gameSession.sessionId);
+        
+        // Set practice mode based on backend response
+        if (gameSession.isPracticeMode) {
+          setIsPracticeMode(true);
+          setGameCompleted(true); // Mark as completed so UI shows practice banner
         } else {
-          const gameSession = await startGame(language);
-          setSessionId(gameSession.sessionId);
+          setGameCompleted(false);
+          setIsPracticeMode(false);
         }
       } catch (err) {
         console.error("Failed to load stats:", err);
