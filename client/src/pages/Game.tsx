@@ -981,12 +981,13 @@ export default function Game() {
               setSolution("");
               setRevealingRow(undefined);
               setHintUsed(false);
+              setTotalScore(0);
               
               // Start new practice game
               const gameSession = await startGame(language);
               setSessionId(gameSession.sessionId);
               setIsPracticeMode(true);
-              setGameCompleted(true); // Mark as completed to show practice banner
+              setGameCompleted(false); // Reset - TX not sent yet for new game
             } catch (err) {
               console.error("Failed to start practice game:", err);
               toast({
