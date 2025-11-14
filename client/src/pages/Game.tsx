@@ -855,6 +855,20 @@ export default function Game() {
             </div>
           )}
           
+          {/* Practice Mode Banner */}
+          {stats.hasCompletedToday && (
+            <div className="mb-2 md:mb-3 mx-2 md:mx-4" data-testid="banner-practice-mode">
+              <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 backdrop-blur-sm border border-purple-500/30 rounded-lg p-2 md:p-3 text-center shadow-lg">
+                <div className="flex items-center justify-center gap-1.5 md:gap-2 text-xs md:text-sm font-semibold text-purple-600 dark:text-purple-400 mb-1">
+                  {t.gamePracticeMode}
+                </div>
+                <div className="text-[10px] md:text-xs text-muted-foreground">
+                  {t.gamePracticeModeDesc}
+                </div>
+              </div>
+            </div>
+          )}
+          
           {/* Stats Badge */}
           <div className="grid grid-cols-4 gap-1.5 md:gap-4 mb-2 md:mb-3 px-2 md:px-4">
             <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-1.5 md:p-4 text-center shadow-lg hover-elevate transition-all">
