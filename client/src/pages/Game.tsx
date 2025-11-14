@@ -236,15 +236,49 @@ export default function Game() {
 
   // Auto-close modal and start new game after TX validation in practice mode
   useEffect(() => {
-    if (gameCompleted && isPracticeMode && showGameOver && !isSavingScore) {
-      const timer = setTimeout(() => {
+    if (gameCompleted && isPracticeMode && showGameOver && !isSavingScore && language) {
+      const timer = setTimeout(async () => {
+        console.log("Auto-close timer expired - starting new practice game");
         setShowGameOver(false);
-        // Modal kapatıldıktan sonra handleCloseModal otomatik yeni oyun başlatacak
+        
+        // Start new practice game immediately
+        try {
+          // Clear game state
+          setGuesses([]);
+          setCurrentGuess("");
+          setFeedback([]);
+          setLetterStates(new Map());
+          setGameStatus("playing");
+          setSolution("");
+          setRevealingRow(undefined);
+          setHintUsed(false);
+          setTotalScore(0);
+          
+          // Start new practice game
+          const gameSession = await startGame(language);
+          console.log("Auto-start: New practice game started:", gameSession);
+          setSessionId(gameSession.sessionId);
+          setIsPracticeMode(true);
+          setGameCompleted(false);
+          
+          // Focus input
+          setTimeout(() => {
+            inputRef.current?.focus();
+          }, 100);
+        } catch (err) {
+          console.error("Auto-start failed:", err);
+          toast({
+            title: "Error",
+            description: "Failed to start new game. Please refresh.",
+            variant: "destructive",
+            duration: 3000,
+          });
+        }
       }, 5000);
       
       return () => clearTimeout(timer);
     }
-  }, [gameCompleted, isPracticeMode, showGameOver, isSavingScore]);
+  }, [gameCompleted, isPracticeMode, showGameOver, isSavingScore, language, toast]);
 
   const handleSaveScore = useCallback(async () => {
     if (!sessionId) {
