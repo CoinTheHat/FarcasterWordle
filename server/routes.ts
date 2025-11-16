@@ -11,7 +11,6 @@ import {
   getBoardStats,
   getDailyLeaderboard,
   getWeeklyLeaderboard,
-  getWeeklyLeaderboardOld,
   getBestScoresLeaderboard,
   createWeeklyReward,
   updateWeeklyRewardStatus,
@@ -587,7 +586,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/leaderboard/last-week-winners", async (req: Request, res: Response) => {
     const { startDate, endDate } = getLastWeekDateRange();
     
-    const leaderboard = await getWeeklyLeaderboardOld(startDate, endDate, 3);
+    const leaderboard = await getWeeklyLeaderboard(startDate, endDate, 3);
     
     res.json({
       period: "last-week",
