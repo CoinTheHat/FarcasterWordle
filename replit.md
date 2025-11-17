@@ -36,7 +36,7 @@ The backend uses Node.js with Express, featuring custom middleware for Farcaster
 Farcaster SDK is used for authentication, extracting FID for all API requests via the `x-farcaster-fid` header. A guard screen is displayed if FID is unavailable.
 
 ### Weekly Reward System
-The system distributes USDC rewards to the top 3 players weekly (1st: 10 USDC, 2nd: 5 USDC, 3rd: 3 USDC) based on cumulative scores from Monday to Sunday (Europe/Istanbul UTC+3). An admin panel allows manual triggering of distributions, which are sent via the Base network. Failed transfers can be retried, and a `weekly_rewards` table tracks all distributions.
+The system distributes USDC rewards to the top 3 players weekly (1st: 10 USDC, 2nd: 5 USDC, 3rd: 3 USDC) based on cumulative scores from Monday to Sunday (Europe/Istanbul UTC+3). An admin panel with tabbed interface ("Distribution" and "Failed Rewards") allows manual triggering of distributions via Base network. The retry mechanism uses atomic updates (`atomicUpdateRewardToPending`) with WHERE status='failed' clause to prevent race conditions and double-payments during concurrent retry attempts. Error handling wraps blockchain transfers in try/catch blocks, reverting failed transfers back to 'failed' status with error messages to prevent rewards from being stranded in 'pending' state. Bulk retry operations process all selected rewards sequentially, collecting per-item results for partial success scenarios. The `weekly_rewards` table tracks all distributions with status transitions.
 
 ## External Dependencies
 
