@@ -671,10 +671,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/admin/distribute-weekly-rewards", requireAdminAuth, async (req: Request, res: Response) => {
     try {
+      const dryRun = req.query.dryRun === 'true';
       const { startDate, endDate } = getLastWeekDateRange();
       const preview = await calculateWeeklyRewards(startDate, endDate);
       
-      if (preview.alreadyDistributed) {
+      if (preview.alreadyDistributed && !dryRun) {
         res.json({
           success: false,
           message: "Rewards for this week have already been distributed",
@@ -688,6 +689,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           success: true,
           message: "No eligible winners with wallet addresses",
           distributed: [],
+          dryRun,
         });
         return;
       }
@@ -702,7 +704,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         const existingReward = await getWeeklyReward(winner.fid, preview.weekStart);
         
-        if (existingReward && existingReward.status === 'sent') {
+        if (existingReward && existingReward.status === 'sent' && !dryRun) {
           results.push({
             fid: winner.fid,
             rank,
@@ -714,7 +716,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         let rewardId = existingReward?.id;
         
-        if (!existingReward) {
+        if (!existingReward && !dryRun) {
           const newReward = await createWeeklyReward(
             winner.fid,
             preview.weekStart,
@@ -726,26 +728,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         const memo = `${rank}. Reward - Week ${preview.weekStart} Rank #${rank}`;
-        const transferResult = await sendReward(winner.walletAddress!, amountUsd, memo);
+        const transferResult = await sendReward(winner.walletAddress!, amountUsd, memo, dryRun);
 
         if (transferResult.success) {
-          await updateWeeklyRewardStatus(rewardId!, 'sent', transferResult.txHash);
+          if (!dryRun) {
+            await updateWeeklyRewardStatus(rewardId!, 'sent', transferResult.txHash);
+          }
           results.push({
             fid: winner.fid,
             username: winner.username,
             rank,
             amountUsd,
-            status: existingReward ? "retry_success" : "sent",
+            status: dryRun ? "dry_run_success" : (existingReward ? "retry_success" : "sent"),
             txHash: transferResult.txHash,
+            dryRun: transferResult.dryRun,
           });
         } else {
-          await updateWeeklyRewardStatus(rewardId!, 'failed', undefined, transferResult.error);
+          if (!dryRun) {
+            await updateWeeklyRewardStatus(rewardId!, 'failed', undefined, transferResult.error);
+          }
           results.push({
             fid: winner.fid,
             username: winner.username,
             rank,
             amountUsd,
-            status: existingReward ? "retry_failed" : "failed",
+            status: dryRun ? "dry_run_failed" : (existingReward ? "retry_failed" : "failed"),
             error: transferResult.error,
           });
         }
@@ -756,6 +763,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         weekStart: preview.weekStart,
         weekEnd: preview.weekEnd,
         distributed: results,
+        dryRun,
       });
     } catch (error: any) {
       console.error("Weekly reward distribution error:", error);
