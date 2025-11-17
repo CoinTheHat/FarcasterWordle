@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Trophy, Wallet, DollarSign, Loader2, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -125,7 +126,7 @@ export default function Admin() {
     }
   };
 
-  const distributeRewards = async () => {
+  const distributeRewards = async (dryRun: boolean = false) => {
     if (!adminToken) {
       toast({
         title: "Error",
@@ -135,7 +136,7 @@ export default function Admin() {
       return;
     }
 
-    if (preview?.alreadyDistributed) {
+    if (preview?.alreadyDistributed && !dryRun) {
       toast({
         title: "Error",
         description: "Rewards have already been distributed for this week",
@@ -157,7 +158,11 @@ export default function Admin() {
     setResult(null);
     
     try {
-      const response = await fetch("/api/admin/distribute-weekly-rewards", {
+      const url = dryRun 
+        ? "/api/admin/distribute-weekly-rewards?dryRun=true"
+        : "/api/admin/distribute-weekly-rewards";
+      
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "x-admin-token": adminToken,
@@ -170,11 +175,15 @@ export default function Admin() {
       if (response.ok) {
         setResult(data);
         toast({
-          title: "Success",
-          description: `Distributed rewards to ${data.distributed.length} winners`,
+          title: dryRun ? "✅ Dry-Run Test Success" : "Success",
+          description: dryRun 
+            ? `Test successful! Would distribute to ${data.distributed.length} winners (no real TX sent)`
+            : `Distributed rewards to ${data.distributed.length} winners`,
         });
-        fetchRewardHistory();
-        fetchPreview();
+        if (!dryRun) {
+          fetchRewardHistory();
+          fetchPreview();
+        }
       } else {
         toast({
           title: "Error",
@@ -366,32 +375,70 @@ export default function Admin() {
             </div>
           )}
 
-          <Button
-            onClick={distributeRewards}
-            disabled={!adminToken || isDistributing || preview?.alreadyDistributed || preview?.winners.length === 0}
-            className="w-full"
-            size="lg"
-            data-testid="button-distribute-rewards"
-          >
-            {isDistributing ? (
-              <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                Distributing Rewards...
-              </>
-            ) : (
-              <>
-                <Trophy className="w-5 h-5 mr-2" />
-                Distribute Last Week Rewards
-              </>
-            )}
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              onClick={() => distributeRewards(true)}
+              disabled={!adminToken || isDistributing || preview?.winners.length === 0}
+              className="flex-1"
+              size="lg"
+              variant="outline"
+              data-testid="button-test-distribution"
+            >
+              {isDistributing ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Testing...
+                </>
+              ) : (
+                <>
+                  <AlertTriangle className="w-5 h-5 mr-2" />
+                  Test Distribution (Dry-Run)
+                </>
+              )}
+            </Button>
+
+            <Button
+              onClick={() => distributeRewards(false)}
+              disabled={!adminToken || isDistributing || preview?.alreadyDistributed || preview?.winners.length === 0}
+              className="flex-1"
+              size="lg"
+              data-testid="button-distribute-rewards"
+            >
+              {isDistributing ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Distributing Rewards...
+                </>
+              ) : (
+                <>
+                  <Trophy className="w-5 h-5 mr-2" />
+                  Distribute Last Week Rewards
+                </>
+              )}
+            </Button>
+          </div>
 
           {result && (
             <div className="space-y-2 p-4 bg-muted rounded-lg">
-              <div className="font-semibold">Distribution Result:</div>
+              <div className="flex items-center gap-2">
+                <div className="font-semibold">Distribution Result:</div>
+                {result.dryRun && (
+                  <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
+                    🧪 DRY-RUN TEST
+                  </Badge>
+                )}
+              </div>
               <div className="text-sm text-muted-foreground">
                 Week: {result.weekStart} - {result.weekEnd}
               </div>
+              {result.dryRun && (
+                <Alert className="bg-yellow-500/10 border-yellow-500/20">
+                  <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                  <AlertDescription className="text-yellow-600">
+                    This was a test run. No real transactions were sent and no data was saved.
+                  </AlertDescription>
+                </Alert>
+              )}
               <div className="space-y-1">
                 {result.distributed.map((r: any, i: number) => (
                   <div key={i} className="text-sm p-2 bg-background rounded">

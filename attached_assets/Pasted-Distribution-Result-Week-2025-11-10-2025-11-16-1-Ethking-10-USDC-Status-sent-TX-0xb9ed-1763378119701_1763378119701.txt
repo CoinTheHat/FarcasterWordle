@@ -1,0 +1,22 @@
+Distribution Result:
+Week: 2025-11-10 - 2025-11-16
+#1 Ethking - 10 USDC
+Status: sent | TX: 0xb9ed4f57...
+#2 piacere - 5 USDC
+Status: failed | Error: Missing or invalid parameters. Double check you have provided the correct parameters. URL: https://mainnet.base.org Request body: {"method":"eth_sendRawTransaction","params":["0x02f8af82210580830f4240831282f782f60d94833589fcd6edb6e08f4c7c32d4f71b54bda0291380b844a9059cbb000000000000000000000000b3bbccba45b0d7ac527d27949c6643f5348da69200000000000000000000000000000000000000000000000000000000004c4b40c001a086097c1a5a013310e15ede37f758cd120f82da1ae64d9c5d94c6a9ef60be0ab0a03caaf8637aa036a548eba9ea791253673209c0f349897651ab44e15d8664b47d"]} Request Arguments: from: 0xEc499d6561Dfef8115B21E7Bae883967e56F6728 to: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 data: 0xa9059cbb000000000000000000000000b3bbccba45b0d7ac527d27949c6643f5348da69200000000000000000000000000000000000000000000000000000000004c4b40 Contract Call: address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 function: transfer(address to, uint256 amount) args: (0xb3bbcCba45b0d7Ac527d27949C6643F5348dA692, 5000000) sender: 0xEc499d6561Dfef8115B21E7Bae883967e56F6728 Docs: https://viem.sh/docs/contract/writeContract Details: replacement transaction underpriced Version: viem@2.38.4
+#3 Serhat - 3 USDC
+Status: failed | Error: Missing or invalid parameters. Double check you have provided the correct parameters. URL: https://mainnet.base.org Request body: {"method":"eth_sendRawTransaction","params":["0x02f8af82210580830f4240831282f782b17f94833589fcd6edb6e08f4c7c32d4f71b54bda0291380b844a9059cbb000000000000000000000000bfd9588bfcd1e84536f02fdf6fcb7514629eed2b00000000000000000000000000000000000000000000000000000000002dc6c0c001a0ae93ef76e653eaba97028279ff69dd28f7b2cd9653b41c91826808e4d635bcb1a05e60acb26119ae5ebb8c1e71071b3b073158469b846ec0d9a301a5437f680a05"]} Request Arguments: from: 0xEc499d6561Dfef8115B21E7Bae883967e56F6728 to: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 data: 0xa9059cbb000000000000000000000000bfd9588bfcd1e84536f02fdf6fcb7514629eed2b00000000000000000000000000000000000000000000000000000000002dc6c0 Contract Call: address: 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 function: transfer(address to, uint256 amount) args: (0xbfd9588bFCd1e84536f02fdF6FCb7514629EED2B, 3000000) sender: 0xEc499d6561Dfef8115B21E7Bae883967e56F6728 Docs: https://viem.sh/docs/contract/writeContract Details: replacement transaction underpriced Version: viem@2.38.4
+Recent Distributions
+Last 20 reward distributions
+#3 FID: 1326536
+2025-11-10 - 2025-11-16
+3 USDC
+failed
+#2 FID: 378257
+2025-11-10 - 2025-11-16
+5 USDC
+failed
+#1 FID: 413911
+2025-11-10 - 2025-11-16
+10 USDC
+sent
