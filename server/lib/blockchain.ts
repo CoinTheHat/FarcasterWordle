@@ -30,12 +30,14 @@ export interface TransferResult {
   success: boolean;
   txHash?: string;
   error?: string;
+  dryRun?: boolean;
 }
 
 export async function sendReward(
   toAddress: string,
   amountUsd: number,
-  memo: string
+  memo: string,
+  dryRun: boolean = false
 ): Promise<TransferResult> {
   if (!SPONSOR_PRIVATE_KEY) {
     return {
@@ -48,6 +50,19 @@ export async function sendReward(
     return {
       success: false,
       error: `Invalid reward amount: ${amountUsd}`,
+    };
+  }
+
+  if (dryRun) {
+    const fakeTxHash = `0xDRYRUN${Date.now().toString(16)}${Math.random().toString(16).slice(2, 10)}`;
+    console.log(`[DRY RUN] Would send: ${amountUsd} USDC to ${toAddress}`);
+    console.log(`[DRY RUN] Fake TX Hash: ${fakeTxHash}`);
+    console.log(`[DRY RUN] Memo: ${memo}`);
+    
+    return {
+      success: true,
+      txHash: fakeTxHash,
+      dryRun: true,
     };
   }
 
