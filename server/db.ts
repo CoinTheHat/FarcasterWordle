@@ -313,6 +313,23 @@ export async function updateWeeklyRewardStatus(
     .where(eq(schema.weeklyRewards.id, id));
 }
 
+export async function atomicUpdateRewardToPending(id: number): Promise<WeeklyReward | null> {
+  const results = await db.update(schema.weeklyRewards)
+    .set({
+      status: 'pending',
+      errorMessage: null,
+    })
+    .where(
+      and(
+        eq(schema.weeklyRewards.id, id),
+        eq(schema.weeklyRewards.status, 'failed')
+      )
+    )
+    .returning();
+
+  return results.length > 0 ? results[0] : null;
+}
+
 export async function getWeeklyReward(
   fid: number,
   weekStart: string
@@ -341,6 +358,60 @@ export async function getWeeklyRewardsHistory(limit: number = 50): Promise<Weekl
     .from(schema.weeklyRewards)
     .orderBy(desc(schema.weeklyRewards.createdAt))
     .limit(limit);
+}
+
+export async function getFailedWeeklyRewards(weekStart?: string): Promise<any[]> {
+  const whereConditions = weekStart 
+    ? and(
+        eq(schema.weeklyRewards.status, 'failed'),
+        eq(schema.weeklyRewards.weekStart, weekStart)
+      )
+    : eq(schema.weeklyRewards.status, 'failed');
+
+  const results = await db.select({
+    id: schema.weeklyRewards.id,
+    fid: schema.weeklyRewards.fid,
+    username: schema.profiles.username,
+    walletAddress: schema.profiles.walletAddress,
+    weekStart: schema.weeklyRewards.weekStart,
+    weekEnd: schema.weeklyRewards.weekEnd,
+    rank: schema.weeklyRewards.rank,
+    amountUsd: schema.weeklyRewards.amountUsd,
+    txHash: schema.weeklyRewards.txHash,
+    status: schema.weeklyRewards.status,
+    errorMessage: schema.weeklyRewards.errorMessage,
+    createdAt: schema.weeklyRewards.createdAt,
+    distributedAt: schema.weeklyRewards.distributedAt,
+  })
+  .from(schema.weeklyRewards)
+  .leftJoin(schema.profiles, eq(schema.weeklyRewards.fid, schema.profiles.fid))
+  .where(whereConditions)
+  .orderBy(desc(schema.weeklyRewards.createdAt));
+  
+  return results;
+}
+
+export async function getWeeklyRewardById(id: number): Promise<any | null> {
+  const results = await db.select({
+    id: schema.weeklyRewards.id,
+    fid: schema.weeklyRewards.fid,
+    username: schema.profiles.username,
+    walletAddress: schema.profiles.walletAddress,
+    weekStart: schema.weeklyRewards.weekStart,
+    weekEnd: schema.weeklyRewards.weekEnd,
+    rank: schema.weeklyRewards.rank,
+    amountUsd: schema.weeklyRewards.amountUsd,
+    txHash: schema.weeklyRewards.txHash,
+    status: schema.weeklyRewards.status,
+    errorMessage: schema.weeklyRewards.errorMessage,
+    createdAt: schema.weeklyRewards.createdAt,
+    distributedAt: schema.weeklyRewards.distributedAt,
+  })
+  .from(schema.weeklyRewards)
+  .leftJoin(schema.profiles, eq(schema.weeklyRewards.fid, schema.profiles.fid))
+  .where(eq(schema.weeklyRewards.id, id));
+
+  return results.length > 0 ? results[0] : null;
 }
 
 export async function getPracticeResultCount(fid: number, yyyymmdd: string): Promise<number> {

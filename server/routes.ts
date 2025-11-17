@@ -17,6 +17,9 @@ import {
   getWeeklyReward,
   getPendingWeeklyRewards,
   getWeeklyRewardsHistory,
+  getFailedWeeklyRewards,
+  getWeeklyRewardById,
+  atomicUpdateRewardToPending,
   getPracticeResultCount,
   createPracticeResult,
 } from "./db";
@@ -780,6 +783,216 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/wallet-balance", requireAdminAuth, async (req: Request, res: Response) => {
     const result = await getWalletBalance();
     res.json(result);
+  });
+
+  app.get("/api/admin/failed-rewards", requireAdminAuth, async (req: Request, res: Response) => {
+    try {
+      const weekStart = req.query.weekStart as string | undefined;
+      const failedRewards = await getFailedWeeklyRewards(weekStart);
+      res.json({ 
+        success: true,
+        rewards: failedRewards 
+      });
+    } catch (error: any) {
+      console.error("Failed to fetch failed rewards:", error);
+      res.status(500).json({ error: error.message || "Failed to fetch failed rewards" });
+    }
+  });
+
+  app.post("/api/admin/retry-reward/:id", requireAdminAuth, async (req: Request, res: Response) => {
+    try {
+      const rewardId = parseInt(req.params.id);
+      
+      if (isNaN(rewardId)) {
+        res.status(400).json({ error: "Invalid reward ID" });
+        return;
+      }
+
+      const reward = await getWeeklyRewardById(rewardId);
+      
+      if (!reward) {
+        res.status(404).json({ error: "Reward not found" });
+        return;
+      }
+
+      if (reward.status === 'sent') {
+        res.status(400).json({ error: "This reward has already been successfully sent" });
+        return;
+      }
+
+      if (!reward.walletAddress) {
+        res.status(400).json({ error: "Winner does not have a wallet address" });
+        return;
+      }
+
+      const updated = await atomicUpdateRewardToPending(rewardId);
+      
+      if (!updated) {
+        res.status(409).json({ 
+          error: "Reward is not in failed status or is already being retried by another process" 
+        });
+        return;
+      }
+
+      try {
+        const memo = `${reward.rank}. Reward - Week ${reward.weekStart} Rank #${reward.rank}`;
+        const transferResult = await sendReward(reward.walletAddress, reward.amountUsd, memo, false);
+
+        if (transferResult.success) {
+          await updateWeeklyRewardStatus(rewardId, 'sent', transferResult.txHash);
+          res.json({
+            success: true,
+            reward: {
+              id: rewardId,
+              fid: reward.fid,
+              username: reward.username,
+              rank: reward.rank,
+              amountUsd: reward.amountUsd,
+              status: 'sent',
+              txHash: transferResult.txHash,
+            }
+          });
+        } else {
+          await updateWeeklyRewardStatus(rewardId, 'failed', undefined, transferResult.error);
+          res.status(500).json({
+            success: false,
+            error: transferResult.error,
+            reward: {
+              id: rewardId,
+              fid: reward.fid,
+              username: reward.username,
+              rank: reward.rank,
+              amountUsd: reward.amountUsd,
+              status: 'failed',
+              error: transferResult.error,
+            }
+          });
+        }
+      } catch (sendError: any) {
+        await updateWeeklyRewardStatus(rewardId, 'failed', undefined, sendError.message || 'Transfer failed');
+        throw sendError;
+      }
+    } catch (error: any) {
+      console.error("Retry reward error:", error);
+      res.status(500).json({ error: error.message || "Retry failed" });
+    }
+  });
+
+  app.post("/api/admin/retry-rewards", requireAdminAuth, async (req: Request, res: Response) => {
+    try {
+      const { rewardIds } = req.body;
+      
+      if (!Array.isArray(rewardIds) || rewardIds.length === 0) {
+        res.status(400).json({ error: "Invalid request: rewardIds must be a non-empty array" });
+        return;
+      }
+
+      const results = [];
+
+      for (const rewardId of rewardIds) {
+        const reward = await getWeeklyRewardById(rewardId);
+        
+        if (!reward) {
+          results.push({
+            id: rewardId,
+            status: 'error',
+            error: 'Reward not found',
+          });
+          continue;
+        }
+
+        if (reward.status === 'sent') {
+          results.push({
+            id: rewardId,
+            fid: reward.fid,
+            username: reward.username,
+            status: 'already_sent',
+            txHash: reward.txHash,
+          });
+          continue;
+        }
+
+        if (!reward.walletAddress) {
+          results.push({
+            id: rewardId,
+            fid: reward.fid,
+            username: reward.username,
+            status: 'no_wallet',
+            error: 'No wallet address',
+          });
+          continue;
+        }
+
+        const updated = await atomicUpdateRewardToPending(rewardId);
+        
+        if (!updated) {
+          results.push({
+            id: rewardId,
+            fid: reward.fid,
+            username: reward.username,
+            status: 'skipped',
+            error: 'Already being processed or not in failed status',
+          });
+          continue;
+        }
+
+        try {
+          const memo = `${reward.rank}. Reward - Week ${reward.weekStart} Rank #${reward.rank}`;
+          const transferResult = await sendReward(reward.walletAddress, reward.amountUsd, memo, false);
+
+          if (transferResult.success) {
+            await updateWeeklyRewardStatus(rewardId, 'sent', transferResult.txHash);
+            results.push({
+              id: rewardId,
+              fid: reward.fid,
+              username: reward.username,
+              rank: reward.rank,
+              amountUsd: reward.amountUsd,
+              status: 'sent',
+              txHash: transferResult.txHash,
+            });
+          } else {
+            await updateWeeklyRewardStatus(rewardId, 'failed', undefined, transferResult.error);
+            results.push({
+              id: rewardId,
+              fid: reward.fid,
+              username: reward.username,
+              rank: reward.rank,
+              amountUsd: reward.amountUsd,
+              status: 'failed',
+              error: transferResult.error,
+            });
+          }
+        } catch (sendError: any) {
+          await updateWeeklyRewardStatus(rewardId, 'failed', undefined, sendError.message || 'Transfer failed');
+          results.push({
+            id: rewardId,
+            fid: reward.fid,
+            username: reward.username,
+            rank: reward.rank,
+            amountUsd: reward.amountUsd,
+            status: 'failed',
+            error: sendError.message || 'Transfer failed',
+          });
+        }
+      }
+
+      const successCount = results.filter(r => r.status === 'sent').length;
+      const failureCount = results.filter(r => r.status === 'failed').length;
+
+      res.json({
+        success: true,
+        summary: {
+          total: rewardIds.length,
+          successful: successCount,
+          failed: failureCount,
+        },
+        results,
+      });
+    } catch (error: any) {
+      console.error("Bulk retry error:", error);
+      res.status(500).json({ error: error.message || "Bulk retry failed" });
+    }
   });
 
   app.get("/version.json", (req: Request, res: Response) => {

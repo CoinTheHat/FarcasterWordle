@@ -3,7 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Wallet, DollarSign, Loader2, AlertTriangle } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Trophy, Wallet, DollarSign, Loader2, AlertTriangle, RefreshCw, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -26,6 +28,19 @@ interface PreviewResult {
   alreadyDistributed: boolean;
 }
 
+interface FailedReward {
+  id: number;
+  fid: number;
+  username: string | null;
+  walletAddress: string | null;
+  weekStart: string;
+  weekEnd: string;
+  rank: number;
+  amountUsd: number;
+  errorMessage: string | null;
+  createdAt: string;
+}
+
 export default function Admin() {
   const [adminToken, setAdminToken] = useState("");
   const [isDistributing, setIsDistributing] = useState(false);
@@ -35,6 +50,10 @@ export default function Admin() {
   const [result, setResult] = useState<any>(null);
   const [preview, setPreview] = useState<PreviewResult | null>(null);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [failedRewards, setFailedRewards] = useState<FailedReward[]>([]);
+  const [selectedRewards, setSelectedRewards] = useState<Set<number>>(new Set());
+  const [isLoadingFailed, setIsLoadingFailed] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -43,6 +62,7 @@ export default function Admin() {
       const timeoutId = setTimeout(() => {
         fetchPreview();
         fetchRewardHistory();
+        fetchFailedRewards();
       }, 500); // Debounce 500ms
       
       return () => clearTimeout(timeoutId);
@@ -221,6 +241,107 @@ export default function Admin() {
     }
   };
 
+  const fetchFailedRewards = async () => {
+    if (!adminToken) return;
+
+    setIsLoadingFailed(true);
+    try {
+      const response = await fetch("/api/admin/failed-rewards", {
+        headers: {
+          "x-admin-token": adminToken,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setFailedRewards(data.rewards);
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to fetch failed rewards",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch failed rewards:", error);
+    } finally {
+      setIsLoadingFailed(false);
+    }
+  };
+
+  const retrySelected = async () => {
+    if (selectedRewards.size === 0) {
+      toast({
+        title: "No Selection",
+        description: "Please select at least one failed reward to retry",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsRetrying(true);
+    try {
+      const response = await fetch("/api/admin/retry-rewards", {
+        method: "POST",
+        headers: {
+          "x-admin-token": adminToken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          rewardIds: Array.from(selectedRewards),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const successCount = data.summary.successful;
+        const failCount = data.summary.failed;
+        
+        toast({
+          title: "Retry Complete",
+          description: `✅ ${successCount} successful, ❌ ${failCount} failed`,
+        });
+        
+        setSelectedRewards(new Set());
+        fetchFailedRewards();
+        fetchRewardHistory();
+      } else {
+        toast({
+          title: "Error",
+          description: data.error || "Retry failed",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Retry failed",
+        variant: "destructive",
+      });
+    } finally {
+      setIsRetrying(false);
+    }
+  };
+
+  const toggleRewardSelection = (id: number) => {
+    const newSelected = new Set(selectedRewards);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedRewards(newSelected);
+  };
+
+  const toggleAllRewards = () => {
+    if (selectedRewards.size === failedRewards.length) {
+      setSelectedRewards(new Set());
+    } else {
+      setSelectedRewards(new Set(failedRewards.map(r => r.id)));
+    }
+  };
+
   return (
     <div className="container max-w-6xl mx-auto p-6 space-y-6">
       <div className="flex items-center gap-3">
@@ -263,22 +384,35 @@ export default function Admin() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5" />
-            Distribute Last Week Rewards
-          </CardTitle>
-          <CardDescription>
-            Automatically sends USDC (stablecoin):
-            <ul className="list-disc list-inside mt-2">
-              <li>1st Place: 10 USDC ($10)</li>
-              <li>2nd Place: 5 USDC ($5)</li>
-              <li>3rd Place: 3 USDC ($3)</li>
-            </ul>
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <Tabs defaultValue="distribution" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="distribution" data-testid="tab-distribution">
+            <Trophy className="w-4 h-4 mr-2" />
+            Distribution
+          </TabsTrigger>
+          <TabsTrigger value="failed" data-testid="tab-failed-rewards">
+            <XCircle className="w-4 h-4 mr-2" />
+            Failed Rewards {failedRewards.length > 0 && `(${failedRewards.length})`}
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="distribution">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="w-5 h-5" />
+                Distribute Last Week Rewards
+              </CardTitle>
+              <CardDescription>
+                Automatically sends USDC (stablecoin):
+                <ul className="list-disc list-inside mt-2">
+                  <li>1st Place: 10 USDC ($10)</li>
+                  <li>2nd Place: 5 USDC ($5)</li>
+                  <li>3rd Place: 3 USDC ($3)</li>
+                </ul>
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
           {isLoadingPreview && (
             <div className="flex items-center justify-center p-4">
               <Loader2 className="w-6 h-6 animate-spin" />
@@ -455,8 +589,109 @@ export default function Admin() {
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="failed">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <XCircle className="w-5 h-5" />
+                Failed Rewards
+              </CardTitle>
+              <CardDescription>
+                Retry failed reward distributions from previous weeks
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {isLoadingFailed ? (
+                <div className="flex items-center justify-center p-8">
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                </div>
+              ) : failedRewards.length === 0 ? (
+                <div className="text-center p-8 text-muted-foreground">
+                  No failed rewards found. All distributions completed successfully!
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        checked={selectedRewards.size === failedRewards.length && failedRewards.length > 0}
+                        onCheckedChange={toggleAllRewards}
+                        data-testid="checkbox-select-all"
+                      />
+                      <span className="text-sm text-muted-foreground">
+                        Select All ({selectedRewards.size} selected)
+                      </span>
+                    </div>
+                    <Button
+                      onClick={retrySelected}
+                      disabled={selectedRewards.size === 0 || isRetrying}
+                      size="sm"
+                      data-testid="button-retry-selected"
+                    >
+                      {isRetrying ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Retrying...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2" />
+                          Retry Selected ({selectedRewards.size})
+                        </>
+                      )}
+                    </Button>
+                  </div>
+
+                  <div className="border rounded-lg">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-12"></TableHead>
+                          <TableHead>Rank</TableHead>
+                          <TableHead>Username / FID</TableHead>
+                          <TableHead>Week</TableHead>
+                          <TableHead className="text-right">Amount</TableHead>
+                          <TableHead>Error</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {failedRewards.map((reward) => (
+                          <TableRow key={reward.id} data-testid={`row-failed-reward-${reward.id}`}>
+                            <TableCell>
+                              <Checkbox
+                                checked={selectedRewards.has(reward.id)}
+                                onCheckedChange={() => toggleRewardSelection(reward.id)}
+                                data-testid={`checkbox-reward-${reward.id}`}
+                              />
+                            </TableCell>
+                            <TableCell>#{reward.rank}</TableCell>
+                            <TableCell>
+                              {reward.username || `FID: ${reward.fid}`}
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {reward.weekStart} - {reward.weekEnd}
+                            </TableCell>
+                            <TableCell className="text-right font-semibold">
+                              {reward.amountUsd} USDC
+                            </TableCell>
+                            <TableCell className="text-xs text-red-600 dark:text-red-400 max-w-xs truncate">
+                              {reward.errorMessage || "Unknown error"}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {history.length > 0 && (
         <Card>
