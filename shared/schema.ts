@@ -70,6 +70,25 @@ export const practiceResults = pgTable("practice_results", {
   },
 }));
 
+export const gameSessions = pgTable("game_sessions", {
+  sessionId: text("session_id").primaryKey(),
+  fid: integer("fid").notNull(),
+  yyyymmdd: text("yyyymmdd").notNull(),
+  solution: text("solution").notNull(),
+  language: text("language").notNull(),
+  guesses: text("guesses").array().notNull().default([]),
+  attemptsUsed: integer("attempts_used").notNull().default(0),
+  completed: boolean("completed").notNull().default(false),
+  isPracticeMode: boolean("is_practice_mode").notNull().default(false),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  completedAt: timestamp("completed_at"),
+}, (table) => ({
+  uniqueFidDate: {
+    columns: [table.fid, table.yyyymmdd],
+    isUnique: true,
+  },
+}));
+
 // Insert Schemas
 export const insertProfileSchema = createInsertSchema(profiles).omit({
   createdAt: true,
@@ -96,6 +115,11 @@ export const insertPracticeResultSchema = createInsertSchema(practiceResults).om
   createdAt: true,
 });
 
+export const insertGameSessionSchema = createInsertSchema(gameSessions).omit({
+  createdAt: true,
+  completedAt: true,
+});
+
 // Types
 export type Profile = typeof profiles.$inferSelect;
 export type InsertProfile = z.infer<typeof insertProfileSchema>;
@@ -111,6 +135,9 @@ export type InsertWeeklyReward = z.infer<typeof insertWeeklyRewardSchema>;
 
 export type PracticeResult = typeof practiceResults.$inferSelect;
 export type InsertPracticeResult = z.infer<typeof insertPracticeResultSchema>;
+
+export type GameSession = typeof gameSessions.$inferSelect;
+export type InsertGameSession = z.infer<typeof insertGameSessionSchema>;
 
 // Game Types
 export type TileFeedback = "correct" | "present" | "absent" | "empty";
