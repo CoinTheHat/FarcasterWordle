@@ -397,6 +397,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     activeGame.guesses.push(normalized);
     activeGame.attemptsUsed++;
 
+    // ANTI-EXPLOIT: Sync daily game sessions to database after each guess
+    if (!activeGame.isPracticeMode) {
+      await updateGameSessionGuess(sessionId, activeGame.guesses, activeGame.attemptsUsed);
+    }
+
     const feedback = calculateFeedback(normalized, activeGame.solution);
     
     const won = normalized === activeGame.solution;
