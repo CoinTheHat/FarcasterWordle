@@ -235,17 +235,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (existingDbSession) {
         // Found existing session in DB - return it (same word even after refresh!)
+        // CRITICAL FIX: Restore won/finalScore from persisted guesses to prevent completion blocking
+        const rawGuesses = existingDbSession.guesses || [];
+        const rawSolution = existingDbSession.solution;
+        const attemptsUsed = existingDbSession.attemptsUsed;
+        const lang = existingDbSession.language as Language;
+        
+        // Normalize guesses AND solution with identical locale rules for accurate win detection
+        const guesses = rawGuesses.map(g => 
+          lang === 'tr' ? g.toLocaleUpperCase('tr-TR') : g.toUpperCase()
+        );
+        const solution = lang === 'tr' 
+          ? rawSolution.toLocaleUpperCase('tr-TR') 
+          : rawSolution.toUpperCase();
+        
+        // Check if player already won (solution is in normalized guesses)
+        const hasWon = guesses.includes(solution);
+        const gameOver = hasWon || attemptsUsed >= MAX_ATTEMPTS;
+        
+        // Recalculate final score from persisted state
+        let finalScore: number | undefined;
+        let won: boolean | null = null;
+        
+        if (hasWon) {
+          won = true;
+          finalScore = calculateWinScore(attemptsUsed);
+        } else if (gameOver && guesses.length > 0) {
+          // Player lost - calculate loss score from last guess (only if guesses exist)
+          won = false;
+          const lastGuess = guesses[guesses.length - 1];
+          const feedback = calculateFeedback(lastGuess, solution);
+          finalScore = calculateLossScore(feedback);
+        } else if (gameOver) {
+          // Edge case: game over but no guesses (corruption) - default to 0
+          won = false;
+          finalScore = 0;
+        }
+        
         // Also add to in-memory cache for faster lookups
         const activeGame: ActiveGame = {
           fid: existingDbSession.fid,
           sessionId: existingDbSession.sessionId,
           solution: existingDbSession.solution,
-          language: existingDbSession.language as Language,
-          guesses: existingDbSession.guesses || [],
-          attemptsUsed: existingDbSession.attemptsUsed,
-          won: null,
+          language: lang,
+          guesses,
+          attemptsUsed,
+          won,
+          finalScore,
           createdAt: existingDbSession.createdAt.toISOString(),
-          completed: false,
+          completed: existingDbSession.completed,
           isPracticeMode: false,
         };
         
@@ -546,9 +584,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       await updateStreak(fid, newCurrentStreak, newMaxStreak, today);
 
-      // Mark session as completed
+      // Mark session as completed in database and memory
       activeGame.completed = true;
       activeGame.completedAt = new Date().toISOString();
+      await completeGameSession(sessionId);
 
       res.json({
         success: true,
