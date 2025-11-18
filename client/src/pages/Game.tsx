@@ -194,6 +194,38 @@ export default function Game() {
         const gameSession = await startGame(language);
         setSessionId(gameSession.sessionId);
         
+        // RESTORE SESSION: If resumed=true, restore guesses and game state
+        if (gameSession.resumed && gameSession.guesses && gameSession.guesses.length > 0) {
+          console.log("Restoring session with", gameSession.guesses.length, "guesses");
+          const restoredGuesses = gameSession.guesses.map(g => g.guess);
+          const restoredFeedback = gameSession.guesses.map(g => g.feedback);
+          
+          setGuesses(restoredGuesses);
+          setFeedback(restoredFeedback);
+          
+          // Update letter states from restored guesses
+          const newLetterStates = new Map<string, "correct" | "present" | "absent">();
+          gameSession.guesses.forEach(({ guess, feedback }) => {
+            guess.split('').forEach((letter, i) => {
+              const state = feedback[i];
+              // Skip empty tiles (shouldn't happen but defensive programming)
+              if (state !== "empty") {
+                if (state === "correct" || (!newLetterStates.has(letter) || newLetterStates.get(letter) !== "correct")) {
+                  newLetterStates.set(letter, state);
+                }
+              }
+            });
+          });
+          setLetterStates(newLetterStates);
+          
+          // If game is over, restore final state
+          if (gameSession.gameOver) {
+            setGameStatus(gameSession.won ? "won" : "lost");
+            setSolution(gameSession.solution || "");
+            setShowGameOver(true);
+          }
+        }
+        
         // Set practice mode based on backend response
         if (gameSession.isPracticeMode) {
           setIsPracticeMode(true);

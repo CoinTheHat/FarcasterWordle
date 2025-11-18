@@ -289,11 +289,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         activeGames.set(existingDbSession.sessionId, activeGame);
         
+        // Generate feedback for each persisted guess to restore UI state
+        const guessHistory = guesses.map(guess => ({
+          guess,
+          feedback: calculateFeedback(guess, solution),
+        }));
+        
         res.json({
           sessionId: existingDbSession.sessionId,
           maxAttempts: MAX_ATTEMPTS,
           isPracticeMode: false,
           resumed: true,
+          guesses: guessHistory,
+          attemptsUsed,
+          ...(gameOver ? { 
+            won,
+            gameOver: true,
+            solution,
+            score: finalScore 
+          } : {}),
           ...(process.env.NODE_ENV === 'development' ? { solution: existingDbSession.solution } : {}),
         });
         return;

@@ -1,4 +1,4 @@
-import type { UserStats, GuessResponse, BoardStats } from "@shared/schema";
+import type { UserStats, GuessResponse, BoardStats, TileFeedback } from "@shared/schema";
 
 let currentFid: number | null = null;
 
@@ -33,6 +33,13 @@ export interface StartGameResponse {
   sessionId: string;
   maxAttempts: number;
   isPracticeMode?: boolean;
+  resumed?: boolean;
+  guesses?: Array<{ guess: string; feedback: TileFeedback[] }>;
+  attemptsUsed?: number;
+  gameOver?: boolean;
+  won?: boolean;
+  solution?: string;
+  score?: number;
 }
 
 export async function startGame(language: string = "en"): Promise<StartGameResponse> {
