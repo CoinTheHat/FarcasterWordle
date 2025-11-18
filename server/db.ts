@@ -450,3 +450,72 @@ export async function createPracticeResult(
 
   return result;
 }
+
+export async function createGameSession(
+  sessionId: string,
+  fid: number,
+  yyyymmdd: string,
+  solution: string,
+  language: string,
+  isPracticeMode: boolean
+): Promise<schema.GameSession> {
+  const [session] = await db.insert(schema.gameSessions)
+    .values({
+      sessionId,
+      fid,
+      yyyymmdd,
+      solution,
+      language,
+      guesses: [],
+      attemptsUsed: 0,
+      completed: false,
+      isPracticeMode,
+    })
+    .returning();
+
+  return session;
+}
+
+export async function getGameSession(sessionId: string): Promise<schema.GameSession | null> {
+  const results = await db.select()
+    .from(schema.gameSessions)
+    .where(eq(schema.gameSessions.sessionId, sessionId));
+
+  return results.length > 0 ? results[0] : null;
+}
+
+export async function getTodayGameSession(fid: number, yyyymmdd: string): Promise<schema.GameSession | null> {
+  const results = await db.select()
+    .from(schema.gameSessions)
+    .where(
+      and(
+        eq(schema.gameSessions.fid, fid),
+        eq(schema.gameSessions.yyyymmdd, yyyymmdd),
+        eq(schema.gameSessions.completed, false)
+      )
+    );
+
+  return results.length > 0 ? results[0] : null;
+}
+
+export async function updateGameSessionGuess(
+  sessionId: string,
+  guesses: string[],
+  attemptsUsed: number
+): Promise<void> {
+  await db.update(schema.gameSessions)
+    .set({
+      guesses,
+      attemptsUsed,
+    })
+    .where(eq(schema.gameSessions.sessionId, sessionId));
+}
+
+export async function completeGameSession(sessionId: string): Promise<void> {
+  await db.update(schema.gameSessions)
+    .set({
+      completed: true,
+      completedAt: new Date(),
+    })
+    .where(eq(schema.gameSessions.sessionId, sessionId));
+}
