@@ -22,6 +22,11 @@ import {
   atomicUpdateRewardToPending,
   getPracticeResultCount,
   createPracticeResult,
+  createGameSession,
+  getGameSession,
+  getTodayGameSession,
+  updateGameSessionGuess,
+  completeGameSession,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo, getLastWeekDateRange, getCurrentWeekDateRange } from "./lib/date";
 import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateWinScore, calculateLossScore, getRandomWord, type Language } from "./lib/words";
@@ -223,50 +228,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const todayResult = await getDailyResult(fid, today);
     const isPracticeMode = !!todayResult && process.env.NODE_ENV !== 'development';
 
-    // CRITICAL FIX: Check for existing active (non-completed) session
-    // This prevents multiple session exploit
+    // ANTI-EXPLOIT FIX: For daily games, use database persistence to prevent refresh exploit
+    if (!isPracticeMode) {
+      // Check database for existing session for today
+      const existingDbSession = await getTodayGameSession(fid, today);
+      
+      if (existingDbSession) {
+        // Found existing session in DB - return it (same word even after refresh!)
+        // Also add to in-memory cache for faster lookups
+        const activeGame: ActiveGame = {
+          fid: existingDbSession.fid,
+          sessionId: existingDbSession.sessionId,
+          solution: existingDbSession.solution,
+          language: existingDbSession.language as Language,
+          guesses: existingDbSession.guesses || [],
+          attemptsUsed: existingDbSession.attemptsUsed,
+          won: null,
+          createdAt: existingDbSession.createdAt.toISOString(),
+          completed: false,
+          isPracticeMode: false,
+        };
+        
+        activeGames.set(existingDbSession.sessionId, activeGame);
+        
+        res.json({
+          sessionId: existingDbSession.sessionId,
+          maxAttempts: MAX_ATTEMPTS,
+          isPracticeMode: false,
+          resumed: true,
+          ...(process.env.NODE_ENV === 'development' ? { solution: existingDbSession.solution } : {}),
+        });
+        return;
+      }
+      
+      // No existing session - create new one and save to DB
+      const sessionId = generateSessionId();
+      const solution = getRandomWord(language as Language);
+      
+      // Save to database for persistence across refreshes
+      await createGameSession(sessionId, fid, today, solution, language, false);
+      
+      // Also add to in-memory cache
+      const activeGame: ActiveGame = {
+        fid,
+        sessionId,
+        solution,
+        language: language as Language,
+        guesses: [],
+        attemptsUsed: 0,
+        won: null,
+        createdAt: new Date().toISOString(),
+        completed: false,
+        isPracticeMode: false,
+      };
+      
+      activeGames.set(sessionId, activeGame);
+      
+      res.json({
+        sessionId,
+        maxAttempts: MAX_ATTEMPTS,
+        isPracticeMode: false,
+        ...(process.env.NODE_ENV === 'development' ? { solution } : {}),
+      });
+      return;
+    }
+
+    // PRACTICE MODE: Use in-memory sessions (old logic)
     let existingSession: ActiveGame | undefined;
     let existingSessionId: string | undefined;
     
     activeGames.forEach((game, sid) => {
-      if (game.fid === fid) {
-        // Clean up completed or used-up sessions (6 attempts exhausted)
+      if (game.fid === fid && game.isPracticeMode) {
+        // Clean up completed or used-up sessions
         if (game.completed || game.attemptsUsed >= MAX_ATTEMPTS) {
           activeGames.delete(sid);
         } else if (!existingSession) {
-          // Found active session - reuse it (only set first match)
           existingSession = game;
           existingSessionId = sid;
         }
       }
     });
 
-    // If active session exists, validate it's for today AND same language before reusing
     if (existingSession && existingSessionId) {
-      // CRITICAL FIX: Check if session is from today
-      // If session is stale (from previous day), delete it and create new one
       const sessionDate = existingSession.createdAt ? existingSession.createdAt.substring(0, 10).replace(/-/g, '') : '';
       
       if (sessionDate === today && existingSession.language === language) {
-        // Session is from today and same language - re-validate isPracticeMode
-        // (in case day boundary crossed since session creation)
-        const todayResultCheck = await getDailyResult(fid, today);
-        const currentIsPracticeMode = !!todayResultCheck && process.env.NODE_ENV !== 'development';
-        existingSession.isPracticeMode = currentIsPracticeMode;
-        
         res.json({
           sessionId: existingSessionId,
           maxAttempts: MAX_ATTEMPTS,
-          isPracticeMode: currentIsPracticeMode,
+          isPracticeMode: true,
           resumed: true,
         });
         return;
       } else {
-        // Stale session or different language, delete and create new
         activeGames.delete(existingSessionId);
       }
     }
 
+    // Create new practice session (in-memory only)
     const sessionId = generateSessionId();
     const solution = getRandomWord(language as Language);
     
@@ -280,7 +339,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       won: null,
       createdAt: new Date().toISOString(),
       completed: false,
-      isPracticeMode,
+      isPracticeMode: true,
     };
     
     activeGames.set(sessionId, activeGame);
@@ -288,7 +347,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({
       sessionId,
       maxAttempts: MAX_ATTEMPTS,
-      isPracticeMode,
+      isPracticeMode: true,
       ...(process.env.NODE_ENV === 'development' ? { solution } : {}),
     });
   });
