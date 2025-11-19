@@ -99,7 +99,7 @@ export default function Game() {
       // Set state based on backend response
       if (gameSession.isPracticeMode) {
         setIsPracticeMode(true);
-        setGameCompleted(true); // Show practice banner
+        // Don't set gameCompleted=true here! Only set when game actually ends.
       } else {
         setGameCompleted(false);
         setIsPracticeMode(false);
@@ -222,6 +222,7 @@ export default function Game() {
           if (gameSession.gameOver) {
             setGameStatus(gameSession.won ? "won" : "lost");
             setSolution(gameSession.solution || "");
+            setGameCompleted(true); // Mark as completed when restoring finished game
             setShowGameOver(true);
           }
         }
@@ -229,7 +230,9 @@ export default function Game() {
         // Set practice mode based on backend response
         if (gameSession.isPracticeMode) {
           setIsPracticeMode(true);
-          setGameCompleted(true); // Mark as completed so UI shows practice banner
+          // Don't set gameCompleted=true here! Only set when game actually ends.
+          // gameCompleted gates the auto-restart timer, setting it here causes
+          // premature game termination if showGameOver is restored from session.
         } else {
           setGameCompleted(false);
           setIsPracticeMode(false);
@@ -547,12 +550,14 @@ export default function Game() {
       if (response.won) {
         setGameStatus("won");
         setSolution(normalized);
+        setGameCompleted(true); // Mark game as completed for auto-restart logic
         setTimeout(() => {
           setShowGameOver(true);
         }, 1000);
       } else if (response.gameOver) {
         setGameStatus("lost");
         setSolution(response.solution || "");
+        setGameCompleted(true); // Mark game as completed for auto-restart logic
         setTimeout(() => {
           setShowGameOver(true);
         }, 1000);
