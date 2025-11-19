@@ -49,18 +49,9 @@ export function GameOverModal({
   const [showWarning, setShowWarning] = useState(false);
 
   const handleOpenChange = (open: boolean) => {
-    if (!open && !gameCompleted && walletConnected && totalScore > 0 && !isSavingScore) {
-      // User is trying to close modal without saving score
-      if (isPracticeMode) {
-        // Practice mode: Allow closing without TX, will restart game
-        onClose();
-      } else {
-        // First game: Show warning and prevent closing
-        setShowWarning(true);
-        setTimeout(() => setShowWarning(false), 3000);
-        return;
-      }
-    } else {
+    if (!open) {
+      // User is trying to close modal
+      // All closing logic is now handled in Game.tsx onClose callback
       onClose();
     }
   };

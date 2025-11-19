@@ -269,52 +269,6 @@ export default function Game() {
     attemptAutoConnect();
   }, [isConnected, hasAttemptedAutoConnect, connectors, connect]);
 
-  // Auto-close modal and start new game after TX validation in practice mode
-  useEffect(() => {
-    if (gameCompleted && isPracticeMode && showGameOver && !isSavingScore && language) {
-      const timer = setTimeout(async () => {
-        console.log("Auto-close timer expired - starting new practice game");
-        setShowGameOver(false);
-        
-        // Start new practice game immediately
-        try {
-          // Clear game state
-          setGuesses([]);
-          setCurrentGuess("");
-          setFeedback([]);
-          setLetterStates(new Map());
-          setGameStatus("playing");
-          setSolution("");
-          setRevealingRow(undefined);
-          setHintUsed(false);
-          setTotalScore(0);
-          
-          // Start new practice game
-          const gameSession = await startGame(language);
-          console.log("Auto-start: New practice game started:", gameSession);
-          setSessionId(gameSession.sessionId);
-          setIsPracticeMode(true);
-          setGameCompleted(false);
-          
-          // Focus input
-          setTimeout(() => {
-            inputRef.current?.focus();
-          }, 100);
-        } catch (err) {
-          console.error("Auto-start failed:", err);
-          toast({
-            title: "Error",
-            description: "Failed to start new game. Please refresh.",
-            variant: "destructive",
-            duration: 3000,
-          });
-        }
-      }, 5000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [gameCompleted, isPracticeMode, showGameOver, isSavingScore, language, toast]);
-
   const handleSaveScore = useCallback(async () => {
     if (!sessionId) {
       toast({
@@ -1039,10 +993,24 @@ export default function Game() {
         isOpen={showGameOver}
         onClose={async () => {
           console.log("Modal onClose called", { gameCompleted, isPracticeMode, language });
+          
+          // If practice mode and TX not submitted, prevent closing
+          if (isPracticeMode && !gameCompleted) {
+            toast({
+              title: language === 'tr' ? "TX Atmalısınız" : "TX Required",
+              description: language === 'tr' 
+                ? "Devam etmek için önce TX atmalısınız" 
+                : "You must submit a TX to continue",
+              variant: "destructive",
+              duration: 3000,
+            });
+            return; // Prevent modal from closing
+          }
+          
           setShowGameOver(false);
           
-          // If daily game completed OR practice mode (even without TX), start new practice game
-          if ((gameCompleted || isPracticeMode) && language) {
+          // If daily game completed (TX submitted), start new practice game
+          if (gameCompleted && language) {
             console.log("Starting new practice game...");
             try {
               // Clear game state
