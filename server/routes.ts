@@ -295,6 +295,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           feedback: calculateFeedback(guess, solution),
         }));
         
+        // Check if TX was already submitted (score saved to daily_results)
+        const txSubmitted = !!todayResult; // If daily_results exists, TX was submitted
+        
         res.json({
           sessionId: existingDbSession.sessionId,
           maxAttempts: MAX_ATTEMPTS,
@@ -302,6 +305,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           resumed: true,
           guesses: guessHistory,
           attemptsUsed,
+          txSubmitted, // NEW: Tell frontend if TX already submitted
           ...(gameOver ? { 
             won,
             gameOver: true,

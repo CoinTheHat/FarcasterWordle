@@ -485,15 +485,20 @@ export async function getGameSession(sessionId: string): Promise<schema.GameSess
 }
 
 export async function getTodayGameSession(fid: number, yyyymmdd: string): Promise<schema.GameSession | null> {
+  // CRITICAL FIX: Return ANY session for the day (active or completed)
+  // Prioritize active sessions (completed=false) if they exist,
+  // otherwise return completed sessions that haven't been saved via TX yet
+  // This prevents duplicate session creation and ensures proper state restore
   const results = await db.select()
     .from(schema.gameSessions)
     .where(
       and(
         eq(schema.gameSessions.fid, fid),
         eq(schema.gameSessions.yyyymmdd, yyyymmdd),
-        eq(schema.gameSessions.completed, false)
+        eq(schema.gameSessions.isPracticeMode, false) // Only return daily games, not practice
       )
-    );
+    )
+    .orderBy(schema.gameSessions.completed); // ASC: false (0) before true (1) - active session prioritized
 
   return results.length > 0 ? results[0] : null;
 }

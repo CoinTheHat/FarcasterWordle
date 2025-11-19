@@ -132,7 +132,7 @@ export function GameOverModal({
               </div>
             )}
             
-            {walletConnected && onSaveScore && totalScore > 0 && (!gameCompleted || (isPracticeMode && gameCompleted)) && (
+            {onSaveScore && totalScore > 0 && (!gameCompleted || (isPracticeMode && gameCompleted)) && (
               <>
                 <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3 text-center">
                   <p className="text-sm text-amber-600 dark:text-amber-400 font-medium">
@@ -142,6 +142,17 @@ export function GameOverModal({
                     {isPracticeMode ? (language === 'tr' ? 'Liderlik tablosuna kaydedilmeyecek' : 'Won\'t be saved to leaderboard') : t.gameOverSaveWarningDesc}
                   </p>
                 </div>
+                {!walletConnected && (
+                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 text-center">
+                    <p className="text-sm text-blue-600 dark:text-blue-400 font-medium flex items-center justify-center gap-2">
+                      <Wallet className="w-4 h-4" />
+                      {language === 'tr' ? 'Cüzdan henüz bağlanmadı' : 'Wallet not connected yet'}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {language === 'tr' ? 'Butona tıklayarak cüzdan bağlayabilirsiniz' : 'Click the button below to connect your wallet'}
+                    </p>
+                  </div>
+                )}
                 <Button
                   className="w-full h-12 text-base font-semibold gap-2"
                   onClick={onSaveScore}
@@ -153,6 +164,11 @@ export function GameOverModal({
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
                       {t.gameOverSaving}
+                    </>
+                  ) : !walletConnected ? (
+                    <>
+                      <Wallet className="w-5 h-5" />
+                      {language === 'tr' ? 'Cüzdan Bağla & TX Gönder' : 'Connect Wallet & Send TX'}
                     </>
                   ) : (
                     <>

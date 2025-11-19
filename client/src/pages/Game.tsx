@@ -231,9 +231,12 @@ export default function Game() {
           if (gameSession.gameOver) {
             setGameStatus(gameSession.won ? "won" : "lost");
             setSolution(gameSession.solution || "");
-            // Only set gameCompleted=true for non-practice games (practice requires TX submission)
-            if (!gameSession.isPracticeMode) {
+            // CRITICAL FIX: Only set gameCompleted=true if TX was already submitted
+            // Check txSubmitted flag from backend (indicates daily_results exists)
+            if (gameSession.txSubmitted) {
               setGameCompleted(true);
+            } else {
+              setGameCompleted(false); // TX not submitted yet - user must submit
             }
             setShowGameOver(true);
           }
@@ -281,14 +284,48 @@ export default function Game() {
       return;
     }
 
+    // CRITICAL FIX: If wallet not connected, trigger connection flow instead of just erroring
     if (!isConnected || !address) {
-      toast({
-        title: "Wallet not connected",
-        description: "Please connect your wallet first",
-        variant: "destructive",
-        duration: 2000,
-      });
-      return;
+      if (connectors.length > 0) {
+        try {
+          toast({
+            title: language === 'tr' ? "Cüzdan Bağlanıyor..." : "Connecting Wallet...",
+            description: language === 'tr' 
+              ? "TX göndermek için cüzdan bağlantısı gerekli" 
+              : "Wallet connection required to submit TX",
+            duration: 3000,
+          });
+          await connect({ connector: connectors[0] });
+          // After connection, the hook will re-run and we'll have isConnected=true
+          // User needs to click the button again
+          toast({
+            title: language === 'tr' ? "Cüzdan Bağlandı!" : "Wallet Connected!",
+            description: language === 'tr' 
+              ? "Şimdi TX gönderebilirsiniz" 
+              : "You can now submit your TX",
+            duration: 2000,
+          });
+          return;
+        } catch (err) {
+          toast({
+            title: language === 'tr' ? "Bağlantı Başarısız" : "Connection Failed",
+            description: language === 'tr' 
+              ? "Cüzdan bağlantısı başarısız oldu" 
+              : "Failed to connect wallet",
+            variant: "destructive",
+            duration: 3000,
+          });
+          return;
+        }
+      } else {
+        toast({
+          title: "Wallet not available",
+          description: "No wallet connector found. Please refresh the page.",
+          variant: "destructive",
+          duration: 3000,
+        });
+        return;
+      }
     }
 
     setIsSavingScore(true);
@@ -506,10 +543,9 @@ export default function Game() {
         setGameStatus("won");
         setSolution(normalized);
         setIsPracticeMode(response.isPracticeMode || false); // Sync practice mode from backend FIRST
-        // Only set gameCompleted=true for non-practice games (practice requires TX submission)
-        if (!response.isPracticeMode) {
-          setGameCompleted(true);
-        }
+        // CRITICAL FIX: gameCompleted should only be true AFTER successful TX submission
+        // For BOTH daily and practice games, start with false - only handleSaveScore sets it to true
+        setGameCompleted(false);
         setTimeout(() => {
           setShowGameOver(true);
         }, 1000);
@@ -517,10 +553,9 @@ export default function Game() {
         setGameStatus("lost");
         setSolution(response.solution || "");
         setIsPracticeMode(response.isPracticeMode || false); // Sync practice mode from backend FIRST
-        // Only set gameCompleted=true for non-practice games (practice requires TX submission)
-        if (!response.isPracticeMode) {
-          setGameCompleted(true);
-        }
+        // CRITICAL FIX: gameCompleted should only be true AFTER successful TX submission
+        // For BOTH daily and practice games, start with false - only handleSaveScore sets it to true
+        setGameCompleted(false);
         setTimeout(() => {
           setShowGameOver(true);
         }, 1000);

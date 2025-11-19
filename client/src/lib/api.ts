@@ -40,6 +40,7 @@ export interface StartGameResponse {
   won?: boolean;
   solution?: string;
   score?: number;
+  txSubmitted?: boolean; // NEW: Indicates if TX was already submitted (daily_results exists)
 }
 
 export async function startGame(language: string = "en"): Promise<StartGameResponse> {
