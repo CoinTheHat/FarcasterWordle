@@ -99,7 +99,7 @@ export default function Game() {
       // Set state based on backend response
       if (gameSession.isPracticeMode) {
         setIsPracticeMode(true);
-        // Don't set gameCompleted=true here! Only set when game actually ends.
+        setGameCompleted(false); // CRITICAL: Reset gameCompleted for practice mode (prevents bypass)
       } else {
         setGameCompleted(false);
         setIsPracticeMode(false);
@@ -197,7 +197,7 @@ export default function Game() {
         // Set practice mode FIRST before restoring session state
         if (gameSession.isPracticeMode) {
           setIsPracticeMode(true);
-          // Don't set gameCompleted=true here! Only set when game actually ends.
+          setGameCompleted(false); // CRITICAL: Reset gameCompleted for practice mode (prevents bypass if daily→practice in same session)
         } else {
           setGameCompleted(false);
           setIsPracticeMode(false);
@@ -231,7 +231,10 @@ export default function Game() {
           if (gameSession.gameOver) {
             setGameStatus(gameSession.won ? "won" : "lost");
             setSolution(gameSession.solution || "");
-            setGameCompleted(true); // Mark as completed when restoring finished game
+            // Only set gameCompleted=true for non-practice games (practice requires TX submission)
+            if (!gameSession.isPracticeMode) {
+              setGameCompleted(true);
+            }
             setShowGameOver(true);
           }
         }
@@ -502,16 +505,22 @@ export default function Game() {
       if (response.won) {
         setGameStatus("won");
         setSolution(normalized);
-        setGameCompleted(true); // Mark game as completed for auto-restart logic
-        setIsPracticeMode(response.isPracticeMode || false); // Sync practice mode from backend
+        setIsPracticeMode(response.isPracticeMode || false); // Sync practice mode from backend FIRST
+        // Only set gameCompleted=true for non-practice games (practice requires TX submission)
+        if (!response.isPracticeMode) {
+          setGameCompleted(true);
+        }
         setTimeout(() => {
           setShowGameOver(true);
         }, 1000);
       } else if (response.gameOver) {
         setGameStatus("lost");
         setSolution(response.solution || "");
-        setGameCompleted(true); // Mark game as completed for auto-restart logic
-        setIsPracticeMode(response.isPracticeMode || false); // Sync practice mode from backend
+        setIsPracticeMode(response.isPracticeMode || false); // Sync practice mode from backend FIRST
+        // Only set gameCompleted=true for non-practice games (practice requires TX submission)
+        if (!response.isPracticeMode) {
+          setGameCompleted(true);
+        }
         setTimeout(() => {
           setShowGameOver(true);
         }, 1000);
