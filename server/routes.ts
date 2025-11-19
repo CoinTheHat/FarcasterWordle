@@ -226,7 +226,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     // Check if user already completed today's game
     const todayResult = await getDailyResult(fid, today);
-    const isPracticeMode = !!todayResult && process.env.NODE_ENV !== 'development';
+    const isPracticeMode = !!todayResult; // Practice mode enabled after first daily game completion
 
     // ANTI-EXPLOIT FIX: For daily games, use database persistence to prevent refresh exploit
     if (!isPracticeMode) {
@@ -480,6 +480,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       remainingAttempts: MAX_ATTEMPTS - activeGame.attemptsUsed,
       gameOver,
       solution: gameOver ? activeGame.solution : undefined,
+      isPracticeMode: activeGame.isPracticeMode,
       ...(gameOver ? { score: finalScore } : {}),
     });
   });

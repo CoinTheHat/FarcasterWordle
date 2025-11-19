@@ -180,6 +180,7 @@ export interface GuessResponse {
   gameOver?: boolean;
   solution?: string;
   score?: number;
+  isPracticeMode?: boolean;
 }
 
 export interface BoardStats {

@@ -194,9 +194,18 @@ export default function Game() {
         const gameSession = await startGame(language);
         setSessionId(gameSession.sessionId);
         
+        // Set practice mode FIRST before restoring session state
+        if (gameSession.isPracticeMode) {
+          setIsPracticeMode(true);
+          // Don't set gameCompleted=true here! Only set when game actually ends.
+        } else {
+          setGameCompleted(false);
+          setIsPracticeMode(false);
+        }
+        
         // RESTORE SESSION: If resumed=true, restore guesses and game state
         if (gameSession.resumed && gameSession.guesses && gameSession.guesses.length > 0) {
-          console.log("Restoring session with", gameSession.guesses.length, "guesses");
+          console.log("Restoring session with", gameSession.guesses.length, "guesses", "isPracticeMode:", gameSession.isPracticeMode);
           const restoredGuesses = gameSession.guesses.map(g => g.guess);
           const restoredFeedback = gameSession.guesses.map(g => g.feedback);
           
@@ -225,17 +234,6 @@ export default function Game() {
             setGameCompleted(true); // Mark as completed when restoring finished game
             setShowGameOver(true);
           }
-        }
-        
-        // Set practice mode based on backend response
-        if (gameSession.isPracticeMode) {
-          setIsPracticeMode(true);
-          // Don't set gameCompleted=true here! Only set when game actually ends.
-          // gameCompleted gates the auto-restart timer, setting it here causes
-          // premature game termination if showGameOver is restored from session.
-        } else {
-          setGameCompleted(false);
-          setIsPracticeMode(false);
         }
       } catch (err) {
         console.error("Failed to load stats:", err);
@@ -505,6 +503,7 @@ export default function Game() {
         setGameStatus("won");
         setSolution(normalized);
         setGameCompleted(true); // Mark game as completed for auto-restart logic
+        setIsPracticeMode(response.isPracticeMode || false); // Sync practice mode from backend
         setTimeout(() => {
           setShowGameOver(true);
         }, 1000);
@@ -512,6 +511,7 @@ export default function Game() {
         setGameStatus("lost");
         setSolution(response.solution || "");
         setGameCompleted(true); // Mark game as completed for auto-restart logic
+        setIsPracticeMode(response.isPracticeMode || false); // Sync practice mode from backend
         setTimeout(() => {
           setShowGameOver(true);
         }, 1000);
