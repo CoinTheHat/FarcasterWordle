@@ -484,17 +484,19 @@ export async function getGameSession(sessionId: string): Promise<schema.GameSess
   return results.length > 0 ? results[0] : null;
 }
 
-export async function getTodayGameSession(fid: number, yyyymmdd: string): Promise<schema.GameSession | null> {
-  // CRITICAL FIX: Return ANY session for the day (active or completed)
+export async function getTodayGameSession(fid: number, yyyymmdd: string, language: string): Promise<schema.GameSession | null> {
+  // CRITICAL FIX: Return ANY session for the day (active or completed) FOR THE SPECIFIED LANGUAGE
   // Prioritize active sessions (completed=false) if they exist,
   // otherwise return completed sessions that haven't been saved via TX yet
   // This prevents duplicate session creation and ensures proper state restore
+  // Language filter prevents session mixing when user switches between TR/EN
   const results = await db.select()
     .from(schema.gameSessions)
     .where(
       and(
         eq(schema.gameSessions.fid, fid),
         eq(schema.gameSessions.yyyymmdd, yyyymmdd),
+        eq(schema.gameSessions.language, language), // CRITICAL: Filter by language to prevent TR/EN session mixing
         eq(schema.gameSessions.isPracticeMode, false) // Only return daily games, not practice
       )
     )

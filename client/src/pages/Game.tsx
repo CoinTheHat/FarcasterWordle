@@ -231,6 +231,16 @@ export default function Game() {
           if (gameSession.gameOver) {
             setGameStatus(gameSession.won ? "won" : "lost");
             setSolution(gameSession.solution || "");
+            
+            // CRITICAL: Restore score from backend response
+            // This ensures modal shows correct score even after page refresh
+            if (gameSession.score !== undefined) {
+              setTotalScore(gameSession.score);
+              // Sync to localStorage for consistency
+              const today = getTodayDateString();
+              localStorage.setItem(`wordcast-score-${language}-${today}`, gameSession.score.toString());
+            }
+            
             // CRITICAL FIX: Only set gameCompleted=true if TX was already submitted
             // Check txSubmitted flag from backend (indicates daily_results exists)
             if (gameSession.txSubmitted) {

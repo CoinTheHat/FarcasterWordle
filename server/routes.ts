@@ -230,8 +230,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     // ANTI-EXPLOIT FIX: For daily games, use database persistence to prevent refresh exploit
     if (!isPracticeMode) {
-      // Check database for existing session for today
-      const existingDbSession = await getTodayGameSession(fid, today);
+      // Check database for existing session for today (filtered by language)
+      const existingDbSession = await getTodayGameSession(fid, today, language);
       
       if (existingDbSession) {
         // Found existing session in DB - return it (same word even after refresh!)

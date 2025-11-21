@@ -83,8 +83,8 @@ export const gameSessions = pgTable("game_sessions", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
   completedAt: timestamp("completed_at"),
 }, (table) => ({
-  uniqueFidDate: {
-    columns: [table.fid, table.yyyymmdd],
+  uniqueFidDateLang: {
+    columns: [table.fid, table.yyyymmdd, table.language],
     isUnique: true,
   },
 }));
