@@ -62,6 +62,7 @@ export default function Game() {
   
   const { toast } = useToast();
   const isRestartingRef = useRef(false);
+  const isSubmittingRef = useRef(false); // Prevent double submission during race conditions
 
   // Function to restart game with new language
   const restartGame = useCallback(async (newLanguage: Language) => {
@@ -477,6 +478,12 @@ export default function Game() {
   }, [gameStatus, language]);
 
   const handleEnter = useCallback(async () => {
+    // CRITICAL FIX: Prevent concurrent submissions (race condition protection)
+    if (isSubmittingRef.current) {
+      console.log("Submission already in progress, ignoring duplicate request");
+      return;
+    }
+    
     if (gameStatus !== "playing" || currentGuess.length !== 5) {
       if (currentGuess.length > 0 && currentGuess.length < 5) {
         toast({
@@ -498,6 +505,8 @@ export default function Game() {
       });
       return;
     }
+
+    isSubmittingRef.current = true; // Lock submission
 
     const normalized = normalizeGuess(currentGuess, language || 'en');
     
@@ -616,6 +625,9 @@ export default function Game() {
           duration: 2000,
         });
       }
+    } finally {
+      // CRITICAL: Always unlock submission even on error
+      isSubmittingRef.current = false;
     }
   }, [gameStatus, currentGuess, sessionId, guesses, feedback, toast, updateLetterStates, language]);
 

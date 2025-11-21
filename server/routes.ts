@@ -272,6 +272,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           finalScore = 0;
         }
         
+        // CRITICAL FIX: If gameOver detected but DB shows incomplete, sync completion immediately
+        // This handles edge cases where completion didn't persist during previous session
+        if (gameOver && !existingDbSession.completed) {
+          await completeGameSession(existingDbSession.sessionId);
+        }
+        
         // Also add to in-memory cache for faster lookups
         const activeGame: ActiveGame = {
           fid: existingDbSession.fid,
@@ -283,7 +289,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           won,
           finalScore,
           createdAt: existingDbSession.createdAt.toISOString(),
-          completed: existingDbSession.completed,
+          completed: gameOver ? true : existingDbSession.completed, // Use gameOver if detected, else DB value
           isPracticeMode: false,
         };
         
@@ -445,6 +451,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
+    // CRITICAL FIX: Prevent guess submission after game is won or completed
+    // This prevents race conditions where user rapidly presses Enter after winning
+    if (activeGame.won === true || activeGame.completed === true) {
+      res.status(400).json({ error: "Game already completed" });
+      return;
+    }
+
     if (activeGame.attemptsUsed >= MAX_ATTEMPTS) {
       res.status(400).json({ error: "No attempts remaining" });
       return;
@@ -475,6 +488,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (gameOver) {
       activeGame.won = won;
       activeGame.finalScore = finalScore;
+      activeGame.completed = true; // CRITICAL: Mark session as completed to prevent further submissions
+      
+      // CRITICAL FIX: Persist completion to database for non-practice games
+      // This ensures resumed sessions (after page refresh) also block further submissions
+      if (!activeGame.isPracticeMode) {
+        await completeGameSession(sessionId);
+      }
     }
 
     res.json({
