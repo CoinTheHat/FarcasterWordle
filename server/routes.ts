@@ -27,11 +27,13 @@ import {
   getTodayGameSession,
   updateGameSessionGuess,
   completeGameSession,
+  getRecentRewards,
+  getTotalDistributedRewards,
 } from "./db";
 import { getTodayDateString, isConsecutiveDay, getDateStringDaysAgo, getLastWeekDateRange, getCurrentWeekDateRange } from "./lib/date";
 import { getWordOfTheDay, isValidGuess, calculateFeedback, calculateWinScore, calculateLossScore, getRandomWord, type Language } from "./lib/words";
 import { randomBytes } from "crypto";
-import { sendReward, getWalletBalance } from "./lib/blockchain";
+import { sendReward, getWalletBalance, getSponsorWalletAddress } from "./lib/blockchain";
 
 const MAX_ATTEMPTS = 6;
 
@@ -726,6 +728,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       period: "all-time",
       leaderboard,
     });
+  });
+
+  app.get("/api/verify", async (req: Request, res: Response) => {
+    try {
+      const sponsorAddress = getSponsorWalletAddress();
+      const { usdcBalance } = await getWalletBalance();
+      
+      // Get recent successful reward distributions (last 50)
+      const recentRewards = await getRecentRewards(50);
+      
+      // Calculate total distributed amount
+      const totalDistributed = await getTotalDistributedRewards();
+      
+      res.json({
+        sponsorWallet: sponsorAddress,
+        usdcBalance: usdcBalance || "0",
+        totalDistributed,
+        recentPayments: recentRewards,
+      });
+    } catch (error) {
+      console.error("Failed to fetch verify data:", error);
+      res.status(500).json({ error: "Failed to fetch verification data" });
+    }
   });
 
   app.get("/api/leaderboard/last-week-winners", async (req: Request, res: Response) => {

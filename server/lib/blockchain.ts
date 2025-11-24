@@ -101,6 +101,20 @@ export async function sendReward(
   }
 }
 
+export function getSponsorWalletAddress(): string | null {
+  if (!SPONSOR_PRIVATE_KEY) {
+    return null;
+  }
+  
+  try {
+    const account = privateKeyToAccount(SPONSOR_PRIVATE_KEY as `0x${string}`);
+    return account.address;
+  } catch (error) {
+    console.error('Failed to derive sponsor wallet address:', error);
+    return null;
+  }
+}
+
 export async function getWalletBalance(): Promise<{ balance: string; usdcBalance?: string; error?: string }> {
   if (!SPONSOR_PRIVATE_KEY) {
     return {

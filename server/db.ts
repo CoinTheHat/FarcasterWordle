@@ -414,6 +414,38 @@ export async function getWeeklyRewardById(id: number): Promise<any | null> {
   return results.length > 0 ? results[0] : null;
 }
 
+export async function getRecentRewards(limit: number = 50): Promise<any[]> {
+  const results = await db.select({
+    id: schema.weeklyRewards.id,
+    fid: schema.weeklyRewards.fid,
+    username: schema.profiles.username,
+    walletAddress: schema.profiles.walletAddress,
+    weekStart: schema.weeklyRewards.weekStart,
+    weekEnd: schema.weeklyRewards.weekEnd,
+    rank: schema.weeklyRewards.rank,
+    amountUsd: schema.weeklyRewards.amountUsd,
+    txHash: schema.weeklyRewards.txHash,
+    distributedAt: schema.weeklyRewards.distributedAt,
+  })
+  .from(schema.weeklyRewards)
+  .leftJoin(schema.profiles, eq(schema.weeklyRewards.fid, schema.profiles.fid))
+  .where(eq(schema.weeklyRewards.status, 'sent'))
+  .orderBy(desc(schema.weeklyRewards.distributedAt))
+  .limit(limit);
+  
+  return results;
+}
+
+export async function getTotalDistributedRewards(): Promise<number> {
+  const results = await db.select({
+    total: sql<number>`COALESCE(SUM(${schema.weeklyRewards.amountUsd}), 0)`,
+  })
+  .from(schema.weeklyRewards)
+  .where(eq(schema.weeklyRewards.status, 'sent'));
+  
+  return Number(results[0]?.total || 0);
+}
+
 export async function getPracticeResultCount(fid: number, yyyymmdd: string): Promise<number> {
   const results = await db.select({ count: count() })
     .from(schema.practiceResults)
