@@ -196,11 +196,13 @@ export default function Game() {
         setSessionId(gameSession.sessionId);
         
         // SECURITY: Check if session expired (anti-exploit: prevents offline solution lookup)
-        if (gameSession.sessionExpired) {
+        // Only show toast if ACTUALLY expired (not just practice mode)
+        if (gameSession.sessionExpired && gameSession.expiredMinutes) {
           toast({
             title: t.gameSessionExpired,
-            description: `${t.gameSessionExpiredDesc} (${gameSession.expiredMinutes} minutes)`,
+            description: `${t.gameSessionExpiredDesc} (${gameSession.expiredMinutes} ${language === 'tr' ? 'dakika' : 'minutes'})`,
             variant: "destructive",
+            duration: 5000,
           });
         }
         
@@ -304,8 +306,9 @@ export default function Game() {
       return;
     }
 
-    // PRACTICE MODE: Skip TX requirement and start new practice game immediately
-    if (isPracticeMode) {
+    // PRACTICE MODE: Skip TX requirement ONLY for completed practice games
+    // Check both isPracticeMode AND gameCompleted to avoid blocking daily games
+    if (isPracticeMode && gameCompleted) {
       try {
         const gameSession = await startGame(language!);
         setSessionId(gameSession.sessionId);
@@ -319,6 +322,7 @@ export default function Game() {
         setSolution("");
         setHintUsed(false);
         setIsPracticeMode(true); // Stay in practice mode
+        setGameCompleted(false); // Reset for new game
         
         toast({
           title: t.gameOverPracticeMode,

@@ -287,6 +287,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return;
         }
         
+        // CRITICAL: Don't restore completed sessions (prevents expired session restore after refresh)
+        if (existingDbSession.completed) {
+          console.log(`[INFO] Session ${existingDbSession.sessionId} already completed. Starting fresh practice mode.`);
+          
+          // Start fresh practice mode instead
+          const practiceSessionId = generateSessionId();
+          const practiceSolution = getRandomWord(language as Language);
+          
+          const practiceGame: ActiveGame = {
+            fid,
+            sessionId: practiceSessionId,
+            solution: practiceSolution,
+            language: language as Language,
+            guesses: [],
+            attemptsUsed: 0,
+            won: null,
+            createdAt: new Date().toISOString(),
+            completed: false,
+            isPracticeMode: true,
+          };
+          
+          activeGames.set(practiceSessionId, practiceGame);
+          
+          res.json({
+            sessionId: practiceSessionId,
+            maxAttempts: MAX_ATTEMPTS,
+            isPracticeMode: true,
+            ...(process.env.NODE_ENV === 'development' ? { solution: practiceSolution } : {}),
+          });
+          return;
+        }
+        
         // Session still valid - proceed with normal restore
         // CRITICAL FIX: Restore won/finalScore from persisted guesses to prevent completion blocking
         const rawGuesses = existingDbSession.guesses || [];
