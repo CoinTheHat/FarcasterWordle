@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Wallet, DollarSign, TrendingUp } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useTranslation } from "@/lib/i18n";
+import { Header } from "@/components/Header";
 
 interface VerifyData {
   sponsorWallet: string | null;
@@ -59,21 +60,26 @@ export default function Verify() {
 
   if (error) {
     return (
-      <div className="container mx-auto p-4 max-w-6xl">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-destructive">{t.verifyErrorTitle}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>{t.verifyErrorMessage}</p>
-          </CardContent>
-        </Card>
-      </div>
+      <>
+        <Header />
+        <div className="container mx-auto p-4 max-w-6xl">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-destructive">{t.verifyErrorTitle}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{t.verifyErrorMessage}</p>
+            </CardContent>
+          </Card>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-6xl space-y-6">
+    <>
+      <Header />
+      <div className="container mx-auto p-4 max-w-6xl space-y-6">
       <div>
         <h1 className="text-3xl font-bold mb-2" data-testid="text-verify-title">
           {t.verifyTitle}
@@ -224,5 +230,6 @@ export default function Verify() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }
