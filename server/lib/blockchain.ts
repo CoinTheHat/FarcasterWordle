@@ -46,6 +46,20 @@ export async function sendReward(
     };
   }
 
+  if (!toAddress || toAddress === 'null' || toAddress === 'undefined') {
+    return {
+      success: false,
+      error: 'Missing wallet address',
+    };
+  }
+
+  if (!toAddress.match(/^0x[a-fA-F0-9]{40}$/)) {
+    return {
+      success: false,
+      error: `Invalid wallet address format: ${toAddress}`,
+    };
+  }
+
   if (![10, 5, 3].includes(amountUsd)) {
     return {
       success: false,

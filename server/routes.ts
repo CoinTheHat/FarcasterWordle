@@ -872,6 +872,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const rank = winner.rank;
         const amountUsd = winner.rewardAmountUsd;
 
+        if (!winner.walletAddress) {
+          results.push({
+            fid: winner.fid,
+            username: winner.username,
+            rank,
+            amountUsd,
+            status: "failed",
+            error: "Missing wallet address",
+          });
+          continue;
+        }
+
         const existingReward = await getWeeklyReward(winner.fid, preview.weekStart);
         
         if (existingReward && existingReward.status === 'sent' && !dryRun) {
@@ -898,7 +910,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
 
         const memo = `${rank}. Reward - Week ${preview.weekStart} Rank #${rank}`;
-        const transferResult = await sendReward(winner.walletAddress!, amountUsd, memo, dryRun);
+        const transferResult = await sendReward(winner.walletAddress, amountUsd, memo, dryRun);
 
         if (transferResult.success) {
           if (!dryRun) {
