@@ -306,41 +306,6 @@ export default function Game() {
       return;
     }
 
-    // PRACTICE MODE: Skip TX requirement ONLY for completed practice games
-    // Check both isPracticeMode AND gameCompleted to avoid blocking daily games
-    if (isPracticeMode && gameCompleted) {
-      try {
-        const gameSession = await startGame(language!);
-        setSessionId(gameSession.sessionId);
-        setGuesses([]);
-        setFeedback([]);
-        setCurrentGuess("");
-        setLetterStates(new Map());
-        setGameStatus("playing");
-        setShowGameOver(false);
-        setTotalScore(0);
-        setSolution("");
-        setHintUsed(false);
-        setIsPracticeMode(true); // Stay in practice mode
-        setGameCompleted(false); // Reset for new game
-        
-        toast({
-          title: t.gameOverPracticeMode,
-          description: t.gameOverPracticeTxValidated,
-          duration: 3000,
-        });
-      } catch (err) {
-        console.error("Failed to start new practice game:", err);
-        toast({
-          title: "Error",
-          description: "Failed to start new practice game. Please refresh the page.",
-          variant: "destructive",
-          duration: 3000,
-        });
-      }
-      return;
-    }
-
     // CRITICAL FIX: If wallet not connected, trigger connection flow instead of just erroring
     if (!isConnected || !address) {
       if (connectors.length > 0) {
