@@ -287,36 +287,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return;
         }
         
-        // CRITICAL: Don't restore completed sessions (prevents expired session restore after refresh)
+        // CRITICAL: Don't restore completed sessions that already have TX submitted
+        // But DO restore completed sessions where user hasn't submitted TX yet (user closed app before TX)
         if (existingDbSession.completed) {
-          console.log(`[INFO] Session ${existingDbSession.sessionId} already completed. Starting fresh practice mode.`);
+          // Check if user already submitted TX (exists in daily_results)
+          const dailyResult = await getDailyResult(fid, today);
           
-          // Start fresh practice mode instead
-          const practiceSessionId = generateSessionId();
-          const practiceSolution = getRandomWord(language as Language);
+          if (dailyResult) {
+            // TX already submitted - start fresh practice mode
+            console.log(`[INFO] Session ${existingDbSession.sessionId} already saved to daily_results. Starting fresh practice mode.`);
+            
+            const practiceSessionId = generateSessionId();
+            const practiceSolution = getRandomWord(language as Language);
+            
+            const practiceGame: ActiveGame = {
+              fid,
+              sessionId: practiceSessionId,
+              solution: practiceSolution,
+              language: language as Language,
+              guesses: [],
+              attemptsUsed: 0,
+              won: null,
+              createdAt: new Date().toISOString(),
+              completed: false,
+              isPracticeMode: true,
+            };
+            
+            activeGames.set(practiceSessionId, practiceGame);
+            
+            res.json({
+              sessionId: practiceSessionId,
+              maxAttempts: MAX_ATTEMPTS,
+              isPracticeMode: true,
+              ...(process.env.NODE_ENV === 'development' ? { solution: practiceSolution } : {}),
+            });
+            return;
+          }
           
-          const practiceGame: ActiveGame = {
-            fid,
-            sessionId: practiceSessionId,
-            solution: practiceSolution,
-            language: language as Language,
-            guesses: [],
-            attemptsUsed: 0,
-            won: null,
-            createdAt: new Date().toISOString(),
-            completed: false,
-            isPracticeMode: true,
-          };
-          
-          activeGames.set(practiceSessionId, practiceGame);
-          
-          res.json({
-            sessionId: practiceSessionId,
-            maxAttempts: MAX_ATTEMPTS,
-            isPracticeMode: true,
-            ...(process.env.NODE_ENV === 'development' ? { solution: practiceSolution } : {}),
-          });
-          return;
+          // TX NOT submitted yet - restore session so user can submit TX
+          console.log(`[INFO] Session ${existingDbSession.sessionId} completed but no TX yet. Restoring for TX submission.`);
+          // Fall through to normal restore logic below
         }
         
         // Session still valid - proceed with normal restore
