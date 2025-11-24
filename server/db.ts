@@ -558,3 +558,32 @@ export async function completeGameSession(sessionId: string): Promise<void> {
     })
     .where(eq(schema.gameSessions.sessionId, sessionId));
 }
+
+export async function getLatestPracticeSession(fid: number, yyyymmdd: string, language: string): Promise<schema.GameSession | null> {
+  // Get latest INCOMPLETE practice session for today in the specified language
+  // If user completed a session but didn't submit TX, this should also return it
+  const results = await db.select()
+    .from(schema.gameSessions)
+    .where(
+      and(
+        eq(schema.gameSessions.fid, fid),
+        eq(schema.gameSessions.yyyymmdd, yyyymmdd),
+        eq(schema.gameSessions.language, language),
+        eq(schema.gameSessions.isPracticeMode, true) // Only practice sessions
+      )
+    )
+    .orderBy(desc(schema.gameSessions.createdAt)) // Latest first
+    .limit(1);
+
+  return results.length > 0 ? results[0] : null;
+}
+
+export async function getPracticeResultBySessionId(sessionId: string): Promise<schema.PracticeResult | null> {
+  // Check if practice result exists with this session's TX hash
+  // We can use sessionId as identifier since it's stored in txHash for linking
+  const results = await db.select()
+    .from(schema.practiceResults)
+    .where(eq(schema.practiceResults.txHash, sessionId));
+
+  return results.length > 0 ? results[0] : null;
+}

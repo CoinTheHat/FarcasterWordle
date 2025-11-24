@@ -25,6 +25,8 @@ import {
   createGameSession,
   getGameSession,
   getTodayGameSession,
+  getLatestPracticeSession,
+  getPracticeResultBySessionId,
   updateGameSessionGuess,
   completeGameSession,
   getRecentRewards,
@@ -450,41 +452,141 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
-    // PRACTICE MODE: Use in-memory sessions (old logic)
-    let existingSession: ActiveGame | undefined;
-    let existingSessionId: string | undefined;
+    // PRACTICE MODE: Use database persistence (same as daily mode)
+    // Check database for existing INCOMPLETE practice session
+    const existingPracticeSession = await getLatestPracticeSession(fid, today, language);
     
-    activeGames.forEach((game, sid) => {
-      if (game.fid === fid && game.isPracticeMode) {
-        // Clean up completed or used-up sessions
-        if (game.completed || game.attemptsUsed >= MAX_ATTEMPTS) {
-          activeGames.delete(sid);
-        } else if (!existingSession) {
-          existingSession = game;
-          existingSessionId = sid;
+    if (existingPracticeSession) {
+      // Check if session already completed (user finished but didn't submit TX)
+      let practiceResult = null;
+      if (existingPracticeSession.completed) {
+        // Check practice_results table for this specific session's TX submission
+        practiceResult = await getPracticeResultBySessionId(existingPracticeSession.sessionId);
+        
+        if (practiceResult) {
+          // TX already submitted - start fresh practice game
+          console.log(`[INFO] Practice session ${existingPracticeSession.sessionId} already saved. Starting fresh.`);
+          
+          const newSessionId = generateSessionId();
+          const newSolution = getRandomWord(language as Language);
+          
+          // Save new practice session to database
+          await createGameSession(newSessionId, fid, today, newSolution, language, true);
+          
+          const newGame: ActiveGame = {
+            fid,
+            sessionId: newSessionId,
+            solution: newSolution,
+            language: language as Language,
+            guesses: [],
+            attemptsUsed: 0,
+            won: null,
+            createdAt: new Date().toISOString(),
+            completed: false,
+            isPracticeMode: true,
+          };
+          
+          activeGames.set(newSessionId, newGame);
+          
+          res.json({
+            sessionId: newSessionId,
+            maxAttempts: MAX_ATTEMPTS,
+            isPracticeMode: true,
+            ...(process.env.NODE_ENV === 'development' ? { solution: newSolution } : {}),
+          });
+          return;
         }
+        
+        // TX NOT submitted - restore session for TX submission
+        console.log(`[INFO] Practice session ${existingPracticeSession.sessionId} completed but no TX yet. Restoring.`);
+        // Fall through to restore logic below
       }
-    });
-
-    if (existingSession && existingSessionId) {
-      const sessionDate = existingSession.createdAt ? existingSession.createdAt.substring(0, 10).replace(/-/g, '') : '';
       
-      if (sessionDate === today && existingSession.language === language) {
-        res.json({
-          sessionId: existingSessionId,
-          maxAttempts: MAX_ATTEMPTS,
-          isPracticeMode: true,
-          resumed: true,
-        });
-        return;
-      } else {
-        activeGames.delete(existingSessionId);
+      // Restore existing practice session (same as daily mode)
+      const rawGuesses = existingPracticeSession.guesses || [];
+      const rawSolution = existingPracticeSession.solution;
+      const attemptsUsed = existingPracticeSession.attemptsUsed;
+      const lang = existingPracticeSession.language as Language;
+      
+      const guesses = rawGuesses.map(g => 
+        lang === 'tr' ? g.toLocaleUpperCase('tr-TR') : g.toUpperCase()
+      );
+      const solution = lang === 'tr' 
+        ? rawSolution.toLocaleUpperCase('tr-TR') 
+        : rawSolution.toUpperCase();
+      
+      const hasWon = guesses.includes(solution);
+      const gameOver = hasWon || attemptsUsed >= MAX_ATTEMPTS;
+      
+      let finalScore: number | undefined;
+      let won: boolean | null = null;
+      
+      if (hasWon) {
+        won = true;
+        finalScore = calculateWinScore(attemptsUsed);
+      } else if (gameOver && guesses.length > 0) {
+        won = false;
+        const lastGuess = guesses[guesses.length - 1];
+        const feedback = calculateFeedback(lastGuess, solution);
+        finalScore = calculateLossScore(feedback);
+      } else if (gameOver) {
+        won = false;
+        finalScore = 0;
       }
+      
+      if (gameOver && !existingPracticeSession.completed) {
+        await completeGameSession(existingPracticeSession.sessionId);
+      }
+      
+      const activeGame: ActiveGame = {
+        fid: existingPracticeSession.fid,
+        sessionId: existingPracticeSession.sessionId,
+        solution: existingPracticeSession.solution,
+        language: lang,
+        guesses,
+        attemptsUsed,
+        won,
+        finalScore,
+        createdAt: existingPracticeSession.createdAt.toISOString(),
+        completed: gameOver ? true : existingPracticeSession.completed,
+        isPracticeMode: true,
+      };
+      
+      activeGames.set(existingPracticeSession.sessionId, activeGame);
+      
+      const guessHistory = guesses.map((guess, i) => ({
+        guess,
+        feedback: calculateFeedback(guess, solution),
+      }));
+      
+      // Check if TX was submitted (practice_results with this sessionId)
+      const txSubmitted = !!practiceResult;
+      
+      res.json({
+        sessionId: existingPracticeSession.sessionId,
+        maxAttempts: MAX_ATTEMPTS,
+        isPracticeMode: true,
+        resumed: true,
+        guesses: guessHistory,
+        attemptsUsed,
+        txSubmitted,
+        ...(gameOver ? { 
+          won,
+          gameOver: true,
+          solution,
+          score: finalScore 
+        } : {}),
+        ...(process.env.NODE_ENV === 'development' ? { solution: existingPracticeSession.solution } : {}),
+      });
+      return;
     }
 
-    // Create new practice session (in-memory only)
+    // Create new practice session and save to database
     const sessionId = generateSessionId();
     const solution = getRandomWord(language as Language);
+    
+    // Save to database for persistence across refreshes
+    await createGameSession(sessionId, fid, today, solution, language, true);
     
     const activeGame: ActiveGame = {
       fid,

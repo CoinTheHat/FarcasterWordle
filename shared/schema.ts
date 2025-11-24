@@ -82,12 +82,7 @@ export const gameSessions = pgTable("game_sessions", {
   isPracticeMode: boolean("is_practice_mode").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   completedAt: timestamp("completed_at"),
-}, (table) => ({
-  uniqueFidDateLang: {
-    columns: [table.fid, table.yyyymmdd, table.language],
-    isUnique: true,
-  },
-}));
+});
 
 // Insert Schemas
 export const insertProfileSchema = createInsertSchema(profiles).omit({
