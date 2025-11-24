@@ -195,6 +195,15 @@ export default function Game() {
         const gameSession = await startGame(language);
         setSessionId(gameSession.sessionId);
         
+        // SECURITY: Check if session expired (anti-exploit: prevents offline solution lookup)
+        if (gameSession.sessionExpired) {
+          toast({
+            title: t.gameSessionExpired,
+            description: `${t.gameSessionExpiredDesc} (${gameSession.expiredMinutes} minutes)`,
+            variant: "destructive",
+          });
+        }
+        
         // Set practice mode FIRST before restoring session state
         if (gameSession.isPracticeMode) {
           setIsPracticeMode(true);

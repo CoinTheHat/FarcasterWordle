@@ -41,6 +41,8 @@ export interface StartGameResponse {
   solution?: string;
   score?: number;
   txSubmitted?: boolean; // NEW: Indicates if TX was already submitted (daily_results exists)
+  sessionExpired?: boolean; // SECURITY: Session timeout (prevents offline solution lookup exploit)
+  expiredMinutes?: number; // Time in minutes since session expired
 }
 
 export async function startGame(language: string = "en"): Promise<StartGameResponse> {

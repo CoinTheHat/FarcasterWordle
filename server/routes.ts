@@ -36,6 +36,7 @@ import { randomBytes } from "crypto";
 import { sendReward, getWalletBalance, getSponsorWalletAddress } from "./lib/blockchain";
 
 const MAX_ATTEMPTS = 6;
+const MAX_SESSION_DURATION_MS = 10 * 60 * 1000; // 10 minutes - prevents offline solution lookup exploit
 
 interface ActiveGame {
   fid: number;
@@ -236,7 +237,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const existingDbSession = await getTodayGameSession(fid, today, language);
       
       if (existingDbSession) {
-        // Found existing session in DB - return it (same word even after refresh!)
+        // ANTI-EXPLOIT: Check session age to prevent offline solution lookup
+        const sessionAge = Date.now() - new Date(existingDbSession.createdAt).getTime();
+        
+        if (sessionAge > MAX_SESSION_DURATION_MS && !existingDbSession.completed) {
+          // Session expired! Force complete as loss to prevent exploit
+          const expiredMinutes = Math.ceil(sessionAge / 1000 / 60);
+          console.log(`[SECURITY] Session ${existingDbSession.sessionId} expired (${expiredMinutes}min old). Auto-completing as loss.`);
+          
+          await completeGameSession(existingDbSession.sessionId);
+          
+          // CRITICAL: Remove stale session from in-memory cache to prevent replay attacks
+          // Without this, attackers can reuse the old sessionId to bypass timeout
+          activeGames.delete(existingDbSession.sessionId);
+          
+          // Mark as completed loss in daily_results with 0 score (only if not already saved)
+          const existingResult = await getDailyResult(fid, today);
+          if (!existingResult) {
+            await createDailyResult(fid, today, MAX_ATTEMPTS, false, 0);
+          }
+          
+          // Now user is in practice mode - start fresh practice session
+          const practiceSessionId = generateSessionId();
+          const practiceSolution = getRandomWord(language as Language);
+          
+          const practiceGame: ActiveGame = {
+            fid,
+            sessionId: practiceSessionId,
+            solution: practiceSolution,
+            language: language as Language,
+            guesses: [],
+            attemptsUsed: 0,
+            won: null,
+            createdAt: new Date().toISOString(),
+            completed: false,
+            isPracticeMode: true,
+          };
+          
+          activeGames.set(practiceSessionId, practiceGame);
+          
+          res.json({
+            sessionId: practiceSessionId,
+            maxAttempts: MAX_ATTEMPTS,
+            isPracticeMode: true,
+            sessionExpired: true, // NEW: Signal to frontend that session expired
+            expiredMinutes,
+            ...(process.env.NODE_ENV === 'development' ? { solution: practiceSolution } : {}),
+          });
+          return;
+        }
+        
+        // Session still valid - proceed with normal restore
         // CRITICAL FIX: Restore won/finalScore from persisted guesses to prevent completion blocking
         const rawGuesses = existingDbSession.guesses || [];
         const rawSolution = existingDbSession.solution;
@@ -437,6 +488,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
+    // SECURITY: Check session age to prevent offline solution lookup exploit
+    // This applies to BOTH DB-restored AND in-memory sessions
+    if (!activeGame.isPracticeMode && !activeGame.completed) {
+      const sessionAge = Date.now() - new Date(activeGame.createdAt).getTime();
+      if (sessionAge > MAX_SESSION_DURATION_MS) {
+        const expiredMinutes = Math.ceil(sessionAge / 1000 / 60);
+        console.log(`[SECURITY] Blocking guess for expired session ${sessionId} (${expiredMinutes}min old)`);
+        
+        // CRITICAL: Remove expired session from cache to prevent replay attacks
+        activeGames.delete(sessionId);
+        
+        res.status(400).json({ 
+          error: "Session expired",
+          sessionExpired: true,
+          expiredMinutes
+        });
+        return;
+      }
+    }
+
     // Use language-aware normalization (Turkish locale for tr, standard for en)
     const normalized = activeGame.language === 'tr' 
       ? guess.toLocaleUpperCase('tr-TR').trim()
@@ -497,6 +568,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!activeGame.isPracticeMode) {
         await completeGameSession(sessionId);
       }
+      
+      // SECURITY: Remove ALL completed sessions from cache to prevent replay attacks
+      // This applies to both daily and practice mode sessions
+      activeGames.delete(sessionId);
     }
 
     res.json({
