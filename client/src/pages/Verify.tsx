@@ -34,6 +34,12 @@ export default function Verify() {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
+  const formatCurrency = (value: string | number) => {
+    const num = typeof value === "string" ? parseFloat(value) : value;
+    if (isNaN(num)) return "$0.00";
+    return `$${num.toFixed(2)}`;
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -42,7 +48,8 @@ export default function Verify() {
     });
   };
 
-  const getBaseScanUrl = (txHash: string) => {
+  const getBaseScanUrl = (txHash: string | null) => {
+    if (!txHash) return null;
     return `https://basescan.org/tx/${txHash}`;
   };
 
@@ -117,7 +124,7 @@ export default function Verify() {
               <Skeleton className="h-8 w-24" />
             ) : (
               <div className="text-2xl font-bold" data-testid="text-usdc-balance">
-                ${parseFloat(data?.usdcBalance || "0").toFixed(2)} USDC
+                {formatCurrency(data?.usdcBalance || "0")} USDC
               </div>
             )}
           </CardContent>
@@ -133,7 +140,7 @@ export default function Verify() {
               <Skeleton className="h-8 w-24" />
             ) : (
               <div className="text-2xl font-bold" data-testid="text-total-distributed">
-                ${data?.totalDistributed || 0} USDC
+                {formatCurrency(data?.totalDistributed || 0)} USDC
               </div>
             )}
           </CardContent>
@@ -187,12 +194,12 @@ export default function Verify() {
                         </Badge>
                       </TableCell>
                       <TableCell className="font-semibold" data-testid={`text-amount-${payment.id}`}>
-                        ${payment.amountUsd}
+                        {formatCurrency(payment.amountUsd)}
                       </TableCell>
                       <TableCell data-testid={`link-tx-${payment.id}`}>
-                        {payment.txHash ? (
+                        {payment.txHash && getBaseScanUrl(payment.txHash) ? (
                           <a
-                            href={getBaseScanUrl(payment.txHash)}
+                            href={getBaseScanUrl(payment.txHash)!}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
