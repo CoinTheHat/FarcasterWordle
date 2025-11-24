@@ -683,10 +683,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     activeGame.guesses.push(normalized);
     activeGame.attemptsUsed++;
 
-    // ANTI-EXPLOIT: Sync daily game sessions to database after each guess
-    if (!activeGame.isPracticeMode) {
-      await updateGameSessionGuess(sessionId, activeGame.guesses, activeGame.attemptsUsed);
-    }
+    // ANTI-EXPLOIT: Sync ALL game sessions (daily and practice) to database after each guess
+    await updateGameSessionGuess(sessionId, activeGame.guesses, activeGame.attemptsUsed);
 
     const feedback = calculateFeedback(normalized, activeGame.solution);
     
@@ -707,11 +705,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       activeGame.finalScore = finalScore;
       activeGame.completed = true; // CRITICAL: Mark session as completed to prevent further submissions
       
-      // CRITICAL FIX: Persist completion to database for non-practice games
+      // CRITICAL FIX: Persist completion to database for ALL games (daily and practice)
       // This ensures resumed sessions (after page refresh) also block further submissions
-      if (!activeGame.isPracticeMode) {
-        await completeGameSession(sessionId);
-      }
+      await completeGameSession(sessionId);
       
       // SECURITY: Remove ALL completed sessions from cache to prevent replay attacks
       // This applies to both daily and practice mode sessions
@@ -750,11 +746,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
-    const activeGame = activeGames.get(sessionId);
+    // CRITICAL FIX: Check BOTH memory AND database for session (sessions deleted after completion)
+    let activeGame = activeGames.get(sessionId);
 
     if (!activeGame) {
-      res.status(400).json({ error: "Game session not found or expired. Please start a new game." });
-      return;
+      // Session not in memory - check database (happens after game completion)
+      const dbSession = await getGameSession(sessionId);
+      
+      if (!dbSession) {
+        res.status(400).json({ error: "Game session not found or expired. Please start a new game." });
+        return;
+      }
+      
+      // Restore session from database to memory
+      const lang = dbSession.language as Language;
+      const rawGuesses = dbSession.guesses || [];
+      const guesses = rawGuesses.map(g => 
+        lang === 'tr' ? g.toLocaleUpperCase('tr-TR') : g.toUpperCase()
+      );
+      const solution = lang === 'tr' 
+        ? dbSession.solution.toLocaleUpperCase('tr-TR') 
+        : dbSession.solution.toUpperCase();
+      
+      const hasWon = guesses.includes(solution);
+      const gameOver = hasWon || dbSession.attemptsUsed >= MAX_ATTEMPTS;
+      
+      let finalScore: number | undefined;
+      let won: boolean | null = null;
+      
+      if (hasWon) {
+        won = true;
+        finalScore = calculateWinScore(dbSession.attemptsUsed);
+      } else if (gameOver && guesses.length > 0) {
+        won = false;
+        const lastGuess = guesses[guesses.length - 1];
+        const feedback = calculateFeedback(lastGuess, solution);
+        finalScore = calculateLossScore(feedback);
+      } else if (gameOver) {
+        won = false;
+        finalScore = 0;
+      }
+      
+      activeGame = {
+        fid: dbSession.fid,
+        sessionId: dbSession.sessionId,
+        solution: dbSession.solution,
+        language: lang,
+        guesses,
+        attemptsUsed: dbSession.attemptsUsed,
+        won,
+        finalScore,
+        createdAt: dbSession.createdAt.toISOString(),
+        completed: dbSession.completed,
+        isPracticeMode: dbSession.isPracticeMode,
+      };
     }
 
     if (activeGame.fid !== fid) {
