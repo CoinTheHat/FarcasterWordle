@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy, Wallet, Home, Globe } from "lucide-react";
+import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy, Wallet, Home, Globe, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link, useLocation } from "wouter";
 import { useTranslation } from "@/lib/i18n";
@@ -40,6 +40,7 @@ export function Header({
 }: HeaderProps) {
   const [location] = useLocation();
   const isLeaderboard = location === "/leaderboard";
+  const isVerify = location === "/verify";
   const isGame = location === "/";
   const { t, language, setLanguage } = useTranslation();
   
@@ -147,6 +148,17 @@ export function Header({
               className="h-8 w-8 md:w-10 md:h-10"
             >
               <Trophy className="w-4 h-4 md:w-5 md:h-5" />
+            </Button>
+          </Link>
+
+          <Link href="/verify">
+            <Button
+              size="icon"
+              variant={isVerify ? "default" : "ghost"}
+              data-testid="button-verify"
+              className="h-8 w-8 md:w-10 md:h-10"
+            >
+              <ShieldCheck className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           </Link>
           
