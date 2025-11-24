@@ -9,6 +9,7 @@ import { I18nProvider } from "@/lib/i18n";
 import Game from "@/pages/Game";
 import Leaderboard from "@/pages/Leaderboard";
 import Admin from "@/pages/Admin";
+import Verify from "@/pages/Verify";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -16,6 +17,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Game} />
       <Route path="/leaderboard" component={Leaderboard} />
+      <Route path="/verify" component={Verify} />
       <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
