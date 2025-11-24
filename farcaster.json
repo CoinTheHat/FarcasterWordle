@@ -20,6 +20,9 @@
     "ogTitle": "WordCast - Daily Word Puzzle",
     "ogDescription": "Play daily word puzzles, compete on leaderboards, and save scores to blockchain.",
     "ogImageUrl": "https://farcasterwordle.com/splash.png",
-    "noindex": false
+    "noindex": false,
+    "links": {
+      "twitter": "https://x.com/FarcasterWordle"
+    }
   }
 }
