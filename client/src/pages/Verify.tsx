@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, Wallet, DollarSign, TrendingUp } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useTranslation } from "@/lib/i18n";
 
 interface VerifyData {
   sponsorWallet: string | null;
@@ -23,6 +24,7 @@ interface VerifyData {
 }
 
 export default function Verify() {
+  const { t } = useTranslation();
   const { data, isLoading, error } = useQuery<VerifyData>({
     queryKey: ["/api/verify"],
   });
@@ -53,10 +55,10 @@ export default function Verify() {
       <div className="container mx-auto p-4 max-w-6xl">
         <Card>
           <CardHeader>
-            <CardTitle className="text-destructive">Error</CardTitle>
+            <CardTitle className="text-destructive">{t.verifyErrorTitle}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Failed to load verification data. Please try again later.</p>
+            <p>{t.verifyErrorMessage}</p>
           </CardContent>
         </Card>
       </div>
@@ -67,17 +69,17 @@ export default function Verify() {
     <div className="container mx-auto p-4 max-w-6xl space-y-6">
       <div>
         <h1 className="text-3xl font-bold mb-2" data-testid="text-verify-title">
-          Transparency & Verification
+          {t.verifyTitle}
         </h1>
         <p className="text-muted-foreground" data-testid="text-verify-description">
-          All USDC reward distributions are publicly verifiable on the Base blockchain.
+          {t.verifyDescription}
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card data-testid="card-sponsor-wallet">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sponsor Wallet</CardTitle>
+            <CardTitle className="text-sm font-medium">{t.verifySponsorWallet}</CardTitle>
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -86,7 +88,7 @@ export default function Verify() {
             ) : (
               <>
                 <div className="text-sm font-mono mb-2" data-testid="text-sponsor-address">
-                  {data?.sponsorWallet ? formatAddress(data.sponsorWallet) : "Not configured"}
+                  {data?.sponsorWallet ? formatAddress(data.sponsorWallet) : t.verifyNotConfigured}
                 </div>
                 {data?.sponsorWallet && (
                   <a
@@ -96,7 +98,7 @@ export default function Verify() {
                     className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
                     data-testid="link-sponsor-basescan"
                   >
-                    View on BaseScan
+                    {t.verifyViewBaseScan}
                     <ExternalLink className="h-3 w-3" />
                   </a>
                 )}
@@ -107,7 +109,7 @@ export default function Verify() {
 
         <Card data-testid="card-usdc-balance">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Current Balance</CardTitle>
+            <CardTitle className="text-sm font-medium">{t.verifyCurrentBalance}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -123,7 +125,7 @@ export default function Verify() {
 
         <Card data-testid="card-total-distributed">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Distributed</CardTitle>
+            <CardTitle className="text-sm font-medium">{t.verifyTotalDistributed}</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -140,8 +142,8 @@ export default function Verify() {
 
       <Card data-testid="card-payment-history">
         <CardHeader>
-          <CardTitle>Recent Payments</CardTitle>
-          <CardDescription>Latest 50 successful USDC reward distributions</CardDescription>
+          <CardTitle>{t.verifyRecentPayments}</CardTitle>
+          <CardDescription>{t.verifyRecentPaymentsDesc}</CardDescription>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -155,13 +157,13 @@ export default function Verify() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Player</TableHead>
-                    <TableHead>Wallet</TableHead>
-                    <TableHead>Week</TableHead>
-                    <TableHead>Rank</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Transaction</TableHead>
+                    <TableHead>{t.verifyDate}</TableHead>
+                    <TableHead>{t.verifyPlayer}</TableHead>
+                    <TableHead>{t.verifyWallet}</TableHead>
+                    <TableHead>{t.verifyWeek}</TableHead>
+                    <TableHead>{t.verifyRank}</TableHead>
+                    <TableHead>{t.verifyAmount}</TableHead>
+                    <TableHead>{t.verifyTransaction}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -171,7 +173,7 @@ export default function Verify() {
                         {formatDate(payment.distributedAt)}
                       </TableCell>
                       <TableCell data-testid={`text-username-${payment.id}`}>
-                        {payment.username || "Anonymous"}
+                        {payment.username || t.verifyAnonymous}
                       </TableCell>
                       <TableCell className="font-mono text-xs" data-testid={`text-wallet-${payment.id}`}>
                         {formatAddress(payment.walletAddress)}
@@ -199,7 +201,7 @@ export default function Verify() {
                             <ExternalLink className="h-3 w-3" />
                           </a>
                         ) : (
-                          <span className="text-xs text-muted-foreground">Pending</span>
+                          <span className="text-xs text-muted-foreground">{t.verifyPending}</span>
                         )}
                       </TableCell>
                     </TableRow>
@@ -209,7 +211,7 @@ export default function Verify() {
             </div>
           ) : (
             <p className="text-center text-muted-foreground py-8" data-testid="text-no-payments">
-              No payments distributed yet.
+              {t.verifyNoPayments}
             </p>
           )}
         </CardContent>

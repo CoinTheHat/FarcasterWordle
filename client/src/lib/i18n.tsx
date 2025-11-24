@@ -183,6 +183,29 @@ interface Translations {
   // Errors
   errorGeneric: string;
   errorNetwork: string;
+  
+  // Verify Page
+  verifyTitle: string;
+  verifyDescription: string;
+  verifySponsorWallet: string;
+  verifyCurrentBalance: string;
+  verifyTotalDistributed: string;
+  verifyRecentPayments: string;
+  verifyRecentPaymentsDesc: string;
+  verifyDate: string;
+  verifyPlayer: string;
+  verifyWallet: string;
+  verifyWeek: string;
+  verifyRank: string;
+  verifyAmount: string;
+  verifyTransaction: string;
+  verifyViewBaseScan: string;
+  verifyNoPayments: string;
+  verifyNotConfigured: string;
+  verifyPending: string;
+  verifyAnonymous: string;
+  verifyErrorTitle: string;
+  verifyErrorMessage: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -361,6 +384,29 @@ const translations: Record<Language, Translations> = {
     // Errors
     errorGeneric: "Something went wrong",
     errorNetwork: "Network error. Please try again.",
+    
+    // Verify Page
+    verifyTitle: "Transparency & Verification",
+    verifyDescription: "All USDC reward distributions are publicly verifiable on the Base blockchain.",
+    verifySponsorWallet: "Sponsor Wallet",
+    verifyCurrentBalance: "Current Balance",
+    verifyTotalDistributed: "Total Distributed",
+    verifyRecentPayments: "Recent Payments",
+    verifyRecentPaymentsDesc: "Latest 50 successful USDC reward distributions",
+    verifyDate: "Date",
+    verifyPlayer: "Player",
+    verifyWallet: "Wallet",
+    verifyWeek: "Week",
+    verifyRank: "Rank",
+    verifyAmount: "Amount",
+    verifyTransaction: "Transaction",
+    verifyViewBaseScan: "View on BaseScan",
+    verifyNoPayments: "No payments distributed yet.",
+    verifyNotConfigured: "Not configured",
+    verifyPending: "Pending",
+    verifyAnonymous: "Anonymous",
+    verifyErrorTitle: "Error",
+    verifyErrorMessage: "Failed to load verification data. Please try again later.",
   },
   tr: {
     // Header
@@ -537,6 +583,29 @@ const translations: Record<Language, Translations> = {
     // Errors
     errorGeneric: "Bir şeyler yanlış gitti",
     errorNetwork: "Ağ hatası. Lütfen tekrar deneyin.",
+    
+    // Verify Page
+    verifyTitle: "Şeffaflık ve Doğrulama",
+    verifyDescription: "Tüm USDC ödül dağıtımları Base blockchain üzerinde halka açık olarak doğrulanabilir.",
+    verifySponsorWallet: "Sponsor Cüzdan",
+    verifyCurrentBalance: "Mevcut Bakiye",
+    verifyTotalDistributed: "Toplam Dağıtılan",
+    verifyRecentPayments: "Son Ödemeler",
+    verifyRecentPaymentsDesc: "Son 50 başarılı USDC ödül dağıtımı",
+    verifyDate: "Tarih",
+    verifyPlayer: "Oyuncu",
+    verifyWallet: "Cüzdan",
+    verifyWeek: "Hafta",
+    verifyRank: "Sıra",
+    verifyAmount: "Miktar",
+    verifyTransaction: "İşlem",
+    verifyViewBaseScan: "BaseScan'de Gör",
+    verifyNoPayments: "Henüz ödeme dağıtılmadı.",
+    verifyNotConfigured: "Yapılandırılmamış",
+    verifyPending: "Beklemede",
+    verifyAnonymous: "Anonim",
+    verifyErrorTitle: "Hata",
+    verifyErrorMessage: "Doğrulama verileri yüklenemedi. Lütfen daha sonra tekrar deneyin.",
   },
 };
 
