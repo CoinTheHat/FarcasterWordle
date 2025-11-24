@@ -29,6 +29,7 @@ import {
   getPracticeResultBySessionId,
   updateGameSessionGuess,
   completeGameSession,
+  deleteGameSession,
   getRecentRewards,
   getTotalDistributedRewards,
 } from "./db";
@@ -843,9 +844,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Continue anyway - practice results are optional for now
       }
       
-      // Mark session as completed
-      activeGame.completed = true;
-      activeGame.completedAt = new Date().toISOString();
+      // CRITICAL: Delete session from database after TX submission
+      // This prevents re-entry showing TX modal again on completed sessions
+      await deleteGameSession(sessionId);
       
       res.json({
         success: true,
@@ -889,10 +890,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       await updateStreak(fid, newCurrentStreak, newMaxStreak, today);
 
-      // Mark session as completed in database and memory
-      activeGame.completed = true;
-      activeGame.completedAt = new Date().toISOString();
-      await completeGameSession(sessionId);
+      // CRITICAL: Delete session from database after TX submission
+      // This prevents re-entry showing TX modal again on completed sessions
+      await deleteGameSession(sessionId);
 
       res.json({
         success: true,

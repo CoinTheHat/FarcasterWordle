@@ -559,6 +559,11 @@ export async function completeGameSession(sessionId: string): Promise<void> {
     .where(eq(schema.gameSessions.sessionId, sessionId));
 }
 
+export async function deleteGameSession(sessionId: string): Promise<void> {
+  await db.delete(schema.gameSessions)
+    .where(eq(schema.gameSessions.sessionId, sessionId));
+}
+
 export async function getLatestPracticeSession(fid: number, yyyymmdd: string, language: string): Promise<schema.GameSession | null> {
   // Get latest INCOMPLETE practice session for today in the specified language
   // If user completed a session but didn't submit TX, this should also return it
