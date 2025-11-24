@@ -304,6 +304,39 @@ export default function Game() {
       return;
     }
 
+    // PRACTICE MODE: Skip TX requirement and start new practice game immediately
+    if (isPracticeMode) {
+      try {
+        const gameSession = await startGame(language!);
+        setSessionId(gameSession.sessionId);
+        setGuesses([]);
+        setFeedback([]);
+        setCurrentGuess("");
+        setLetterStates(new Map());
+        setGameStatus("playing");
+        setShowGameOver(false);
+        setTotalScore(0);
+        setSolution("");
+        setHintUsed(false);
+        setIsPracticeMode(true); // Stay in practice mode
+        
+        toast({
+          title: t.gameOverPracticeMode,
+          description: t.gameOverPracticeTxValidated,
+          duration: 3000,
+        });
+      } catch (err) {
+        console.error("Failed to start new practice game:", err);
+        toast({
+          title: "Error",
+          description: "Failed to start new practice game. Please refresh the page.",
+          variant: "destructive",
+          duration: 3000,
+        });
+      }
+      return;
+    }
+
     // CRITICAL FIX: If wallet not connected, trigger connection flow instead of just erroring
     if (!isConnected || !address) {
       if (connectors.length > 0) {
@@ -454,7 +487,7 @@ export default function Game() {
     } finally {
       setIsSavingScore(false);
     }
-  }, [sessionId, isConnected, address, totalScore, sendTransactionAsync, toast, language]);
+  }, [sessionId, isConnected, address, totalScore, sendTransactionAsync, toast, language, isPracticeMode, t]);
 
   const updateLetterStates = useCallback((guess: string, fb: TileFeedback[]) => {
     setLetterStates((prev) => {
