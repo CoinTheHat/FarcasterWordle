@@ -59,8 +59,11 @@ export default function Game() {
   const [isConnectingWallet, setIsConnectingWallet] = useState(false);
   const [hasAttemptedAutoConnect, setHasAttemptedAutoConnect] = useState(false);
   const [farcasterWallet, setFarcasterWallet] = useState<string | null>(null);
+  const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState<number>(5 * 60); // 5 minutes in seconds
   
   const { toast } = useToast();
+  const SESSION_DURATION = 5 * 60; // 5 minutes in seconds
   const isRestartingRef = useRef(false);
   const isSubmittingRef = useRef(false); // Prevent double submission during race conditions
 
@@ -96,6 +99,8 @@ export default function Game() {
       // Backend handles practice mode - always try to start game
       const gameSession = await startGame(newLanguage);
       setSessionId(gameSession.sessionId);
+      setSessionStartTime(Date.now()); // Reset timer for new game
+      setTimeRemaining(SESSION_DURATION);
       
       // Set state based on backend response
       if (gameSession.isPracticeMode) {
@@ -194,6 +199,8 @@ export default function Game() {
         // Start game regardless of remainingAttempts - backend will set isPracticeMode flag
         const gameSession = await startGame(language);
         setSessionId(gameSession.sessionId);
+        setSessionStartTime(Date.now()); // Start timer for new session
+        setTimeRemaining(SESSION_DURATION);
         
         // SECURITY: Check if session expired (anti-exploit: prevents offline solution lookup)
         // Only show toast if ACTUALLY expired (not just practice mode)
@@ -294,6 +301,49 @@ export default function Game() {
     
     attemptAutoConnect();
   }, [isConnected, hasAttemptedAutoConnect, connectors, connect]);
+
+  // Timer countdown effect - only for daily games (not practice mode)
+  useEffect(() => {
+    // Don't run timer if: no session, practice mode, game completed, or game over
+    if (!sessionId || isPracticeMode || gameCompleted || gameStatus !== "playing") {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      if (sessionStartTime) {
+        const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+        const remaining = Math.max(0, SESSION_DURATION - elapsed);
+        setTimeRemaining(remaining);
+
+        // Warning toast at 1 minute remaining
+        if (remaining === 60) {
+          toast({
+            title: language === 'tr' ? "⚠️ Son 1 Dakika!" : "⚠️ 1 Minute Left!",
+            description: language === 'tr' 
+              ? "Süre dolmadan oyunu bitirin!" 
+              : "Finish the game before time runs out!",
+            variant: "destructive",
+            duration: 5000,
+          });
+        }
+
+        // Session expired
+        if (remaining === 0) {
+          toast({
+            title: language === 'tr' ? "⏰ Süre Doldu!" : "⏰ Time's Up!",
+            description: language === 'tr' 
+              ? "Oturum süresi doldu. Yeni oyun başlatılıyor..." 
+              : "Session expired. Starting new game...",
+            variant: "destructive",
+            duration: 5000,
+          });
+          clearInterval(interval);
+        }
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [sessionId, sessionStartTime, isPracticeMode, gameCompleted, gameStatus, language, toast]);
 
   const handleSaveScore = useCallback(async () => {
     if (!sessionId) {
@@ -434,6 +484,8 @@ export default function Game() {
       try {
         const gameSession = await startGame(language!);
         setSessionId(gameSession.sessionId);
+        setSessionStartTime(Date.now()); // Reset timer for new game
+        setTimeRemaining(SESSION_DURATION);
         setGuesses([]);
         setFeedback([]);
         setCurrentGuess("");
@@ -1009,6 +1061,31 @@ export default function Game() {
             </div>
           )}
           
+          {/* Timer - Only for daily games, not practice mode */}
+          {!isPracticeMode && !stats.hasCompletedToday && gameStatus === "playing" && (
+            <div className="mb-2 md:mb-3 mx-2 md:mx-4" data-testid="banner-timer">
+              <div className={`backdrop-blur-sm border rounded-lg p-2 md:p-3 text-center shadow-lg transition-all ${
+                timeRemaining <= 60 
+                  ? 'bg-gradient-to-r from-red-500/20 to-orange-500/20 border-red-500/50 animate-pulse' 
+                  : 'bg-card/80 border-card-border'
+              }`}>
+                <div className={`flex items-center justify-center gap-1.5 md:gap-2 text-sm md:text-lg font-bold ${
+                  timeRemaining <= 60 ? 'text-red-500' : 'text-primary'
+                }`}>
+                  <span>⏱️</span>
+                  <span data-testid="text-timer">
+                    {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, '0')}
+                  </span>
+                </div>
+                {timeRemaining <= 60 && (
+                  <div className="text-[10px] md:text-xs text-red-500 font-medium mt-1">
+                    {language === 'tr' ? '⚠️ Acele edin!' : '⚠️ Hurry up!'}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
           {/* Stats Badge */}
           <div className="grid grid-cols-4 gap-1.5 md:gap-4 mb-2 md:mb-3 px-2 md:px-4">
             <div className="bg-card/80 backdrop-blur-sm border border-card-border rounded-lg p-1.5 md:p-4 text-center shadow-lg hover-elevate transition-all">
@@ -1105,6 +1182,8 @@ export default function Game() {
               const gameSession = await startGame(language);
               console.log("New practice game started:", gameSession);
               setSessionId(gameSession.sessionId);
+              setSessionStartTime(Date.now()); // Reset timer
+              setTimeRemaining(SESSION_DURATION);
               setIsPracticeMode(true);
               setGameCompleted(false); // Reset - TX not sent yet for new game
               

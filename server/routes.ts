@@ -39,7 +39,7 @@ import { randomBytes } from "crypto";
 import { sendReward, getWalletBalance, getSponsorWalletAddress } from "./lib/blockchain";
 
 const MAX_ATTEMPTS = 6;
-const MAX_SESSION_DURATION_MS = 10 * 60 * 1000; // 10 minutes - prevents offline solution lookup exploit
+const MAX_SESSION_DURATION_MS = 5 * 60 * 1000; // 5 minutes - prevents offline solution lookup exploit
 
 interface ActiveGame {
   fid: number;
