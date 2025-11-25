@@ -851,9 +851,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
 
+    // TIMEOUT FIX: If timeout occurred, treat as loss even if game not "completed" normally
     if (activeGame.won === null) {
-      res.status(400).json({ error: "Game not completed" });
-      return;
+      if (isTimeout === true) {
+        // Timeout = automatic loss
+        activeGame.won = false;
+        // Calculate timeout score from existing guesses (best row score)
+        let timeoutScore = 0;
+        if (activeGame.guesses && activeGame.guesses.length > 0) {
+          for (const guess of activeGame.guesses) {
+            const feedback = calculateFeedback(guess, activeGame.solution);
+            let rowScore = 0;
+            for (const tile of feedback) {
+              if (tile === 'correct') rowScore += 2;
+              else if (tile === 'present') rowScore += 1;
+            }
+            if (rowScore > timeoutScore) timeoutScore = rowScore;
+          }
+        }
+        activeGame.finalScore = timeoutScore;
+      } else {
+        res.status(400).json({ error: "Game not completed" });
+        return;
+      }
     }
 
     const today = getTodayDateString();
