@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT MODE */
+/* COSMIC PURPLE THEME - Light Mode (purple tones) */
 :root {
   --button-outline: rgba(0,0,0, .10);
   --badge-outline: rgba(0,0,0, .05);
@@ -14,67 +14,67 @@
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
 
-  --background: 220 40% 97%;
+  --background: 260 30% 96%;
 
-  --foreground: 220 15% 10%;
+  --foreground: 260 20% 15%;
 
-  --border: 220 20% 88%;
+  --border: 260 20% 85%;
 
   --card: 0 0% 100%;
 
-  --card-foreground: 220 15% 10%;
+  --card-foreground: 260 20% 15%;
 
-  --card-border: 220 20% 92%;
+  --card-border: 260 15% 88%;
 
-  --sidebar: 220 25% 95%;
+  --sidebar: 260 25% 94%;
 
-  --sidebar-foreground: 220 15% 10%;
+  --sidebar-foreground: 260 20% 15%;
 
-  --sidebar-border: 220 20% 88%;
+  --sidebar-border: 260 20% 85%;
 
-  --sidebar-primary: 142 70% 38%;
+  --sidebar-primary: 165 85% 38%;
 
-  --sidebar-primary-foreground: 142 70% 98%;
+  --sidebar-primary-foreground: 0 0% 100%;
 
-  --sidebar-accent: 142 10% 86%;
+  --sidebar-accent: 260 15% 88%;
 
-  --sidebar-accent-foreground: 142 10% 18%;
+  --sidebar-accent-foreground: 260 15% 20%;
 
-  --sidebar-ring: 142 70% 48%;
+  --sidebar-ring: 165 85% 45%;
 
   --popover: 0 0% 100%;
 
-  --popover-foreground: 220 15% 10%;
+  --popover-foreground: 260 20% 15%;
 
-  --popover-border: 220 20% 90%;
+  --popover-border: 260 15% 88%;
 
-  --primary: 142 70% 40%;
+  --primary: 165 85% 40%;
 
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 220 15% 90%;
+  --secondary: 260 20% 90%;
 
-  --secondary-foreground: 220 15% 10%;
+  --secondary-foreground: 260 20% 15%;
 
-  --muted: 220 15% 92%;
+  --muted: 260 15% 92%;
 
-  --muted-foreground: 220 10% 40%;
+  --muted-foreground: 260 10% 45%;
 
-  --accent: 220 20% 90%;
+  --accent: 320 70% 55%;
 
-  --accent-foreground: 220 20% 12%;
+  --accent-foreground: 0 0% 100%;
 
   --destructive: 0 84% 48%;
 
   --destructive-foreground: 0 0% 100%;
 
-  --input: 0 0% 72%;
-  --ring: 142 65% 45%;
-  --chart-1: 142 65% 32%;
-  --chart-2: 197 75% 35%;
-  --chart-3: 280 62% 38%;
-  --chart-4: 32 85% 42%;
-  --chart-5: 12 76% 48%;
+  --input: 260 15% 75%;
+  --ring: 165 80% 45%;
+  --chart-1: 165 80% 40%;
+  --chart-2: 320 70% 55%;
+  --chart-3: 260 60% 50%;
+  --chart-4: 45 90% 50%;
+  --chart-5: 200 85% 55%;
 
   --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-serif: Georgia, serif;
@@ -122,86 +122,93 @@
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
+/* COSMIC PURPLE THEME - Dark Mode (deep purple/violet gradient feel) */
 .dark {
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .05);
+  --button-outline: rgba(255,255,255, .12);
+  --badge-outline: rgba(255,255,255, .08);
 
-  --opaque-button-border-intensity: 9;  /* In terms of percentages */
+  --opaque-button-border-intensity: 12;  /* In terms of percentages */
 
   /* Backgrounds applied on top of other backgrounds when hovered/active */
-  --elevate-1: rgba(255,255,255, .04);
-  --elevate-2: rgba(255,255,255, .09);
+  --elevate-1: rgba(255,255,255, .05);
+  --elevate-2: rgba(255,255,255, .10);
 
-  --background: 220 30% 10%;
+  /* Deep cosmic purple background */
+  --background: 258 45% 11%;
 
-  --foreground: 220 20% 95%;
+  --foreground: 260 15% 95%;
 
-  --border: 220 20% 22%;
+  --border: 260 30% 22%;
 
-  --card: 220 25% 13%;
+  /* Slightly lighter purple for cards */
+  --card: 255 35% 16%;
 
-  --card-foreground: 220 20% 95%;
+  --card-foreground: 260 15% 95%;
 
-  --card-border: 220 20% 18%;
+  --card-border: 260 25% 24%;
 
-  --sidebar: 220 25% 12%;
+  --sidebar: 258 40% 13%;
 
-  --sidebar-foreground: 220 20% 95%;
+  --sidebar-foreground: 260 15% 95%;
 
-  --sidebar-border: 220 20% 20%;
+  --sidebar-border: 260 30% 20%;
 
-  --sidebar-primary: 142 65% 45%;
+  /* Bright teal/cyan for primary actions */
+  --sidebar-primary: 165 90% 45%;
 
   --sidebar-primary-foreground: 0 0% 100%;
 
-  --sidebar-accent: 142 10% 24%;
+  --sidebar-accent: 260 30% 22%;
 
-  --sidebar-accent-foreground: 142 10% 90%;
+  --sidebar-accent-foreground: 260 15% 90%;
 
-  --sidebar-ring: 142 65% 55%;
+  --sidebar-ring: 165 90% 50%;
 
-  --popover: 220 25% 15%;
+  --popover: 255 35% 18%;
 
-  --popover-foreground: 220 20% 95%;
+  --popover-foreground: 260 15% 95%;
 
-  --popover-border: 220 20% 24%;
+  --popover-border: 260 25% 26%;
 
-  --primary: 142 65% 45%;
+  /* Bright teal/cyan primary - like the "Gönder" button in the example */
+  --primary: 165 90% 45%;
 
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 220 15% 24%;
+  --secondary: 260 25% 22%;
 
-  --secondary-foreground: 220 20% 95%;
+  --secondary-foreground: 260 15% 95%;
 
-  --muted: 220 15% 20%;
+  /* Muted purple for tiles/inputs */
+  --muted: 255 30% 18%;
 
-  --muted-foreground: 220 10% 70%;
+  --muted-foreground: 260 15% 65%;
 
-  --accent: 220 20% 24%;
+  /* Magenta/pink accent for highlights */
+  --accent: 320 75% 55%;
 
-  --accent-foreground: 220 20% 92%;
+  --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 78% 52%;
+  --destructive: 0 75% 50%;
 
   --destructive-foreground: 0 0% 100%;
 
-  --input: 0 0% 32%;
-  --ring: 142 58% 52%;
-  --chart-1: 142 58% 68%;
-  --chart-2: 197 72% 65%;
-  --chart-3: 280 58% 68%;
-  --chart-4: 32 82% 62%;
-  --chart-5: 12 73% 68%;
+  --input: 260 25% 28%;
+  --ring: 165 85% 50%;
+  --chart-1: 165 85% 55%;
+  --chart-2: 320 75% 60%;
+  --chart-3: 260 65% 60%;
+  --chart-4: 45 90% 55%;
+  --chart-5: 200 85% 60%;
 
-  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.20);
-  --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.25);
-  --shadow-sm: 0px 1px 3px 0px hsl(0 0% 0% / 0.30), 0px 1px 2px -1px hsl(0 0% 0% / 0.30);
-  --shadow: 0px 1px 3px 0px hsl(0 0% 0% / 0.35), 0px 1px 2px -1px hsl(0 0% 0% / 0.35);
-  --shadow-md: 0px 4px 6px -1px hsl(0 0% 0% / 0.30), 0px 2px 4px -2px hsl(0 0% 0% / 0.30);
-  --shadow-lg: 0px 10px 15px -3px hsl(0 0% 0% / 0.30), 0px 4px 6px -4px hsl(0 0% 0% / 0.30);
-  --shadow-xl: 0px 20px 25px -5px hsl(0 0% 0% / 0.30), 0px 8px 10px -6px hsl(0 0% 0% / 0.30);
-  --shadow-2xl: 0px 25px 50px -12px hsl(0 0% 0% / 0.45);
+  --shadow-2xs: 0px 1px 2px 0px hsl(280 50% 5% / 0.30);
+  --shadow-xs: 0px 1px 2px 0px hsl(280 50% 5% / 0.35);
+  --shadow-sm: 0px 1px 3px 0px hsl(280 50% 5% / 0.40), 0px 1px 2px -1px hsl(280 50% 5% / 0.40);
+  --shadow: 0px 1px 3px 0px hsl(280 50% 5% / 0.45), 0px 1px 2px -1px hsl(280 50% 5% / 0.45);
+  --shadow-md: 0px 4px 6px -1px hsl(280 50% 5% / 0.40), 0px 2px 4px -2px hsl(280 50% 5% / 0.40);
+  --shadow-lg: 0px 10px 15px -3px hsl(280 50% 5% / 0.40), 0px 4px 6px -4px hsl(280 50% 5% / 0.40);
+  --shadow-xl: 0px 20px 25px -5px hsl(280 50% 5% / 0.40), 0px 8px 10px -6px hsl(280 50% 5% / 0.40);
+  --shadow-2xl: 0px 25px 50px -12px hsl(280 50% 5% / 0.55);
 
 }
 
