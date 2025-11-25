@@ -61,6 +61,7 @@ export default function Game() {
   const [farcasterWallet, setFarcasterWallet] = useState<string | null>(null);
   const [sessionStartTime, setSessionStartTime] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number>(5 * 60); // 5 minutes in seconds
+  const [isTimeout, setIsTimeout] = useState(false); // Track if game ended due to timeout
   
   const { toast } = useToast();
   const SESSION_DURATION = 5 * 60; // 5 minutes in seconds
@@ -82,6 +83,7 @@ export default function Game() {
       setSolution("");
       setRevealingRow(undefined);
       setHintUsed(false);
+      setIsTimeout(false);
       setShowGameOver(false);
       
       // Fetch fresh stats and start new game
@@ -345,6 +347,7 @@ export default function Game() {
           // Set game as lost due to timeout
           setGameStatus("lost");
           setTotalScore(bestScore);
+          setIsTimeout(true); // Mark as timeout for leaderboard display
           
           // Show toast
           toast({
@@ -435,7 +438,7 @@ export default function Game() {
       });
 
       console.log("Transaction hash:", hash);
-      const result = await completeGame(sessionId, hash);
+      const result = await completeGame(sessionId, hash, isTimeout);
 
       setGameCompleted(true);
       setIsPracticeMode(result.isPracticeMode || false);
@@ -518,6 +521,7 @@ export default function Game() {
         setTotalScore(0);
         setSolution("");
         setHintUsed(false);
+        setIsTimeout(false);
       } catch (restartErr) {
         console.error("Failed to restart game:", restartErr);
         toast({

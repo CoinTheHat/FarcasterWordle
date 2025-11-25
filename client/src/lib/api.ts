@@ -83,11 +83,11 @@ export interface CompleteGameResponse {
   message?: string;
 }
 
-export async function completeGame(sessionId: string, txHash: string): Promise<CompleteGameResponse> {
+export async function completeGame(sessionId: string, txHash: string, isTimeout: boolean = false): Promise<CompleteGameResponse> {
   const response = await fetch("/api/complete-game", {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify({ sessionId, txHash }),
+    body: JSON.stringify({ sessionId, txHash, isTimeout }),
   });
   
   if (!response.ok) {

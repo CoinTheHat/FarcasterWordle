@@ -772,7 +772,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/complete-game", requireAuth, async (req: AuthRequest, res: Response) => {
     const fid = req.fid!;
-    const { sessionId, txHash } = req.body;
+    const { sessionId, txHash, isTimeout } = req.body;
 
     if (!sessionId || typeof sessionId !== "string") {
       res.status(400).json({ error: "Invalid session" });
@@ -915,9 +915,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     // SECURITY FIX: Save score ONLY after TX validation
+    // If timeout occurred, set attempts to 0 for leaderboard display
+    const attemptsToSave = isTimeout === true ? 0 : activeGame.attemptsUsed;
     
     try {
-      await createDailyResult(fid, today, activeGame.attemptsUsed, activeGame.won, finalScore);
+      await createDailyResult(fid, today, attemptsToSave, activeGame.won, finalScore);
       
       // Update streak (based on consecutive days played, not won)
       const streak = await getOrCreateStreak(fid);

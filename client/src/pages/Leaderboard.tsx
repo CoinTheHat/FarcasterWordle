@@ -195,7 +195,7 @@ export default function Leaderboard() {
                           </div>
                           <div className="text-xs md:text-sm text-muted-foreground">
                             {period === "best-scores" ? t.leaderboardBestScore : entry.won > 0 ? `${entry.won} ${entry.won > 1 ? t.leaderboardWins : t.leaderboardWin}` : t.leaderboardNoWins}
-                            {period === "daily" && ` • ${entry.attempts} ${entry.attempts > 1 ? t.leaderboardAttempts : t.leaderboardAttempt}`}
+                            {period === "daily" && ` • ${entry.attempts === 0 ? t.leaderboardTimeout : `${entry.attempts} ${entry.attempts > 1 ? t.leaderboardAttempts : t.leaderboardAttempt}`}`}
                           </div>
                           {period === "weekly" && entry.rank <= 3 && entry.walletAddress && (
                             <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted-foreground">

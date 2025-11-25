@@ -129,6 +129,7 @@ interface Translations {
   leaderboardNoWins: string;
   leaderboardAttempt: string;
   leaderboardAttempts: string;
+  leaderboardTimeout: string;
   leaderboardPrize: string;
   leaderboardNoScores: string;
   leaderboard1st: string;
@@ -330,6 +331,7 @@ const translations: Record<Language, Translations> = {
     leaderboardNoWins: "No wins",
     leaderboardAttempt: "attempt",
     leaderboardAttempts: "attempts",
+    leaderboardTimeout: "Time Out",
     leaderboardPrize: "Prize",
     leaderboardNoScores: "No scores yet. Be the first to play!",
     leaderboard1st: "1st",
@@ -529,6 +531,7 @@ const translations: Record<Language, Translations> = {
     leaderboardNoWins: "Galibiyet yok",
     leaderboardAttempt: "deneme",
     leaderboardAttempts: "deneme",
+    leaderboardTimeout: "Süre Bitti",
     leaderboardPrize: "Ödül",
     leaderboardNoScores: "Henüz skor yok. İlk oynayan sen ol!",
     leaderboard1st: "1.",
