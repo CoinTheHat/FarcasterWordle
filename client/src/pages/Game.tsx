@@ -333,28 +333,28 @@ export default function Game() {
         if (remaining === 0) {
           clearInterval(interval);
           
-          // Calculate best score from current feedback (green=20, yellow=10)
-          let bestScore = 0;
+          // Timeout = 1x multiplier (base points only: green=10, yellow=5)
+          let timeoutScore = 0;
           for (const row of feedback) {
             let rowScore = 0;
             for (const tile of row) {
-              if (tile === 'correct') rowScore += 20;
-              else if (tile === 'present') rowScore += 10;
+              if (tile === 'correct') rowScore += 10;  // 1x multiplier
+              else if (tile === 'present') rowScore += 5;  // 1x multiplier
             }
-            if (rowScore > bestScore) bestScore = rowScore;
+            if (rowScore > timeoutScore) timeoutScore = rowScore;
           }
           
           // Set game as lost due to timeout
           setGameStatus("lost");
-          setTotalScore(bestScore);
+          setTotalScore(timeoutScore);
           setIsTimeout(true); // Mark as timeout for leaderboard display
           
           // Show toast
           toast({
             title: language === 'tr' ? "⏰ Süre Doldu!" : "⏰ Time's Up!",
             description: language === 'tr' 
-              ? `En iyi tahmininizden ${bestScore} puan kazandınız!` 
-              : `You earned ${bestScore} points from your best guess!`,
+              ? `1x çarpan ile ${timeoutScore} puan kazandınız!` 
+              : `You earned ${timeoutScore} points with 1x multiplier!`,
             variant: "destructive",
             duration: 5000,
           });
