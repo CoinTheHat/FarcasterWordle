@@ -244,20 +244,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const sessionAge = Date.now() - new Date(existingDbSession.createdAt).getTime();
         
         if (sessionAge > MAX_SESSION_DURATION_MS && !existingDbSession.completed) {
-          // Session expired! Force complete as loss to prevent exploit
+          // Session expired! Check actual game state before auto-completing
           const expiredMinutes = Math.ceil(sessionAge / 1000 / 60);
-          console.log(`[SECURITY] Session ${existingDbSession.sessionId} expired (${expiredMinutes}min old). Auto-completing as loss.`);
+          console.log(`[SECURITY] Session ${existingDbSession.sessionId} expired (${expiredMinutes}min old). Checking actual game state...`);
           
           await completeGameSession(existingDbSession.sessionId);
           
           // CRITICAL: Remove stale session from in-memory cache to prevent replay attacks
-          // Without this, attackers can reuse the old sessionId to bypass timeout
           activeGames.delete(existingDbSession.sessionId);
           
-          // Mark as completed loss in daily_results with 0 score (only if not already saved)
+          // FIX: Use actual session data instead of hardcoded MAX_ATTEMPTS/0
           const existingResult = await getDailyResult(fid, today);
           if (!existingResult) {
-            await createDailyResult(fid, today, MAX_ATTEMPTS, false, 0);
+            const rawGuesses = existingDbSession.guesses || [];
+            const solution = existingDbSession.language === 'tr' 
+              ? existingDbSession.solution.toLocaleUpperCase('tr-TR')
+              : existingDbSession.solution.toUpperCase();
+            
+            // Normalize guesses for comparison
+            const normalizedGuesses = rawGuesses.map(g => 
+              existingDbSession.language === 'tr' ? g.toLocaleUpperCase('tr-TR') : g.toUpperCase()
+            );
+            
+            // Check if user actually won (last guess matches solution)
+            const hasWon = normalizedGuesses.length > 0 && normalizedGuesses.includes(solution);
+            const actualAttempts = existingDbSession.attemptsUsed || rawGuesses.length || MAX_ATTEMPTS;
+            
+            let finalScore = 0;
+            if (hasWon) {
+              finalScore = calculateWinScore(actualAttempts);
+              console.log(`[SECURITY] Session expired but user had won! Saving: ${actualAttempts} attempts, won=true, score=${finalScore}`);
+            } else if (rawGuesses.length > 0) {
+              // User made attempts but didn't win - calculate loss score from last guess
+              const lastGuess = normalizedGuesses[normalizedGuesses.length - 1];
+              const feedback = calculateFeedback(lastGuess, solution);
+              finalScore = calculateLossScore(feedback);
+              console.log(`[SECURITY] Session expired, user lost. Saving: ${actualAttempts} attempts, won=false, score=${finalScore}`);
+            } else {
+              // No guesses at all - full loss
+              console.log(`[SECURITY] Session expired with no guesses. Saving: ${MAX_ATTEMPTS} attempts, won=false, score=0`);
+            }
+            
+            await createDailyResult(fid, today, actualAttempts, hasWon, finalScore);
           }
           
           // Now user is in practice mode - start fresh practice session
