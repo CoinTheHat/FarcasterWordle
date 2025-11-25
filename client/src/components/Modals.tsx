@@ -50,15 +50,32 @@ export function GameOverModal({
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
-      // User is trying to close modal
-      // All closing logic is now handled in Game.tsx onClose callback
+      // If game not completed (TX not sent), block closing and show warning
+      if (!gameCompleted) {
+        setShowWarning(true);
+        return; // Block closing
+      }
       onClose();
+    }
+  };
+
+  // Block escape key and outside click if TX not completed
+  const handleInteractOutside = (e: Event) => {
+    if (!gameCompleted) {
+      e.preventDefault();
+      setShowWarning(true);
     }
   };
   
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-sm" data-testid="modal-gameover">
+      <DialogContent 
+        className="max-w-sm" 
+        data-testid="modal-gameover"
+        onPointerDownOutside={handleInteractOutside}
+        onEscapeKeyDown={handleInteractOutside}
+        hideCloseButton={!gameCompleted}
+      >
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-center">
             {won ? t.gameOverCongrats : t.gameOverGameOver}

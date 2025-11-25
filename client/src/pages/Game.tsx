@@ -333,13 +333,13 @@ export default function Game() {
         if (remaining === 0) {
           clearInterval(interval);
           
-          // Timeout = 1x multiplier (base points only: green=10, yellow=5)
+          // Timeout = 1x multiplier (base 20 per green, base 10 per yellow, multiplier 1x)
           let timeoutScore = 0;
           for (const row of feedback) {
             let rowScore = 0;
             for (const tile of row) {
-              if (tile === 'correct') rowScore += 10;  // 1x multiplier
-              else if (tile === 'present') rowScore += 5;  // 1x multiplier
+              if (tile === 'correct') rowScore += 20;  // base 20 × 1x = 20
+              else if (tile === 'present') rowScore += 10;  // base 10 × 1x = 10
             }
             if (rowScore > timeoutScore) timeoutScore = rowScore;
           }
