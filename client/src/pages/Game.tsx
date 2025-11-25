@@ -333,13 +333,13 @@ export default function Game() {
         if (remaining === 0) {
           clearInterval(interval);
           
-          // Timeout = 1x multiplier (base 20 per green, base 10 per yellow, multiplier 1x)
+          // Timeout = same as loss (no multiplier): green=2, yellow=1
           let timeoutScore = 0;
           for (const row of feedback) {
             let rowScore = 0;
             for (const tile of row) {
-              if (tile === 'correct') rowScore += 20;  // base 20 × 1x = 20
-              else if (tile === 'present') rowScore += 10;  // base 10 × 1x = 10
+              if (tile === 'correct') rowScore += 2;  // same as loss
+              else if (tile === 'present') rowScore += 1;  // same as loss
             }
             if (rowScore > timeoutScore) timeoutScore = rowScore;
           }
@@ -353,8 +353,8 @@ export default function Game() {
           toast({
             title: language === 'tr' ? "⏰ Süre Doldu!" : "⏰ Time's Up!",
             description: language === 'tr' 
-              ? `1x çarpan ile ${timeoutScore} puan kazandınız!` 
-              : `You earned ${timeoutScore} points with 1x multiplier!`,
+              ? `${timeoutScore} puan kazandınız.` 
+              : `You earned ${timeoutScore} points.`,
             variant: "destructive",
             duration: 5000,
           });
