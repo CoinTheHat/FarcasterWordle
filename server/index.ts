@@ -17,6 +17,21 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({ extended: false }));
 
+// Cache control for production - prevent users from getting stale versions
+app.use((req, res, next) => {
+  // For HTML pages, prevent caching
+  if (req.path === '/' || req.path.endsWith('.html')) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+  // For API endpoints, also prevent caching
+  if (req.path.startsWith('/api')) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  }
+  next();
+});
+
 // Serve static files from public directory BEFORE any other middleware
 // This ensures manifest.json, favicon.png, etc. are served correctly
 const publicPath = path.resolve(import.meta.dirname, "..", "public");
