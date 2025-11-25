@@ -335,34 +335,35 @@ export function SettingsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-sm" data-testid="modal-settings">
+      <DialogContent className="max-w-sm overflow-hidden" data-testid="modal-settings">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">{t.settingsTitle}</DialogTitle>
           <DialogDescription>{t.settingsDescription}</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          <div className="space-y-3 p-4 rounded-lg border">
+        <div className="space-y-4 py-4 overflow-hidden">
+          <div className="space-y-3 p-4 rounded-lg border overflow-hidden">
             <div className="flex flex-col gap-1">
               <span className="font-medium">{t.settingsUsername}</span>
               <span className="text-sm text-muted-foreground">
                 {t.settingsUsernameDesc}
               </span>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2">
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder={t.settingsUsernamePlaceholder}
                 maxLength={20}
-                className="flex-1 h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                className="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 data-testid="input-username"
               />
               <Button
                 onClick={handleSaveUsername}
                 disabled={isSaving || !username.trim()}
                 size="sm"
+                className="w-full"
                 data-testid="button-save-username"
               >
                 {isSaving ? t.settingsUsernameUpdating : t.settingsUsernameButton}
@@ -380,7 +381,7 @@ export function SettingsModal({
             )}
           </div>
 
-          <div className="space-y-3 p-4 rounded-lg border">
+          <div className="space-y-3 p-4 rounded-lg border overflow-hidden">
             <div className="flex flex-col gap-1">
               <span className="font-medium">{t.settingsWallet}</span>
               <span className="text-sm text-muted-foreground">
@@ -389,12 +390,12 @@ export function SettingsModal({
             </div>
             {currentWalletAddress ? (
               <div className="space-y-2">
-                <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
-                  <Wallet className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-mono flex-1 truncate" data-testid="text-wallet-address">
+                <div className="flex items-center gap-2 p-3 rounded-md bg-muted overflow-hidden">
+                  <Wallet className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm font-mono flex-1 min-w-0 truncate" data-testid="text-wallet-address">
                     {currentWalletAddress.slice(0, 6)}...{currentWalletAddress.slice(-4)}
                   </span>
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs flex-shrink-0">
                     {t.settingsWalletConnected.replace(":", "")}
                   </Badge>
                 </div>
@@ -425,8 +426,8 @@ export function SettingsModal({
             )}
           </div>
 
-          <div className="flex items-center justify-between p-4 rounded-lg border">
-            <div className="flex flex-col gap-1">
+          <div className="flex items-center justify-between gap-3 p-4 rounded-lg border overflow-hidden">
+            <div className="flex flex-col gap-1 min-w-0 flex-1">
               <span className="font-medium">{t.settingsColorBlind}</span>
               <span className="text-sm text-muted-foreground">
                 {t.settingsColorBlindDesc}
@@ -435,6 +436,7 @@ export function SettingsModal({
             <Button
               variant={colorBlindMode ? "default" : "outline"}
               size="sm"
+              className="flex-shrink-0"
               onClick={() => onColorBlindToggle(!colorBlindMode)}
               data-testid="toggle-colorblind"
             >
@@ -442,10 +444,10 @@ export function SettingsModal({
             </Button>
           </div>
 
-          <div className="p-4 rounded-lg bg-muted/50 border-2 border-primary/20">
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-bold text-primary">WordCast v{APP_VERSION}</span>
-              <Badge variant="secondary" className="text-xs font-bold">
+          <div className="p-4 rounded-lg bg-muted/50 border-2 border-primary/20 overflow-hidden">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <span className="font-bold text-primary truncate">WordCast v{APP_VERSION}</span>
+              <Badge variant="secondary" className="text-xs font-bold flex-shrink-0">
                 {language === "tr" ? "Yeni" : "New"}
               </Badge>
             </div>
