@@ -492,44 +492,26 @@ export default function Game() {
 
       if (isUserRejection) {
         toast({
-          title: "Transaction cancelled",
-          description: "⚠️ Without saving to blockchain, your score won't count for leaderboards or streaks. Starting a new game with a different word!",
+          title: language === "tr" ? "İşlem iptal edildi" : "Transaction cancelled",
+          description: language === "tr" 
+            ? "⚠️ Skorunuz kaydedilmedi. Lütfen tekrar 'Kaydet' butonuna basın."
+            : "⚠️ Your score wasn't saved. Please tap 'Save' button again.",
           variant: "destructive",
           duration: 5000,
         });
+        // ANTI-EXPLOIT FIX: Do NOT reset game state on TX rejection!
+        // Keep the modal open so user must complete the TX with the same word
+        // This prevents users from canceling TX to get a new word
       } else {
         toast({
-          title: "Transaction failed",
-          description: errorMessage.length > 100 ? "Network error. Please try again." : errorMessage,
+          title: language === "tr" ? "İşlem başarısız" : "Transaction failed",
+          description: errorMessage.length > 100 
+            ? (language === "tr" ? "Ağ hatası. Lütfen tekrar deneyin." : "Network error. Please try again.")
+            : errorMessage,
           variant: "destructive",
           duration: 4000,
         });
-      }
-
-      try {
-        const gameSession = await startGame(language!);
-        setSessionId(gameSession.sessionId);
-        setSessionStartTime(Date.now()); // Reset timer for new game
-        setTimeRemaining(SESSION_DURATION);
-        setGuesses([]);
-        setFeedback([]);
-        setCurrentGuess("");
-        setLetterStates(new Map());
-        setGameStatus("playing");
-        setGameCompleted(false);
-        setShowGameOver(false);
-        setTotalScore(0);
-        setSolution("");
-        setHintUsed(false);
-        setIsTimeout(false);
-      } catch (restartErr) {
-        console.error("Failed to restart game:", restartErr);
-        toast({
-          title: "Error",
-          description: "Failed to start new game. Please refresh the page.",
-          variant: "destructive",
-          duration: 3000,
-        });
+        // For network errors, also keep the modal open to retry
       }
     } finally {
       setIsSavingScore(false);
