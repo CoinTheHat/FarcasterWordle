@@ -275,11 +275,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
               finalScore = calculateWinScore(actualAttempts);
               console.log(`[SECURITY] Session expired but user had won! Saving: ${actualAttempts} attempts, won=true, score=${finalScore}`);
             } else if (rawGuesses.length > 0) {
-              // User made attempts but didn't win - calculate loss score from last guess
-              const lastGuess = normalizedGuesses[normalizedGuesses.length - 1];
-              const feedback = calculateFeedback(lastGuess, solution);
-              finalScore = calculateLossScore(feedback);
-              console.log(`[SECURITY] Session expired, user lost. Saving: ${actualAttempts} attempts, won=false, score=${finalScore}`);
+              // User made attempts but didn't win - calculate BEST feedback from ALL guesses
+              // This is fairer: combine all green/yellow letters discovered across all attempts
+              const bestFeedback: ("correct" | "present" | "absent")[] = ["absent", "absent", "absent", "absent", "absent"];
+              
+              for (const guess of normalizedGuesses) {
+                const guessFeedback = calculateFeedback(guess, solution);
+                for (let i = 0; i < 5; i++) {
+                  // Upgrade position if this guess found better info
+                  if (guessFeedback[i] === "correct") {
+                    bestFeedback[i] = "correct";
+                  } else if (guessFeedback[i] === "present" && bestFeedback[i] !== "correct") {
+                    bestFeedback[i] = "present";
+                  }
+                }
+              }
+              
+              finalScore = calculateLossScore(bestFeedback);
+              const correctCount = bestFeedback.filter(f => f === "correct").length;
+              const presentCount = bestFeedback.filter(f => f === "present").length;
+              console.log(`[SECURITY] Session expired, user lost. Best feedback: ${correctCount} green, ${presentCount} yellow. Saving: ${actualAttempts} attempts, won=false, score=${finalScore}`);
             } else {
               // No guesses at all - full loss
               console.log(`[SECURITY] Session expired with no guesses. Saving: ${MAX_ATTEMPTS} attempts, won=false, score=0`);
