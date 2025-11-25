@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy, Wallet, Home, Globe, ShieldCheck } from "lucide-react";
+import { Settings, TrendingUp, HelpCircle, Lightbulb, Trophy, Wallet, Home, Globe, ShieldCheck, Sun, Moon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Link, useLocation } from "wouter";
 import { useTranslation } from "@/lib/i18n";
 import type { Language } from "@shared/schema";
+import { useState, useEffect } from "react";
 
 interface HeaderProps {
   streak?: number;
@@ -43,6 +44,39 @@ export function Header({
   const isVerify = location === "/verify";
   const isGame = location === "/";
   const { t, language, setLanguage } = useTranslation();
+  
+  // Theme toggle state
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark');
+    }
+    return true; // Default to dark
+  });
+
+  const toggleTheme = () => {
+    const newIsDark = !isDark;
+    setIsDark(newIsDark);
+    
+    if (newIsDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
+
+  // Initialize theme from localStorage on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+      document.documentElement.classList.remove('dark');
+      setIsDark(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      setIsDark(true);
+    }
+  }, []);
   
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -193,6 +227,20 @@ export function Header({
               <Settings className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           )}
+          
+          <Button
+            size="icon"
+            variant="ghost"
+            onClick={toggleTheme}
+            data-testid="button-theme-toggle"
+            className="h-8 w-8 md:w-10 md:h-10"
+          >
+            {isDark ? (
+              <Sun className="w-4 h-4 md:w-5 md:h-5 text-yellow-500" />
+            ) : (
+              <Moon className="w-4 h-4 md:w-5 md:h-5 text-purple-500" />
+            )}
+          </Button>
         </div>
       </div>
     </header>
