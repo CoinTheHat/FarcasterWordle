@@ -327,23 +327,45 @@ export default function Game() {
           });
         }
 
-        // Session expired
+        // Session expired - trigger game over with timeout
         if (remaining === 0) {
+          clearInterval(interval);
+          
+          // Calculate best score from current feedback (green=20, yellow=10)
+          let bestScore = 0;
+          for (const row of feedback) {
+            let rowScore = 0;
+            for (const tile of row) {
+              if (tile === 'correct') rowScore += 20;
+              else if (tile === 'present') rowScore += 10;
+            }
+            if (rowScore > bestScore) bestScore = rowScore;
+          }
+          
+          // Set game as lost due to timeout
+          setGameStatus("lost");
+          setTotalScore(bestScore);
+          
+          // Show toast
           toast({
             title: language === 'tr' ? "⏰ Süre Doldu!" : "⏰ Time's Up!",
             description: language === 'tr' 
-              ? "Oturum süresi doldu. Yeni oyun başlatılıyor..." 
-              : "Session expired. Starting new game...",
+              ? `En iyi tahmininizden ${bestScore} puan kazandınız!` 
+              : `You earned ${bestScore} points from your best guess!`,
             variant: "destructive",
             duration: 5000,
           });
-          clearInterval(interval);
+          
+          // Show game over modal for TX submission
+          setTimeout(() => {
+            setShowGameOver(true);
+          }, 500);
         }
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [sessionId, sessionStartTime, isPracticeMode, gameCompleted, gameStatus, language, toast]);
+  }, [sessionId, sessionStartTime, isPracticeMode, gameCompleted, gameStatus, language, toast, feedback]);
 
   const handleSaveScore = useCallback(async () => {
     if (!sessionId) {
