@@ -625,10 +625,36 @@ const translationFunctions: Record<Language, TranslationFunctions> = {
     solvedIn: (attempts: number) => `You solved it in ${attempts} ${attempts === 1 ? "try" : "tries"}!`,
     triesLabel: (attempts: number) => attempts === 1 ? "try" : "tries",
     shareText: (score: number, attempts: number, streak: number, won: boolean) => {
+      const winMessages = [
+        `Another day, another satisfying victory! ${score} points secured on WordCast!`,
+        `Brain: Activated. Score: ${score}. Status: Unstoppable!`,
+        `${score} points?! I'm basically a word wizard at this point!`,
+        `WordCast couldn't handle me today - ${score} points in the bag!`,
+        `Just casually dropping ${score} points on WordCast. No big deal.`,
+        `My neurons are on fire! ${score} points on WordCast today!`,
+        `They said it couldn't be done. I said ${score} points. Who's laughing now?`,
+        `WordCast speedrun complete! ${score} points achieved!`,
+        `Vocabulary level: LEGENDARY! Scored ${score} points today!`,
+        `POV: You just witnessed greatness. ${score} points on WordCast!`,
+      ];
+      const loseMessages = [
+        `WordCast humbled me today... but I'll be back stronger!`,
+        `Today's puzzle chose violence. Tomorrow is my revenge!`,
+        `The word won this round, but the war isn't over!`,
+        `Plot twist: The puzzle was the villain today. Next time!`,
+        `Brain.exe stopped working. Rebooting for tomorrow!`,
+        `Even legends have off days. This was mine!`,
+        `Today's word got the best of me. But the streak lives on!`,
+        `Couldn't crack it today, but I'll return with vengeance!`,
+        `The puzzle gods weren't on my side today!`,
+        `Failed today's mission, but tomorrow I strike back!`,
+      ];
       if (won) {
-        return `I scored ${score} points on WordCast! 🎯\nSolved in ${attempts}/6 tries | Streak: ${streak}\n\nCan you beat my score?\n\nhttps://farcasterwordle.com/`;
+        const msg = winMessages[Math.floor(Math.random() * winMessages.length)];
+        return `${msg}\n\n${attempts}/6 tries | Streak: ${streak}\n\nThink you can beat me?\n\nhttps://farcasterwordle.com/`;
       } else {
-        return `WordCast daily challenge: X/6 ❌\nStreak: ${streak}\n\nCan you solve today's puzzle?\n\nhttps://farcasterwordle.com/`;
+        const msg = loseMessages[Math.floor(Math.random() * loseMessages.length)];
+        return `${msg}\n\nX/6 | Streak: ${streak}\n\nCan you solve today's puzzle?\n\nhttps://farcasterwordle.com/`;
       }
     },
     encouragementMessage: (attempts: number) => {
@@ -647,10 +673,36 @@ const translationFunctions: Record<Language, TranslationFunctions> = {
     solvedIn: (attempts: number) => `${attempts} denemede çözdün!`,
     triesLabel: (attempts: number) => "deneme",
     shareText: (score: number, attempts: number, streak: number, won: boolean) => {
+      const winMessages = [
+        `Bugün de kazandım! WordCast'te ${score} puan benim!`,
+        `Beyin: Aktif. Skor: ${score}. Durum: Durdurulamaz!`,
+        `${score} puan mı?! Artık kelime büyücüsüyüm sanırım!`,
+        `WordCast bugün bana yetişemedi - ${score} puan cebimde!`,
+        `WordCast'te ${score} puan attım, sıradan bir gün işte...`,
+        `Nöronlarım alev alev! Bugün ${score} puan topladım!`,
+        `İmkansız dediler. Ben ${score} puan dedim. Kim haklıymış?`,
+        `WordCast speedrun tamamlandı! ${score} puan kazanıldı!`,
+        `Kelime bilgisi seviyesi: EFSANE! Bugün ${score} puan!`,
+        `Şahit oldunuz: WordCast'te ${score} puanlık gösteri!`,
+      ];
+      const loseMessages = [
+        `WordCast bugün beni devirdi... ama yarın döneceğim!`,
+        `Bugünkü bulmaca şiddet seçti. Yarın intikamımı alacağım!`,
+        `Bu raund kelimenin, ama savaş bitmedi!`,
+        `Plot twist: Bugün bulmaca kötü adamdı. Bir dahakine!`,
+        `Beyin.exe çalışmayı durdurdu. Yarın için yeniden başlatılıyor!`,
+        `Efsanelerin bile kötü günleri olur. Bu benimkiydi!`,
+        `Bugünkü kelime beni yendi. Ama seri devam ediyor!`,
+        `Bugün çözemedim, ama intikamla döneceğim!`,
+        `Bulmaca tanrıları bugün benden yana değildi!`,
+        `Bugünkü görev başarısız, ama yarın geri vuracağım!`,
+      ];
       if (won) {
-        return `WordCast'te ${score} puan aldım! 🎯\n${attempts}/6 denemede çözdüm | Seri: ${streak}\n\nSen kaç puan yaparsın?\n\nhttps://farcasterwordle.com/`;
+        const msg = winMessages[Math.floor(Math.random() * winMessages.length)];
+        return `${msg}\n\n${attempts}/6 deneme | Seri: ${streak}\n\nBeni yenebilir misin?\n\nhttps://farcasterwordle.com/`;
       } else {
-        return `WordCast günlük bulmacası: X/6 ❌\nSeri: ${streak}\n\nBugünkü bulmacayı çözebilir misin?\n\nhttps://farcasterwordle.com/`;
+        const msg = loseMessages[Math.floor(Math.random() * loseMessages.length)];
+        return `${msg}\n\nX/6 | Seri: ${streak}\n\nBugünkü bulmacayı çözebilir misin?\n\nhttps://farcasterwordle.com/`;
       }
     },
     encouragementMessage: (attempts: number) => {
