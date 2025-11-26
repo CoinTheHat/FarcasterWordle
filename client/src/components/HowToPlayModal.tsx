@@ -21,7 +21,8 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
       objectiveText: "5 harfli kelimeyi 6 denemede tahmin et",
       rules: "Kurallar",
       rule1: "Her tahmin 5 harfli geçerli bir kelime olmalı",
-      rule2: "Her denemeden sonra, harflerin rengi değişerek ipucu verir:",
+      rule2: "Günlük oyunda 5 dakika süren var - ilk tahmininizle başlar",
+      rule3: "Her denemeden sonra, harflerin rengi değişerek ipucu verir:",
       greenTitle: "Yeşil",
       greenDesc: "Harf doğru ve doğru yerde",
       yellowTitle: "Sarı",
@@ -54,7 +55,8 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
       objectiveText: "Guess the 5-letter word in 6 attempts",
       rules: "Rules",
       rule1: "Each guess must be a valid 5-letter word",
-      rule2: "After each guess, the color of the tiles will change:",
+      rule2: "Daily games have a 5-minute timer - starts with your first guess",
+      rule3: "After each guess, the color of the tiles will change:",
       greenTitle: "Green",
       greenDesc: "Letter is correct and in the right spot",
       yellowTitle: "Yellow",
@@ -105,6 +107,7 @@ export function HowToPlayModal({ open, onClose }: HowToPlayModalProps) {
             <ul className="space-y-2 text-muted-foreground">
               <li>• {t.rule1}</li>
               <li>• {t.rule2}</li>
+              <li>• {t.rule3}</li>
             </ul>
 
             <div className="mt-4 space-y-3">
