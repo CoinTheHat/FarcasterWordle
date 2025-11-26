@@ -990,6 +990,7 @@ export default function Game() {
           onHintClick={handleHintClick}
           onLanguageClick={() => setShowLanguageModal(true)}
           hintUsed={hintUsed}
+          isPracticeMode={stats.hasCompletedToday}
         />
         
         <main className="flex-1 flex flex-col items-center justify-center px-4">
@@ -1039,6 +1040,7 @@ export default function Game() {
         onHintClick={handleHintClick}
         onLanguageClick={() => setShowLanguageModal(true)}
         hintUsed={hintUsed}
+        isPracticeMode={stats.hasCompletedToday}
       />
 
       <main className="flex-1 flex flex-col items-center justify-between py-2 md:py-4 px-4">

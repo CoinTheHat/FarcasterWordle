@@ -21,6 +21,7 @@ interface HeaderProps {
   onHintClick?: () => void;
   onLanguageClick?: () => void;
   hintUsed?: boolean;
+  isPracticeMode?: boolean;
 }
 
 export function Header({ 
@@ -37,7 +38,8 @@ export function Header({
   onHelpClick, 
   onHintClick, 
   onLanguageClick,
-  hintUsed = false 
+  hintUsed = false,
+  isPracticeMode = false
 }: HeaderProps) {
   const [location] = useLocation();
   const isLeaderboard = location === "/leaderboard";
@@ -116,16 +118,18 @@ export function Header({
                 <HelpCircle className="w-4 h-4 md:w-5 md:h-5" />
               </Button>
               
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={onHintClick}
-                data-testid="button-hint"
-                className="h-8 w-8 md:w-10 md:h-10"
-                disabled={hintUsed}
-              >
-                <Lightbulb className={`w-4 h-4 md:w-5 md:h-5 ${hintUsed ? 'text-yellow-500' : ''}`} />
-              </Button>
+              {isPracticeMode && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  onClick={onHintClick}
+                  data-testid="button-hint"
+                  className="h-8 w-8 md:w-10 md:h-10"
+                  disabled={hintUsed}
+                >
+                  <Lightbulb className={`w-4 h-4 md:w-5 md:h-5 ${hintUsed ? 'text-yellow-500' : ''}`} />
+                </Button>
+              )}
             </>
           )}
           
