@@ -101,7 +101,7 @@ export default function Game() {
       // Backend handles practice mode - always try to start game
       const gameSession = await startGame(newLanguage);
       setSessionId(gameSession.sessionId);
-      setSessionStartTime(Date.now()); // Reset timer for new game
+      setSessionStartTime(null); // Timer starts on first guess, not game start
       setTimeRemaining(SESSION_DURATION);
       
       // Set state based on backend response
@@ -201,7 +201,7 @@ export default function Game() {
         // Start game regardless of remainingAttempts - backend will set isPracticeMode flag
         const gameSession = await startGame(language);
         setSessionId(gameSession.sessionId);
-        setSessionStartTime(Date.now()); // Start timer for new session
+        setSessionStartTime(null); // Timer starts on first guess, not game start
         setTimeRemaining(SESSION_DURATION);
         
         // SECURITY: Check if session expired (anti-exploit: prevents offline solution lookup)
@@ -229,6 +229,15 @@ export default function Game() {
           console.log("Restoring session with", gameSession.guesses.length, "guesses", "isPracticeMode:", gameSession.isPracticeMode);
           const restoredGuesses = gameSession.guesses.map(g => g.guess);
           const restoredFeedback = gameSession.guesses.map(g => g.feedback);
+          
+          // TIMER FIX: If session has guesses, timer was already started
+          // Use session createdAt from backend if available, otherwise start now
+          if (!gameSession.isPracticeMode && gameSession.sessionCreatedAt) {
+            setSessionStartTime(new Date(gameSession.sessionCreatedAt).getTime());
+          } else if (!gameSession.isPracticeMode) {
+            // Fallback: timer already started but we lost the timestamp
+            setSessionStartTime(Date.now());
+          }
           
           setGuesses(restoredGuesses);
           setFeedback(restoredFeedback);
@@ -578,6 +587,11 @@ export default function Game() {
     }
 
     isSubmittingRef.current = true; // Lock submission
+
+    // START TIMER ON FIRST GUESS (not on game start)
+    if (guesses.length === 0 && !sessionStartTime && !isPracticeMode) {
+      setSessionStartTime(Date.now());
+    }
 
     const normalized = normalizeGuess(currentGuess, language || 'en');
     
@@ -1190,7 +1204,7 @@ export default function Game() {
               const gameSession = await startGame(language);
               console.log("New practice game started:", gameSession);
               setSessionId(gameSession.sessionId);
-              setSessionStartTime(Date.now()); // Reset timer
+              setSessionStartTime(null); // Timer starts on first guess
               setTimeRemaining(SESSION_DURATION);
               setIsPracticeMode(true);
               setGameCompleted(false); // Reset - TX not sent yet for new game

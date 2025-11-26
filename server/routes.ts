@@ -453,6 +453,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           guesses: guessHistory,
           attemptsUsed,
           txSubmitted, // NEW: Tell frontend if TX already submitted
+          sessionCreatedAt: existingDbSession.createdAt.toISOString(), // For timer calculation
           ...(gameOver ? { 
             won,
             gameOver: true,
