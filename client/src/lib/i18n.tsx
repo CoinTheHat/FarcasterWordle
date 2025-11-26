@@ -674,35 +674,35 @@ const translationFunctions: Record<Language, TranslationFunctions> = {
     triesLabel: (attempts: number) => "deneme",
     shareText: (score: number, attempts: number, streak: number, won: boolean) => {
       const winMessages = [
-        `Bugün de kazandım! WordCast'te ${score} puan benim!`,
-        `Beyin: Aktif. Skor: ${score}. Durum: Durdurulamaz!`,
-        `${score} puan mı?! Artık kelime büyücüsüyüm sanırım!`,
-        `WordCast bugün bana yetişemedi - ${score} puan cebimde!`,
-        `WordCast'te ${score} puan attım, sıradan bir gün işte...`,
-        `Nöronlarım alev alev! Bugün ${score} puan topladım!`,
-        `İmkansız dediler. Ben ${score} puan dedim. Kim haklıymış?`,
-        `WordCast speedrun tamamlandı! ${score} puan kazanıldı!`,
-        `Kelime bilgisi seviyesi: EFSANE! Bugün ${score} puan!`,
-        `Şahit oldunuz: WordCast'te ${score} puanlık gösteri!`,
+        `Bugün de efsane oynadım! WordCast'te ${score} puan kaptım!`,
+        `Kafam bugün çalıştı! ${score} puan aldım, durduran yok!`,
+        `${score} puan ha! Kelime ustası benim artık!`,
+        `WordCast bana çare bulamadı - ${score} puan kasıldı!`,
+        `${score} puan? Benim için sıradan bir gün...`,
+        `Bugün beyin fırtınası koptu! ${score} puan geldi!`,
+        `Olmaz dediler, ben ${score} puan yaptım. Al sana!`,
+        `Hızlı çözdüm, ${score} puan geldi! Rakip arıyorum!`,
+        `Kelime bilgim coştu! Bugün ${score} puan!`,
+        `İzleyin ve öğrenin: ${score} puanlık performans!`,
       ];
       const loseMessages = [
-        `WordCast bugün beni devirdi... ama yarın döneceğim!`,
-        `Bugünkü bulmaca şiddet seçti. Yarın intikamımı alacağım!`,
-        `Bu raund kelimenin, ama savaş bitmedi!`,
-        `Plot twist: Bugün bulmaca kötü adamdı. Bir dahakine!`,
-        `Beyin.exe çalışmayı durdurdu. Yarın için yeniden başlatılıyor!`,
-        `Efsanelerin bile kötü günleri olur. Bu benimkiydi!`,
-        `Bugünkü kelime beni yendi. Ama seri devam ediyor!`,
-        `Bugün çözemedim, ama intikamla döneceğim!`,
-        `Bulmaca tanrıları bugün benden yana değildi!`,
-        `Bugünkü görev başarısız, ama yarın geri vuracağım!`,
+        `Bugün olmadı be... Ama yarın hazır olun!`,
+        `Bugünkü kelime acımadı. Yarın rövanş var!`,
+        `Bu sefer kelime kazandı, ama savaş bitmedi!`,
+        `Bugün şanssız günümdü. Yarın farklı olacak!`,
+        `Kafam basmadı bugün. Yarına yeniden şarj!`,
+        `En iyilerin bile kötü günü olur. Bugün benimkiydi!`,
+        `Kelime beni yendi ama serim devam ediyor!`,
+        `Bugün çözemedim, ama yarın intikam günü!`,
+        `Şans bugün benden yana değildi!`,
+        `Bugün kaybettim ama yarın döneceğim!`,
       ];
       if (won) {
         const msg = winMessages[Math.floor(Math.random() * winMessages.length)];
-        return `${msg}\n\n${attempts}/6 deneme | Seri: ${streak}\n\nBeni yenebilir misin?\n\nhttps://farcasterwordle.com/`;
+        return `${msg}\n\n${attempts}/6 deneme | Seri: ${streak}\n\nBeni geçebilir misin?\n\nhttps://farcasterwordle.com/`;
       } else {
         const msg = loseMessages[Math.floor(Math.random() * loseMessages.length)];
-        return `${msg}\n\nX/6 | Seri: ${streak}\n\nBugünkü bulmacayı çözebilir misin?\n\nhttps://farcasterwordle.com/`;
+        return `${msg}\n\nX/6 | Seri: ${streak}\n\nSen çözebilir misin?\n\nhttps://farcasterwordle.com/`;
       }
     },
     encouragementMessage: (attempts: number) => {
