@@ -997,9 +997,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return;
     }
     
+    // Check if hint was already used for this session - return same hint
+    if (activeGame.hintPosition !== undefined && activeGame.hintLetter !== undefined) {
+      res.json({
+        position: activeGame.hintPosition,
+        letter: activeGame.hintLetter,
+        hint: `The letter at position ${activeGame.hintPosition + 1} is "${activeGame.hintLetter}"`
+      });
+      return;
+    }
+    
     const solution = activeGame.solution;
     const randomPosition = Math.floor(Math.random() * 5);
     const letter = solution[randomPosition];
+    
+    // Store hint in session so it's consistent
+    activeGame.hintPosition = randomPosition;
+    activeGame.hintLetter = letter;
     
     res.json({
       position: randomPosition,
