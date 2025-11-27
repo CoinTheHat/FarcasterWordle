@@ -270,11 +270,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
             const hasWon = normalizedGuesses.length > 0 && normalizedGuesses.includes(solution);
             const actualAttempts = existingDbSession.attemptsUsed || rawGuesses.length || MAX_ATTEMPTS;
             
+            // CRITICAL FIX: If no guesses made, game never actually started (timer didn't start)
+            // Don't penalize user - just delete the stale session and let them start fresh
+            if (rawGuesses.length === 0) {
+              console.log(`[INFO] Session ${existingDbSession.sessionId} expired with NO guesses. Game never started - giving user another chance.`);
+              await deleteGameSession(existingDbSession.sessionId);
+              
+              // Start fresh daily game (not practice mode since they never played)
+              const freshSessionId = generateSessionId();
+              const freshSolution = getDailyWord(language as Language, today);
+              
+              const freshGame: ActiveGame = {
+                fid,
+                sessionId: freshSessionId,
+                solution: freshSolution,
+                language: language as Language,
+                guesses: [],
+                attemptsUsed: 0,
+                won: null,
+                createdAt: new Date().toISOString(),
+                completed: false,
+                isPracticeMode: false,
+              };
+              
+              activeGames.set(freshSessionId, freshGame);
+              await createGameSession(freshGame);
+              
+              res.json({
+                sessionId: freshSessionId,
+                maxAttempts: MAX_ATTEMPTS,
+                isPracticeMode: false,
+                ...(process.env.NODE_ENV === 'development' ? { solution: freshSolution } : {}),
+              });
+              return;
+            }
+            
             let finalScore = 0;
             if (hasWon) {
               finalScore = calculateWinScore(actualAttempts);
               console.log(`[SECURITY] Session expired but user had won! Saving: ${actualAttempts} attempts, won=true, score=${finalScore}`);
-            } else if (rawGuesses.length > 0) {
+            } else {
               // User made attempts but didn't win - calculate BEST feedback from ALL guesses
               // This is fairer: combine all green/yellow letters discovered across all attempts
               const bestFeedback: ("correct" | "present" | "absent")[] = ["absent", "absent", "absent", "absent", "absent"];
@@ -295,9 +330,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
               const correctCount = bestFeedback.filter(f => f === "correct").length;
               const presentCount = bestFeedback.filter(f => f === "present").length;
               console.log(`[SECURITY] Session expired, user lost. Best feedback: ${correctCount} green, ${presentCount} yellow. Saving: ${actualAttempts} attempts, won=false, score=${finalScore}`);
-            } else {
-              // No guesses at all - full loss
-              console.log(`[SECURITY] Session expired with no guesses. Saving: ${MAX_ATTEMPTS} attempts, won=false, score=0`);
             }
             
             await createDailyResult(fid, today, actualAttempts, hasWon, finalScore);
