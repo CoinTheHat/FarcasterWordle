@@ -651,10 +651,10 @@ const translationFunctions: Record<Language, TranslationFunctions> = {
       ];
       if (won) {
         const msg = winMessages[Math.floor(Math.random() * winMessages.length)];
-        return `${msg}\n\n${attempts}/6 tries | Streak: ${streak}\n\nThink you can beat me?\n\nhttps://farcasterwordle.com/`;
+        return `${msg}\n\n${attempts}/6 tries | Streak: ${streak}\n\nThink you can beat me?\n\nhttps://farcasterwordle.com/\n\n#WordCast`;
       } else {
         const msg = loseMessages[Math.floor(Math.random() * loseMessages.length)];
-        return `${msg}\n\nX/6 | Streak: ${streak}\n\nCan you solve today's puzzle?\n\nhttps://farcasterwordle.com/`;
+        return `${msg}\n\nX/6 | Streak: ${streak}\n\nCan you solve today's puzzle?\n\nhttps://farcasterwordle.com/\n\n#WordCast`;
       }
     },
     encouragementMessage: (attempts: number) => {
@@ -699,10 +699,10 @@ const translationFunctions: Record<Language, TranslationFunctions> = {
       ];
       if (won) {
         const msg = winMessages[Math.floor(Math.random() * winMessages.length)];
-        return `${msg}\n\n${attempts}/6 deneme | Seri: ${streak}\n\nBeni geçebilir misin?\n\nhttps://farcasterwordle.com/`;
+        return `${msg}\n\n${attempts}/6 deneme | Seri: ${streak}\n\nBeni geçebilir misin?\n\nhttps://farcasterwordle.com/\n\n#WordCast`;
       } else {
         const msg = loseMessages[Math.floor(Math.random() * loseMessages.length)];
-        return `${msg}\n\nX/6 | Seri: ${streak}\n\nSen çözebilir misin?\n\nhttps://farcasterwordle.com/`;
+        return `${msg}\n\nX/6 | Seri: ${streak}\n\nSen çözebilir misin?\n\nhttps://farcasterwordle.com/\n\n#WordCast`;
       }
     },
     encouragementMessage: (attempts: number) => {
