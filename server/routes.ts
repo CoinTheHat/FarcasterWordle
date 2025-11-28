@@ -495,7 +495,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           guesses: guessHistory,
           attemptsUsed,
           txSubmitted, // NEW: Tell frontend if TX already submitted
-          sessionCreatedAt: existingDbSession.createdAt.toISOString(), // For timer calculation
+          sessionCreatedAt: existingDbSession.createdAt.toISOString(), // Legacy - keep for backward compat
+          timerStartedAt: existingDbSession.timerStartedAt?.toISOString() || null, // CRITICAL: Timer starts on first guess
           ...(gameOver ? { 
             won,
             gameOver: true,

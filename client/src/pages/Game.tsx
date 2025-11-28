@@ -230,13 +230,17 @@ export default function Game() {
           const restoredGuesses = gameSession.guesses.map(g => g.guess);
           const restoredFeedback = gameSession.guesses.map(g => g.feedback);
           
-          // TIMER FIX: If session has guesses, timer was already started
-          // Use session createdAt from backend if available, otherwise start now
-          if (!gameSession.isPracticeMode && gameSession.sessionCreatedAt) {
-            setSessionStartTime(new Date(gameSession.sessionCreatedAt).getTime());
-          } else if (!gameSession.isPracticeMode) {
-            // Fallback: timer already started but we lost the timestamp
-            setSessionStartTime(Date.now());
+          // TIMER FIX: Use timerStartedAt if available (timer starts on first guess, not session creation)
+          // This ensures frontend timer matches backend expiry logic
+          if (!gameSession.isPracticeMode) {
+            if (gameSession.timerStartedAt) {
+              // Timer already started - use exact timestamp from backend
+              setSessionStartTime(new Date(gameSession.timerStartedAt).getTime());
+            } else if (gameSession.guesses && gameSession.guesses.length > 0 && gameSession.sessionCreatedAt) {
+              // Legacy: guesses exist but no timerStartedAt (old sessions before this fix)
+              setSessionStartTime(new Date(gameSession.sessionCreatedAt).getTime());
+            }
+            // If no guesses yet, timer hasn't started - keep sessionStartTime null
           }
           
           setGuesses(restoredGuesses);
