@@ -550,6 +550,14 @@ export async function updateGameSessionGuess(
     .where(eq(schema.gameSessions.sessionId, sessionId));
 }
 
+export async function startGameTimer(sessionId: string): Promise<void> {
+  await db.update(schema.gameSessions)
+    .set({
+      timerStartedAt: new Date(),
+    })
+    .where(eq(schema.gameSessions.sessionId, sessionId));
+}
+
 export async function completeGameSession(sessionId: string): Promise<void> {
   await db.update(schema.gameSessions)
     .set({

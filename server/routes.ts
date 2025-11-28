@@ -30,6 +30,7 @@ import {
   updateGameSessionGuess,
   completeGameSession,
   deleteGameSession,
+  startGameTimer,
   getRecentRewards,
   getTotalDistributedRewards,
 } from "./db";
@@ -241,9 +242,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (existingDbSession) {
         // ANTI-EXPLOIT: Check session age to prevent offline solution lookup
-        const sessionAge = Date.now() - new Date(existingDbSession.createdAt).getTime();
+        // CRITICAL FIX: Use timerStartedAt if available (timer starts on first guess, not session creation)
+        // If no guesses made yet, timer hasn't started - use createdAt as fallback but with generous timeout
+        const timerStartTime = existingDbSession.timerStartedAt 
+          ? new Date(existingDbSession.timerStartedAt).getTime()
+          : (existingDbSession.guesses && existingDbSession.guesses.length > 0 
+              ? new Date(existingDbSession.createdAt).getTime() // Legacy: guesses exist but no timerStartedAt
+              : null); // No guesses = timer never started
         
-        if (sessionAge > MAX_SESSION_DURATION_MS && !existingDbSession.completed) {
+        // Only check expiry if timer has actually started (user made at least 1 guess)
+        const sessionAge = timerStartTime ? Date.now() - timerStartTime : 0;
+        
+        if (timerStartTime && sessionAge > MAX_SESSION_DURATION_MS && !existingDbSession.completed) {
           // Session expired! Check actual game state before auto-completing
           const expiredMinutes = Math.ceil(sessionAge / 1000 / 60);
           console.log(`[SECURITY] Session ${existingDbSession.sessionId} expired (${expiredMinutes}min old). Checking actual game state...`);
@@ -759,6 +769,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     activeGame.guesses.push(normalized);
     activeGame.attemptsUsed++;
+
+    // CRITICAL FIX: Start timer on first guess (not on session creation)
+    // This prevents penalizing users who open the game but don't play immediately
+    if (activeGame.attemptsUsed === 1 && !activeGame.isPracticeMode) {
+      await startGameTimer(sessionId);
+      console.log(`[TIMER] Started timer for session ${sessionId} on first guess`);
+    }
 
     // ANTI-EXPLOIT: Sync ALL game sessions (daily and practice) to database after each guess
     await updateGameSessionGuess(sessionId, activeGame.guesses, activeGame.attemptsUsed);

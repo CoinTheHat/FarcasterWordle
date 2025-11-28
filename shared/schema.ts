@@ -82,6 +82,7 @@ export const gameSessions = pgTable("game_sessions", {
   isPracticeMode: boolean("is_practice_mode").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   completedAt: timestamp("completed_at"),
+  timerStartedAt: timestamp("timer_started_at"),
 });
 
 // Insert Schemas
@@ -113,6 +114,7 @@ export const insertPracticeResultSchema = createInsertSchema(practiceResults).om
 export const insertGameSessionSchema = createInsertSchema(gameSessions).omit({
   createdAt: true,
   completedAt: true,
+  timerStartedAt: true,
 });
 
 // Types
