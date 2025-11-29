@@ -52,9 +52,12 @@ interface ActiveGame {
   won: boolean | null;
   finalScore?: number;
   createdAt: string;
+  timerStartedAt?: string; // CRITICAL: Timer starts on first guess, not session creation
   completed: boolean;
   completedAt?: string;
   isPracticeMode: boolean;
+  hintPosition?: number;
+  hintLetter?: string;
 }
 
 const activeGames = new Map<string, ActiveGame>();
@@ -472,6 +475,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           won,
           finalScore,
           createdAt: existingDbSession.createdAt.toISOString(),
+          timerStartedAt: existingDbSession.timerStartedAt?.toISOString(), // CRITICAL: Timer starts on first guess
           completed: gameOver ? true : existingDbSession.completed, // Use gameOver if detected, else DB value
           isPracticeMode: false,
         };
@@ -636,6 +640,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         won,
         finalScore,
         createdAt: existingPracticeSession.createdAt.toISOString(),
+        timerStartedAt: existingPracticeSession.timerStartedAt?.toISOString(), // Practice mode doesn't use timer but keep consistent
         completed: gameOver ? true : existingPracticeSession.completed,
         isPracticeMode: true,
       };
@@ -721,12 +726,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
 
     // SECURITY: Check session age to prevent offline solution lookup exploit
-    // This applies to BOTH DB-restored AND in-memory sessions
-    if (!activeGame.isPracticeMode && !activeGame.completed) {
-      const sessionAge = Date.now() - new Date(activeGame.createdAt).getTime();
+    // CRITICAL FIX: Use timerStartedAt (not createdAt) - timer starts on first guess
+    if (!activeGame.isPracticeMode && !activeGame.completed && activeGame.timerStartedAt) {
+      const sessionAge = Date.now() - new Date(activeGame.timerStartedAt).getTime();
       if (sessionAge > MAX_SESSION_DURATION_MS) {
         const expiredMinutes = Math.ceil(sessionAge / 1000 / 60);
-        console.log(`[SECURITY] Blocking guess for expired session ${sessionId} (${expiredMinutes}min old)`);
+        console.log(`[SECURITY] Blocking guess for expired session ${sessionId} (${expiredMinutes}min old, timer started at ${activeGame.timerStartedAt})`);
         
         // CRITICAL: Remove expired session from cache to prevent replay attacks
         activeGames.delete(sessionId);
@@ -774,8 +779,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     // CRITICAL FIX: Start timer on first guess (not on session creation)
     // This prevents penalizing users who open the game but don't play immediately
     if (activeGame.attemptsUsed === 1 && !activeGame.isPracticeMode) {
-      await startGameTimer(sessionId);
-      console.log(`[TIMER] Started timer for session ${sessionId} on first guess`);
+      const timerStartTime = new Date().toISOString();
+      activeGame.timerStartedAt = timerStartTime; // Update in-memory
+      await startGameTimer(sessionId); // Persist to database
+      console.log(`[TIMER] Started timer for session ${sessionId} on first guess at ${timerStartTime}`);
     }
 
     // ANTI-EXPLOIT: Sync ALL game sessions (daily and practice) to database after each guess
@@ -892,6 +899,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         won,
         finalScore,
         createdAt: dbSession.createdAt.toISOString(),
+        timerStartedAt: dbSession.timerStartedAt?.toISOString(), // CRITICAL: Include timer start time
         completed: dbSession.completed,
         isPracticeMode: dbSession.isPracticeMode,
       };
