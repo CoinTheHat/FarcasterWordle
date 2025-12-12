@@ -763,8 +763,8 @@ export default function Game() {
         }
       } else {
         toast({
-          title: "Shared to Farcaster!",
-          description: "Your results have been posted",
+          title: t.toastSharedToFarcaster,
+          description: t.toastResultsPosted,
           duration: 2000,
         });
       }

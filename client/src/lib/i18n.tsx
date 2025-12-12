@@ -17,6 +17,11 @@ interface Translations {
   headerHelp: string;
   headerSettings: string;
   
+  // Navigation
+  navPlay: string;
+  navLeaderboard: string;
+  navVerify: string;
+  
   // Game
   gameEnterGuess: string;
   gameTypePlaceholder: string;
@@ -219,6 +224,11 @@ const translations: Record<Language, Translations> = {
     headerHelp: "Help",
     headerSettings: "Settings",
     
+    // Navigation
+    navPlay: "Play",
+    navLeaderboard: "Leaderboard",
+    navVerify: "Verify",
+    
     // Game
     gameEnterGuess: "Enter your guess",
     gameTypePlaceholder: "Type...",
@@ -342,7 +352,7 @@ const translations: Record<Language, Translations> = {
     // Wallet
     walletConnect: "Connect Wallet",
     walletConnected: "Connected",
-    walletFarcaster: "Farcaster Wallet",
+    walletFarcaster: "Connected Wallet",
     walletGuardTitle: "Connect Wallet to Play",
     walletGuardDescription: "You need to connect your wallet to play WordCast and participate in weekly prizes.",
     
@@ -371,7 +381,7 @@ const translations: Record<Language, Translations> = {
     toastShareResults: "Share your results!",
     toastUnableToCopy: "Unable to copy",
     toastCopyManually: "Please copy manually",
-    toastSharedToFarcaster: "Shared to Farcaster!",
+    toastSharedToFarcaster: "Shared successfully!",
     toastResultsPosted: "Your results have been posted",
     toastUnableToShare: "Unable to share",
     toastTryAgain: "Please try again",
@@ -418,6 +428,11 @@ const translations: Record<Language, Translations> = {
     headerStats: "İstatistikler",
     headerHelp: "Yardım",
     headerSettings: "Ayarlar",
+    
+    // Navigation
+    navPlay: "Oyna",
+    navLeaderboard: "Sıralama",
+    navVerify: "Doğrula",
     
     // Game
     gameEnterGuess: "Tahmininizi girin",
@@ -542,7 +557,7 @@ const translations: Record<Language, Translations> = {
     // Wallet
     walletConnect: "Cüzdan Bağla",
     walletConnected: "Bağlandı",
-    walletFarcaster: "Farcaster Cüzdanı",
+    walletFarcaster: "Bağlı Cüzdan",
     walletGuardTitle: "Cüzdan Bağla ve Oyna",
     walletGuardDescription: "WordCast oynamak ve haftalık ödüllere katılmak için cüzdanınızı bağlamanız gerekiyor.",
     
@@ -571,7 +586,7 @@ const translations: Record<Language, Translations> = {
     toastShareResults: "Sonuçlarınızı paylaşın!",
     toastUnableToCopy: "Kopyalanamadı",
     toastCopyManually: "Lütfen manuel olarak kopyalayın",
-    toastSharedToFarcaster: "Farcaster'a paylaşıldı!",
+    toastSharedToFarcaster: "Paylaşıldı!",
     toastResultsPosted: "Sonuçlarınız paylaşıldı",
     toastUnableToShare: "Paylaşılamadı",
     toastTryAgain: "Lütfen tekrar deneyin",

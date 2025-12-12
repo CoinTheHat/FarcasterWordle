@@ -13,10 +13,10 @@ export function GuardScreen() {
 
         <div className="space-y-2">
           <h1 className="text-2xl font-bold" data-testid="text-guard-title">
-            Farcaster Mini-App Required
+            Mini-App Required
           </h1>
           <p className="text-muted-foreground" data-testid="text-guard-message">
-            This game can only be played inside the Farcaster Mini-App. Please open it from your Farcaster client.
+            This game can only be played inside a supported Mini-App client. Please open it from your mobile or desktop app.
           </p>
         </div>
 
@@ -25,7 +25,7 @@ export function GuardScreen() {
             To play WordCast:
           </p>
           <ol className="text-sm text-left space-y-2 pl-6 list-decimal text-muted-foreground">
-            <li>Open the Farcaster mobile or desktop app</li>
+            <li>Open the mobile or desktop app</li>
             <li>Navigate to the WordCast Mini-App</li>
             <li>Start playing and track your streak!</li>
           </ol>
