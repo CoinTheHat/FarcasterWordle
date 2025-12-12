@@ -1,0 +1,436 @@
+evmAsk.js:15 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:15:5124)
+    at window.addEventListener.once (evmAsk.js:15:9044)Understand this error
+requestProvider.js:2 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at requestProvider.js:2:569789
+    at requestProvider.js:2:569969
+    at requestProvider.js:2:569973
+    at requestProvider.js:2:569977Understand this error
+inpage.js:1 Object
+inpage.js:1 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperties (<anonymous>)
+    at inpage.js:1:2144479
+    at inpage.js:1:2145409
+    at inpage.js:1:2145413Understand this error
+contentscript.js:1 Object
+inpage.js:1 MetaMask encountered an error setting the global Ethereum provider - this is likely due to another Ethereum wallet extension also setting the global Ethereum provider: TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at a (inpage.js:1:142132)
+    at r.initializeProvider (inpage.js:1:141903)
+    at Object.<anonymous> (inpage.js:1:2308)
+    at Object.<anonymous> (inpage.js:1:6316)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:6329)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:412)
+    at inpage.js:1:429
+a @ inpage.js:1Understand this error
+content.js:2 Check phishing by URL: Passed.
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1Understand this warning
+8Unchecked runtime.lastError: The message port closed before a response was received.Understand this error
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client&sv=3.29.0&t=1765553600565&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=509:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client&sv=3.29.0&t=1765553600726&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=4:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553601092&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=509:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553601342&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=4:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+inpage.js:1 Uncaught (in promise) TypeError: Error in invocation of runtime.sendMessage(optional string extensionId, any message, optional object options, optional function callback): chrome.runtime.sendMessage() called from a webpage must specify an Extension ID (string) for its first argument.
+    at rt (inpage.js:1:725152)
+    at inpage.js:1:725560Understand this error
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553603096&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=509:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553603346&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=4:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+6Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('<URL>') does not match the recipient window's origin ('<URL>').Understand this warning
+evmAsk.js:15 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:15:5124)
+    at window.addEventListener.once (evmAsk.js:15:9044)Understand this error
+requestProvider.js:2 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at requestProvider.js:2:569789
+    at requestProvider.js:2:569969
+    at requestProvider.js:2:569973
+    at requestProvider.js:2:569977Understand this error
+contentscript.js:1 Object
+inpage.js:1 MetaMask encountered an error setting the global Ethereum provider - this is likely due to another Ethereum wallet extension also setting the global Ethereum provider: TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at a (inpage.js:1:142132)
+    at r.initializeProvider (inpage.js:1:141903)
+    at Object.<anonymous> (inpage.js:1:2308)
+    at Object.<anonymous> (inpage.js:1:6316)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:6329)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:412)
+    at inpage.js:1:429
+a @ inpage.js:1Understand this error
+content.js:2 Check phishing by URL: Passed.
+evmAsk.js:15 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:15:5124)
+    at window.addEventListener.once (evmAsk.js:15:9044)Understand this error
+requestProvider.js:2 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at requestProvider.js:2:569789
+    at requestProvider.js:2:569969
+    at requestProvider.js:2:569973
+    at requestProvider.js:2:569977Understand this error
+contentscript.js:1 Object
+inpage.js:1 MetaMask encountered an error setting the global Ethereum provider - this is likely due to another Ethereum wallet extension also setting the global Ethereum provider: TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at a (inpage.js:1:142132)
+    at r.initializeProvider (inpage.js:1:141903)
+    at Object.<anonymous> (inpage.js:1:2308)
+    at Object.<anonymous> (inpage.js:1:6316)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:6329)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:412)
+    at inpage.js:1:429
+a @ inpage.js:1Understand this error
+evmAsk.js:15 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:15:5124)
+    at window.addEventListener.once (evmAsk.js:15:9044)Understand this error
+requestProvider.js:2 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at requestProvider.js:2:569789
+    at requestProvider.js:2:569969
+    at requestProvider.js:2:569973
+    at requestProvider.js:2:569977Understand this error
+contentscript.js:1 Object
+inpage.js:1 MetaMask encountered an error setting the global Ethereum provider - this is likely due to another Ethereum wallet extension also setting the global Ethereum provider: TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at a (inpage.js:1:142132)
+    at r.initializeProvider (inpage.js:1:141903)
+    at Object.<anonymous> (inpage.js:1:2308)
+    at Object.<anonymous> (inpage.js:1:6316)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:6329)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:412)
+    at inpage.js:1:429
+a @ inpage.js:1Understand this error
+index.min.js:1 Shims Injected:
+index.min.js:1   - nextTick
+api.ts:26 Object
+content.js:2 Check phishing by URL: Passed.
+content.js:2 Check phishing by URL: Passed.
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553608516&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=509:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+index-CHuDPJs3.js:94  ERROR  [Statsig] A networking error occurred during POST request to https://client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553608516&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=509. TypeError: Failed to fetch TypeError: Failed to fetch
+    at j (index-CHuDPJs3.js:90:555)
+    at value (injected.js:1:9329314)
+    at n.<anonymous> (index-CHuDPJs3.js:215:63237)
+    at Generator.next (<anonymous>)
+    at index-CHuDPJs3.js:215:60538
+    at new Promise (<anonymous>)
+    at e (index-CHuDPJs3.js:215:60301)
+    at n._sendRequest (index-CHuDPJs3.js:215:62490)
+    at index-CHuDPJs3.js:215:47761
+    at o._capture (index-CHuDPJs3.js:215:48068)
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1   WARN  [Statsig] Failed to flush events.
+console.warn @ injected.js:1Understand this warning
+index.min.js:1 Shims Injected:
+index.min.js:1   - nextTick
+api.ts:26 Object
+index.min.js:1 Shims Injected:
+index.min.js:1   - nextTick
+api.ts:26 Object
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553608525&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=4:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+index-CHuDPJs3.js:94  ERROR  [Statsig] A networking error occurred during POST request to https://client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553608525&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=4. TypeError: Failed to fetch TypeError: Failed to fetch
+    at j (index-CHuDPJs3.js:90:555)
+    at value (injected.js:1:9329314)
+    at n.<anonymous> (index-CHuDPJs3.js:215:63237)
+    at Generator.next (<anonymous>)
+    at index-CHuDPJs3.js:215:60538
+    at new Promise (<anonymous>)
+    at e (index-CHuDPJs3.js:215:60301)
+    at n._sendRequest (index-CHuDPJs3.js:215:62490)
+    at index-CHuDPJs3.js:215:47761
+    at o._capture (index-CHuDPJs3.js:215:48068)
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1   WARN  [Statsig] Failed to flush events.
+console.warn @ injected.js:1Understand this warning
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1Understand this warning
+Api.ts:26 Object
+Api.ts:26 Object
+Api.ts:26 Object
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1Understand this warning
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553611011&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=5:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1Understand this warning
+page.js:2 Uncaught (in promise) a: The source https://farcaster.xyz/~/developers has not been authorized yet
+    at g (page.js:2:13551)
+    at page.js:2:21912Understand this error
+instrumentMethod.js:67 Connecting to 'https://explorer-api.walletconnect.com/v3/wallets?projectId=34357d3c125c2bcf2ce2bc3309d98715' violates the following Content Security Policy directive: "connect-src 'self' https://farcaster.xyz https://client.farcaster.xyz https://warpcast.com https://client.warpcast.com https://wrpcd.net https://*.wrpcd.net https://privy.farcaster.xyz https://privy.warpcast.com https://auth.privy.io https://*.rpc.privy.systems https://cloudflareinsights.com https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com". The action has been blocked.
+h @ instrumentMethod.js:67Understand this error
+instrumentMethod.js:67 Fetch API cannot load https://explorer-api.walletconnect.com/v3/wallets?projectId=34357d3c125c2bcf2ce2bc3309d98715. Refused to connect because it violates the document's Content Security Policy.
+h @ instrumentMethod.js:67Understand this error
+consoleObservable.js:33 TypeError: Failed to fetch. Refused to connect because it violates the document's Content Security Policy.
+    at h (instrumentMethod.js:67:31)
+    at value (injected.js:1:9329314)
+    at privy-provider-Dg-HUZ-W.js:9:1544
+    at privy-provider-Dg-HUZ-W.js:9:1415
+    at eu (react-dom-client.production.js:7485:24)
+    at Uu (react-dom-client.production.js:8940:23)
+    at Iu (react-dom-client.production.js:8915:7)
+    at Uu (react-dom-client.production.js:9034:7)
+    at Iu (react-dom-client.production.js:8915:7)
+    at Uu (react-dom-client.production.js:8934:7)
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+index-CHuDPJs3.js:94 origins don't match https://wallet.farcaster.xyz https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+instrumentMethod.js:67 Connecting to 'https://explorer-api.walletconnect.com/v3/wallets?projectId=34357d3c125c2bcf2ce2bc3309d98715' violates the following Content Security Policy directive: "connect-src 'self' https://farcaster.xyz https://client.farcaster.xyz https://warpcast.com https://client.warpcast.com https://wrpcd.net https://*.wrpcd.net https://privy.farcaster.xyz https://privy.warpcast.com https://auth.privy.io https://*.rpc.privy.systems https://cloudflareinsights.com https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com". The action has been blocked.
+h @ instrumentMethod.js:67Understand this error
+instrumentMethod.js:67 Fetch API cannot load https://explorer-api.walletconnect.com/v3/wallets?projectId=34357d3c125c2bcf2ce2bc3309d98715. Refused to connect because it violates the document's Content Security Policy.
+h @ instrumentMethod.js:67Understand this error
+consoleObservable.js:33 TypeError: Failed to fetch. Refused to connect because it violates the document's Content Security Policy.
+    at h (instrumentMethod.js:67:31)
+    at value (injected.js:1:9329314)
+    at privy-provider-Dg-HUZ-W.js:9:1544
+    at privy-provider-Dg-HUZ-W.js:9:1415
+    at eu (react-dom-client.production.js:7485:24)
+    at Uu (react-dom-client.production.js:8940:23)
+    at Iu (react-dom-client.production.js:8915:7)
+    at Uu (react-dom-client.production.js:9034:7)
+    at Iu (react-dom-client.production.js:8915:7)
+    at Uu (react-dom-client.production.js:8934:7)
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+2index-CHuDPJs3.js:94 origins don't match https://wallet.farcaster.xyz https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+2consoleObservable.js:33 origins don't match https://farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+2consoleObservable.js:33 origins don't match https://farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+2consoleObservable.js:33 origins don't match https://farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+requestProvider.js:2 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at requestProvider.js:2:569789
+    at requestProvider.js:2:569969
+    at requestProvider.js:2:569973
+    at requestProvider.js:2:569977Understand this error
+contentscript.js:1 Object
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553612358&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=5:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+inpage.js:1 MetaMask encountered an error setting the global Ethereum provider - this is likely due to another Ethereum wallet extension also setting the global Ethereum provider: TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at a (inpage.js:1:142132)
+    at r.initializeProvider (inpage.js:1:141903)
+    at Object.<anonymous> (inpage.js:1:2308)
+    at Object.<anonymous> (inpage.js:1:6316)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:6329)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:412)
+    at inpage.js:1:429
+a @ inpage.js:1Understand this error
+evmAsk.js:15 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:15:5124)
+    at window.addEventListener.once (evmAsk.js:15:9044)Understand this error
+content.js:2 Check phishing by URL: Passed.
+5index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+evmAsk.js:15 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:15:5124)
+    at window.addEventListener.once (evmAsk.js:15:9044)Understand this error
+requestProvider.js:2 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at requestProvider.js:2:569789
+    at requestProvider.js:2:569969
+    at requestProvider.js:2:569973
+    at requestProvider.js:2:569977Understand this error
+contentscript.js:1 Object
+injected.js:1 Backpack couldn't override `window.ethereum`.
+(anonymous) @ injected.js:1Understand this warning
+inpage.js:1 MetaMask encountered an error setting the global Ethereum provider - this is likely due to another Ethereum wallet extension also setting the global Ethereum provider: TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at a (inpage.js:1:142132)
+    at r.initializeProvider (inpage.js:1:141903)
+    at Object.<anonymous> (inpage.js:1:2308)
+    at Object.<anonymous> (inpage.js:1:6316)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:6329)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:412)
+    at inpage.js:1:429
+a @ inpage.js:1Understand this error
+csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub3ed0be16dcee00054d67fd118ef8a00d&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=env%3Aprod%2Cversion%3A0.0.3:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+content.js:2 Check phishing by URL: Passed.
+evmAsk.js:15 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:15:5124)
+    at window.addEventListener.once (evmAsk.js:15:9044)Understand this error
+requestProvider.js:2 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at requestProvider.js:2:569789
+    at requestProvider.js:2:569969
+    at requestProvider.js:2:569973
+    at requestProvider.js:2:569977Understand this error
+contentscript.js:1 Object
+inpage.js:1 MetaMask encountered an error setting the global Ethereum provider - this is likely due to another Ethereum wallet extension also setting the global Ethereum provider: TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at a (inpage.js:1:142132)
+    at r.initializeProvider (inpage.js:1:141903)
+    at Object.<anonymous> (inpage.js:1:2308)
+    at Object.<anonymous> (inpage.js:1:6316)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:6329)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:412)
+    at inpage.js:1:429
+a @ inpage.js:1Understand this error
+csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub3ed0be16dcee00054d67fd118ef8a00d&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=env%3Aprod%2Cversion%3A0.0.3:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+content.js:2 Check phishing by URL: Passed.
+index-CX_TW6XH.js:314 Auto-connect successful
+main.js?attr=xrhyJVpgbORkcuL8N8KmC4ChaIBSeZgbmoqtt4vDdqF0JIngTWR4M5zXmBS3hY-h74eHVO2lskJy1ddxQYYhXuREwYbleWdFFy80y--GwO_2-rTnbr3D4L1cxY-pKoRz2-40FycXotkKWbrmYxTFHZqY-7J26zyvnbzRJuhSZdz63UMJzJvZNdVvcHaRQXoIAU0jPEYJDGGfMXEg9O8U0YMCKHClfOKjHoG0LhENbvY5S9qxHlLoyW2WylD0mW4o3aScGERnbs5Gk5KLVmdgRw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-MTBhMDUyNjYtNzFjNC00ZTFkLWI3YjMtNjdiNmZhN2YzMzBi' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-at08zrm+SdSQ+uAWbg9vfRuim15mpl5LD5soRncopQo='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=xrhyJVpgbORkcuL8N8KmC4ChaIBSeZgbmoqtt4vDdqF0JIngTWR4M5zXmBS3hY-h74eHVO2lskJy1ddxQYYhXuREwYbleWdFFy80y--GwO_2-rTnbr3D4L1cxY-pKoRz2-40FycXotkKWbrmYxTFHZqY-7J26zyvnbzRJuhSZdz63UMJzJvZNdVvcHaRQXoIAU0jPEYJDGGfMXEg9O8U0YMCKHClfOKjHoG0LhENbvY5S9qxHlLoyW2WylD0mW4o3aScGERnbs5Gk5KLVmdgRw:316Understand this error
+main.js?attr=xrhyJVpgbORkcuL8N8KmC4ChaIBSeZgbmoqtt4vDdqF0JIngTWR4M5zXmBS3hY-h74eHVO2lskJy1ddxQYYhXuREwYbleWdFFy80y--GwO_2-rTnbr3D4L1cxY-pKoRz2-40FycXotkKWbrmYxTFHZqY-7J26zyvnbzRJuhSZdz63UMJzJvZNdVvcHaRQXoIAU0jPEYJDGGfMXEg9O8U0YMCKHClfOKjHoG0LhENbvY5S9qxHlLoyW2WylD0mW4o3aScGERnbs5Gk5KLVmdgRw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-MTBhMDUyNjYtNzFjNC00ZTFkLWI3YjMtNjdiNmZhN2YzMzBi' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-4mjowJ4N2sz7P1s6E7YoIBczBq2dFxhl7SAze64AlJU='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=xrhyJVpgbORkcuL8N8KmC4ChaIBSeZgbmoqtt4vDdqF0JIngTWR4M5zXmBS3hY-h74eHVO2lskJy1ddxQYYhXuREwYbleWdFFy80y--GwO_2-rTnbr3D4L1cxY-pKoRz2-40FycXotkKWbrmYxTFHZqY-7J26zyvnbzRJuhSZdz63UMJzJvZNdVvcHaRQXoIAU0jPEYJDGGfMXEg9O8U0YMCKHClfOKjHoG0LhENbvY5S9qxHlLoyW2WylD0mW4o3aScGERnbs5Gk5KLVmdgRw:316Understand this error
+main.js?attr=xrhyJVpgbORkcuL8N8KmC4ChaIBSeZgbmoqtt4vDdqF0JIngTWR4M5zXmBS3hY-h74eHVO2lskJy1ddxQYYhXuREwYbleWdFFy80y--GwO_2-rTnbr3D4L1cxY-pKoRz2-40FycXotkKWbrmYxTFHZqY-7J26zyvnbzRJuhSZdz63UMJzJvZNdVvcHaRQXoIAU0jPEYJDGGfMXEg9O8U0YMCKHClfOKjHoG0LhENbvY5S9qxHlLoyW2WylD0mW4o3aScGERnbs5Gk5KLVmdgRw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-MTBhMDUyNjYtNzFjNC00ZTFkLWI3YjMtNjdiNmZhN2YzMzBi' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-XPVT0BHv54KFsDNI/UqKZa8Ywe45Gm6s4GAJYSYWvLA='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=xrhyJVpgbORkcuL8N8KmC4ChaIBSeZgbmoqtt4vDdqF0JIngTWR4M5zXmBS3hY-h74eHVO2lskJy1ddxQYYhXuREwYbleWdFFy80y--GwO_2-rTnbr3D4L1cxY-pKoRz2-40FycXotkKWbrmYxTFHZqY-7J26zyvnbzRJuhSZdz63UMJzJvZNdVvcHaRQXoIAU0jPEYJDGGfMXEg9O8U0YMCKHClfOKjHoG0LhENbvY5S9qxHlLoyW2WylD0mW4o3aScGERnbs5Gk5KLVmdgRw:316Understand this error
+main.js?attr=xrhyJVpgbORkcuL8N8KmC4ChaIBSeZgbmoqtt4vDdqF0JIngTWR4M5zXmBS3hY-h74eHVO2lskJy1ddxQYYhXuREwYbleWdFFy80y--GwO_2-rTnbr3D4L1cxY-pKoRz2-40FycXotkKWbrmYxTFHZqY-7J26zyvnbzRJuhSZdz63UMJzJvZNdVvcHaRQXoIAU0jPEYJDGGfMXEg9O8U0YMCKHClfOKjHoG0LhENbvY5S9qxHlLoyW2WylD0mW4o3aScGERnbs5Gk5KLVmdgRw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-MTBhMDUyNjYtNzFjNC00ZTFkLWI3YjMtNjdiNmZhN2YzMzBi' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-zlJfA2uXtVBB56yzSyvBtUXIhQAzLjZHU5KRIXpbmcw='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=xrhyJVpgbORkcuL8N8KmC4ChaIBSeZgbmoqtt4vDdqF0JIngTWR4M5zXmBS3hY-h74eHVO2lskJy1ddxQYYhXuREwYbleWdFFy80y--GwO_2-rTnbr3D4L1cxY-pKoRz2-40FycXotkKWbrmYxTFHZqY-7J26zyvnbzRJuhSZdz63UMJzJvZNdVvcHaRQXoIAU0jPEYJDGGfMXEg9O8U0YMCKHClfOKjHoG0LhENbvY5S9qxHlLoyW2WylD0mW4o3aScGERnbs5Gk5KLVmdgRw:316Understand this error
+evmAsk.js:15 Uncaught TypeError: Cannot redefine property: ethereum
+    at Object.defineProperty (<anonymous>)
+    at r.inject (evmAsk.js:15:5124)
+    at window.addEventListener.once (evmAsk.js:15:9044)Understand this error
+requestProvider.js:2 Uncaught TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at requestProvider.js:2:569789
+    at requestProvider.js:2:569969
+    at requestProvider.js:2:569973
+    at requestProvider.js:2:569977Understand this error
+contentscript.js:1 Object
+inpage.js:1 MetaMask encountered an error setting the global Ethereum provider - this is likely due to another Ethereum wallet extension also setting the global Ethereum provider: TypeError: Cannot set property ethereum of #<Window> which has only a getter
+    at a (inpage.js:1:142132)
+    at r.initializeProvider (inpage.js:1:141903)
+    at Object.<anonymous> (inpage.js:1:2308)
+    at Object.<anonymous> (inpage.js:1:6316)
+    at 2.../../shared/modules/provider-injection (inpage.js:1:6329)
+    at i (inpage.js:1:254)
+    at e (inpage.js:1:412)
+    at inpage.js:1:429
+a @ inpage.js:1Understand this error
+2index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+embedded-wallets-2455a3756cc1200e.js?dpl=dpl_DsEuUVtCU1bUNHa96JA7x8cGHw62:1 Warning!
+embedded-wallets-2455a3756cc1200e.js?dpl=dpl_DsEuUVtCU1bUNHa96JA7x8cGHw62:1 You are reading this message because you opened the browser console, a developer tool. Do not enter or paste code you do not understand. Never share your tokens or any other info with anyone. If someone told you to do this, it is very likely a scam.
+csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub3ed0be16dcee00054d67fd118ef8a00d&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=env%3Aprod%2Cversion%3A0.0.3:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub3ed0be16dcee00054d67fd118ef8a00d&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=env%3Aprod%2Cversion%3A0.0.3:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+content.js:2 Check phishing by URL: Passed.
+csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub3ed0be16dcee00054d67fd118ef8a00d&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=env%3Aprod%2Cversion%3A0.0.3:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+main.js?attr=fRoV_KGLt9jhMEgyF8INjwBHsktAbVSJjFyLjRQie7PF_x8Ois3GJ-Z0KYs5BXKL5Ucf5cc4terXAjyThTB1xZ7fkBtL6YY1voi1LIjKbDP4rPgyUNQC8zqoBhqVPcAkgbwvSxTfhnXr2ahgdKt8nXBurzSafJW5JwriaXNHcT3t7o0DvxW6ZbxNpCoBp_NMs1RRUVhgNJ-mnQ1Z3XD4Mjox_caHVSmNsHO5PRUa-IpwlrSlIFoM3lXSjGnL_ApwxwBc6LAZsWE1ftOBki75Bw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-NmRhNTliY2ItMzZmNy00NGM1LWE2YjgtMzk0YWMzOWZlMDQx' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-at08zrm+SdSQ+uAWbg9vfRuim15mpl5LD5soRncopQo='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=fRoV_KGLt9jhMEgyF8INjwBHsktAbVSJjFyLjRQie7PF_x8Ois3GJ-Z0KYs5BXKL5Ucf5cc4terXAjyThTB1xZ7fkBtL6YY1voi1LIjKbDP4rPgyUNQC8zqoBhqVPcAkgbwvSxTfhnXr2ahgdKt8nXBurzSafJW5JwriaXNHcT3t7o0DvxW6ZbxNpCoBp_NMs1RRUVhgNJ-mnQ1Z3XD4Mjox_caHVSmNsHO5PRUa-IpwlrSlIFoM3lXSjGnL_ApwxwBc6LAZsWE1ftOBki75Bw:316Understand this error
+main.js?attr=fRoV_KGLt9jhMEgyF8INjwBHsktAbVSJjFyLjRQie7PF_x8Ois3GJ-Z0KYs5BXKL5Ucf5cc4terXAjyThTB1xZ7fkBtL6YY1voi1LIjKbDP4rPgyUNQC8zqoBhqVPcAkgbwvSxTfhnXr2ahgdKt8nXBurzSafJW5JwriaXNHcT3t7o0DvxW6ZbxNpCoBp_NMs1RRUVhgNJ-mnQ1Z3XD4Mjox_caHVSmNsHO5PRUa-IpwlrSlIFoM3lXSjGnL_ApwxwBc6LAZsWE1ftOBki75Bw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-NmRhNTliY2ItMzZmNy00NGM1LWE2YjgtMzk0YWMzOWZlMDQx' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-4mjowJ4N2sz7P1s6E7YoIBczBq2dFxhl7SAze64AlJU='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=fRoV_KGLt9jhMEgyF8INjwBHsktAbVSJjFyLjRQie7PF_x8Ois3GJ-Z0KYs5BXKL5Ucf5cc4terXAjyThTB1xZ7fkBtL6YY1voi1LIjKbDP4rPgyUNQC8zqoBhqVPcAkgbwvSxTfhnXr2ahgdKt8nXBurzSafJW5JwriaXNHcT3t7o0DvxW6ZbxNpCoBp_NMs1RRUVhgNJ-mnQ1Z3XD4Mjox_caHVSmNsHO5PRUa-IpwlrSlIFoM3lXSjGnL_ApwxwBc6LAZsWE1ftOBki75Bw:316Understand this error
+main.js?attr=fRoV_KGLt9jhMEgyF8INjwBHsktAbVSJjFyLjRQie7PF_x8Ois3GJ-Z0KYs5BXKL5Ucf5cc4terXAjyThTB1xZ7fkBtL6YY1voi1LIjKbDP4rPgyUNQC8zqoBhqVPcAkgbwvSxTfhnXr2ahgdKt8nXBurzSafJW5JwriaXNHcT3t7o0DvxW6ZbxNpCoBp_NMs1RRUVhgNJ-mnQ1Z3XD4Mjox_caHVSmNsHO5PRUa-IpwlrSlIFoM3lXSjGnL_ApwxwBc6LAZsWE1ftOBki75Bw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-NmRhNTliY2ItMzZmNy00NGM1LWE2YjgtMzk0YWMzOWZlMDQx' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-XPVT0BHv54KFsDNI/UqKZa8Ywe45Gm6s4GAJYSYWvLA='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=fRoV_KGLt9jhMEgyF8INjwBHsktAbVSJjFyLjRQie7PF_x8Ois3GJ-Z0KYs5BXKL5Ucf5cc4terXAjyThTB1xZ7fkBtL6YY1voi1LIjKbDP4rPgyUNQC8zqoBhqVPcAkgbwvSxTfhnXr2ahgdKt8nXBurzSafJW5JwriaXNHcT3t7o0DvxW6ZbxNpCoBp_NMs1RRUVhgNJ-mnQ1Z3XD4Mjox_caHVSmNsHO5PRUa-IpwlrSlIFoM3lXSjGnL_ApwxwBc6LAZsWE1ftOBki75Bw:316Understand this error
+main.js?attr=fRoV_KGLt9jhMEgyF8INjwBHsktAbVSJjFyLjRQie7PF_x8Ois3GJ-Z0KYs5BXKL5Ucf5cc4terXAjyThTB1xZ7fkBtL6YY1voi1LIjKbDP4rPgyUNQC8zqoBhqVPcAkgbwvSxTfhnXr2ahgdKt8nXBurzSafJW5JwriaXNHcT3t7o0DvxW6ZbxNpCoBp_NMs1RRUVhgNJ-mnQ1Z3XD4Mjox_caHVSmNsHO5PRUa-IpwlrSlIFoM3lXSjGnL_ApwxwBc6LAZsWE1ftOBki75Bw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-NmRhNTliY2ItMzZmNy00NGM1LWE2YjgtMzk0YWMzOWZlMDQx' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-zlJfA2uXtVBB56yzSyvBtUXIhQAzLjZHU5KRIXpbmcw='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=fRoV_KGLt9jhMEgyF8INjwBHsktAbVSJjFyLjRQie7PF_x8Ois3GJ-Z0KYs5BXKL5Ucf5cc4terXAjyThTB1xZ7fkBtL6YY1voi1LIjKbDP4rPgyUNQC8zqoBhqVPcAkgbwvSxTfhnXr2ahgdKt8nXBurzSafJW5JwriaXNHcT3t7o0DvxW6ZbxNpCoBp_NMs1RRUVhgNJ-mnQ1Z3XD4Mjox_caHVSmNsHO5PRUa-IpwlrSlIFoM3lXSjGnL_ApwxwBc6LAZsWE1ftOBki75Bw:316Understand this error
+index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553614929&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=5:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+embedded-wallets-2455a3756cc1200e.js?dpl=dpl_DsEuUVtCU1bUNHa96JA7x8cGHw62:1 Warning!
+embedded-wallets-2455a3756cc1200e.js?dpl=dpl_DsEuUVtCU1bUNHa96JA7x8cGHw62:1 You are reading this message because you opened the browser console, a developer tool. Do not enter or paste code you do not understand. Never share your tokens or any other info with anyone. If someone told you to do this, it is very likely a scam.
+csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub3ed0be16dcee00054d67fd118ef8a00d&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=env%3Aprod%2Cversion%3A0.0.3:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub3ed0be16dcee00054d67fd118ef8a00d&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=env%3Aprod%2Cversion%3A0.0.3:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+embedded-wallets-2455a3756cc1200e.js?dpl=dpl_DsEuUVtCU1bUNHa96JA7x8cGHw62:1 Warning!
+embedded-wallets-2455a3756cc1200e.js?dpl=dpl_DsEuUVtCU1bUNHa96JA7x8cGHw62:1 You are reading this message because you opened the browser console, a developer tool. Do not enter or paste code you do not understand. Never share your tokens or any other info with anyone. If someone told you to do this, it is very likely a scam.
+main.js?attr=bTbh3elq6YELFIUL2IWQkN-nRTSuOaAdZsm9NIMCww5JCwIR9G38rdQNgLyy8pnCt-Xlenn30guvBqjr7lArRYp88R2uVrOABVrutwkebWyUzDq35o2_YDsWY8OPBy1b_dFyjFDjmQVlAmvAugaARNv-DgniQxFzviatx3-5FOqkvmtVIQJfaESUNeLfgalBkDtSWH53JOmYGqE3Ae32dML9HlsFe5wgw6CbGDBXjRv0Pvra-T3mTvJqOa6-KjfQkkA9G2Br8h1Ih3bNVTTPlw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-OGQ2Y2M1ZjMtN2M2Mi00MmJlLTgyZTMtZjg1MjQzMzQ4NTRi' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-at08zrm+SdSQ+uAWbg9vfRuim15mpl5LD5soRncopQo='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=bTbh3elq6YELFIUL2IWQkN-nRTSuOaAdZsm9NIMCww5JCwIR9G38rdQNgLyy8pnCt-Xlenn30guvBqjr7lArRYp88R2uVrOABVrutwkebWyUzDq35o2_YDsWY8OPBy1b_dFyjFDjmQVlAmvAugaARNv-DgniQxFzviatx3-5FOqkvmtVIQJfaESUNeLfgalBkDtSWH53JOmYGqE3Ae32dML9HlsFe5wgw6CbGDBXjRv0Pvra-T3mTvJqOa6-KjfQkkA9G2Br8h1Ih3bNVTTPlw:316Understand this error
+main.js?attr=bTbh3elq6YELFIUL2IWQkN-nRTSuOaAdZsm9NIMCww5JCwIR9G38rdQNgLyy8pnCt-Xlenn30guvBqjr7lArRYp88R2uVrOABVrutwkebWyUzDq35o2_YDsWY8OPBy1b_dFyjFDjmQVlAmvAugaARNv-DgniQxFzviatx3-5FOqkvmtVIQJfaESUNeLfgalBkDtSWH53JOmYGqE3Ae32dML9HlsFe5wgw6CbGDBXjRv0Pvra-T3mTvJqOa6-KjfQkkA9G2Br8h1Ih3bNVTTPlw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-OGQ2Y2M1ZjMtN2M2Mi00MmJlLTgyZTMtZjg1MjQzMzQ4NTRi' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-4mjowJ4N2sz7P1s6E7YoIBczBq2dFxhl7SAze64AlJU='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=bTbh3elq6YELFIUL2IWQkN-nRTSuOaAdZsm9NIMCww5JCwIR9G38rdQNgLyy8pnCt-Xlenn30guvBqjr7lArRYp88R2uVrOABVrutwkebWyUzDq35o2_YDsWY8OPBy1b_dFyjFDjmQVlAmvAugaARNv-DgniQxFzviatx3-5FOqkvmtVIQJfaESUNeLfgalBkDtSWH53JOmYGqE3Ae32dML9HlsFe5wgw6CbGDBXjRv0Pvra-T3mTvJqOa6-KjfQkkA9G2Br8h1Ih3bNVTTPlw:316Understand this error
+main.js?attr=bTbh3elq6YELFIUL2IWQkN-nRTSuOaAdZsm9NIMCww5JCwIR9G38rdQNgLyy8pnCt-Xlenn30guvBqjr7lArRYp88R2uVrOABVrutwkebWyUzDq35o2_YDsWY8OPBy1b_dFyjFDjmQVlAmvAugaARNv-DgniQxFzviatx3-5FOqkvmtVIQJfaESUNeLfgalBkDtSWH53JOmYGqE3Ae32dML9HlsFe5wgw6CbGDBXjRv0Pvra-T3mTvJqOa6-KjfQkkA9G2Br8h1Ih3bNVTTPlw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-OGQ2Y2M1ZjMtN2M2Mi00MmJlLTgyZTMtZjg1MjQzMzQ4NTRi' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-XPVT0BHv54KFsDNI/UqKZa8Ywe45Gm6s4GAJYSYWvLA='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=bTbh3elq6YELFIUL2IWQkN-nRTSuOaAdZsm9NIMCww5JCwIR9G38rdQNgLyy8pnCt-Xlenn30guvBqjr7lArRYp88R2uVrOABVrutwkebWyUzDq35o2_YDsWY8OPBy1b_dFyjFDjmQVlAmvAugaARNv-DgniQxFzviatx3-5FOqkvmtVIQJfaESUNeLfgalBkDtSWH53JOmYGqE3Ae32dML9HlsFe5wgw6CbGDBXjRv0Pvra-T3mTvJqOa6-KjfQkkA9G2Br8h1Ih3bNVTTPlw:316Understand this error
+main.js?attr=bTbh3elq6YELFIUL2IWQkN-nRTSuOaAdZsm9NIMCww5JCwIR9G38rdQNgLyy8pnCt-Xlenn30guvBqjr7lArRYp88R2uVrOABVrutwkebWyUzDq35o2_YDsWY8OPBy1b_dFyjFDjmQVlAmvAugaARNv-DgniQxFzviatx3-5FOqkvmtVIQJfaESUNeLfgalBkDtSWH53JOmYGqE3Ae32dML9HlsFe5wgw6CbGDBXjRv0Pvra-T3mTvJqOa6-KjfQkkA9G2Br8h1Ih3bNVTTPlw:316 Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-OGQ2Y2M1ZjMtN2M2Mi00MmJlLTgyZTMtZjg1MjQzMzQ4NTRi' https://gc.kis.v2.scr.kaspersky-labs.com wss://gc.kis.v2.scr.kaspersky-labs.com'. Either the 'unsafe-inline' keyword, a hash ('sha256-zlJfA2uXtVBB56yzSyvBtUXIhQAzLjZHU5KRIXpbmcw='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.
+AppendChild @ main.js?attr=bTbh3elq6YELFIUL2IWQkN-nRTSuOaAdZsm9NIMCww5JCwIR9G38rdQNgLyy8pnCt-Xlenn30guvBqjr7lArRYp88R2uVrOABVrutwkebWyUzDq35o2_YDsWY8OPBy1b_dFyjFDjmQVlAmvAugaARNv-DgniQxFzviatx3-5FOqkvmtVIQJfaESUNeLfgalBkDtSWH53JOmYGqE3Ae32dML9HlsFe5wgw6CbGDBXjRv0Pvra-T3mTvJqOa6-KjfQkkA9G2Br8h1Ih3bNVTTPlw:316Understand this error
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1Understand this warning
+csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub3ed0be16dcee00054d67fd118ef8a00d&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=env%3Aprod%2Cversion%3A0.0.3:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+csp-report.browser-intake-datadoghq.com/api/v2/logs?dd-api-key=pub3ed0be16dcee00054d67fd118ef8a00d&dd-evp-origin=content-security-policy&ddsource=csp-report&ddtags=env%3Aprod%2Cversion%3A0.0.3:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1Understand this warning
+injected.js:1 origins don't match https://wallet.farcaster.xyz https://privy.farcaster.xyz
+pIt @ injected.js:1Understand this error
+consoleObservable.js:33 origins don't match https://privy.farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+injected.js:1 origins don't match https://wallet.farcaster.xyz https://privy.farcaster.xyz
+pIt @ injected.js:1Understand this error
+injected.js:1 origins don't match https://wallet.farcaster.xyz https://privy.farcaster.xyz
+pIt @ injected.js:1Understand this error
+injected.js:1 Backpack couldn't override `window.ethereum`.
+console.warn @ injected.js:1Understand this warning
+consoleObservable.js:33 origins don't match https://privy.farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+consoleObservable.js:33 origins don't match https://privy.farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+injected.js:1 origins don't match https://wallet.farcaster.xyz https://privy.farcaster.xyz
+pIt @ injected.js:1Understand this error
+injected.js:1 origins don't match https://wallet.farcaster.xyz https://privy.farcaster.xyz
+pIt @ injected.js:1Understand this error
+consoleObservable.js:33 origins don't match https://privy.farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+consoleObservable.js:33 origins don't match https://privy.farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+injected.js:1 origins don't match https://wallet.farcaster.xyz https://privy.farcaster.xyz
+pIt @ injected.js:1Understand this error
+injected.js:1 origins don't match https://wallet.farcaster.xyz https://privy.farcaster.xyz
+pIt @ injected.js:1Understand this error
+injected.js:1 origins don't match https://wallet.farcaster.xyz https://privy.farcaster.xyz
+pIt @ injected.js:1Understand this error
+consoleObservable.js:33 origins don't match https://privy.farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+consoleObservable.js:33 origins don't match https://privy.farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+consoleObservable.js:33 origins don't match https://privy.farcaster.xyz https://wallet.farcaster.xyz
+t.globalConsole.<computed> @ consoleObservable.js:33Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+3index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+3injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553619543&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=5:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENTUnderstand this error
+index-CHuDPJs3.js:94  ERROR  [Statsig] A networking error occurred during POST request to https://client.farcaster.xyz/v2/ss/v1/rgstr?k=client-2411kvi1gA8pYg2HE1kh9pQvOAdmwxcDFUrAln9t184&st=javascript-client-react&sv=3.29.0&t=1765553619543&sid=ce9cb190-d529-4b2a-97ad-1aa46d6594ab&ec=5. TypeError: Failed to fetch TypeError: Failed to fetch
+    at j (index-CHuDPJs3.js:90:555)
+    at value (injected.js:1:9329314)
+    at n.<anonymous> (index-CHuDPJs3.js:215:63237)
+    at Generator.next (<anonymous>)
+    at index-CHuDPJs3.js:215:60538
+    at new Promise (<anonymous>)
+    at e (index-CHuDPJs3.js:215:60301)
+    at n._sendRequest (index-CHuDPJs3.js:215:62490)
+    at index-CHuDPJs3.js:215:47761
+    at o._capture (index-CHuDPJs3.js:215:48068)
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1   WARN  [Statsig] Failed to flush events.
+console.warn @ injected.js:1Understand this warning
+15page.js:2 Uncaught (in promise) a: The source https://farcasterwordle.com/ has not been authorized yet
+    at g (page.js:2:13551)
+    at page.js:2:21912Understand this error
+index-CX_TW6XH.js:314 Preparing transaction: Object
+index-CX_TW6XH.js:270 Using regular transaction (user pays gas)
+index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 origins don't match https://farcaster.xyz https://farcasterwordle.com
+pIt @ injected.js:1Understand this error
+index-CHuDPJs3.js:94 origins don't match https://farcasterwordle.com https://farcaster.xyz
+globalConsole.<computed> @ index-CHuDPJs3.js:94Understand this error
+injected.js:1 Cannot record touch end without a touch start.
+ Touch End: {"identifier":0,"pageX":141,"pageY":183,"timestamp":41089.79999999888}
+ Touch Bank: []
