@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useAccount, useConnect, useSendTransaction } from "wagmi";
+import { useAccount, useConnect, useSendTransaction, useWalletClient } from "wagmi";
+import { sendSponsoredTransaction } from "@/lib/paymasterClient";
 import { Header } from "@/components/Header";
 import { Board } from "@/components/Board";
 import { GameOverModal, StatsModal, SettingsModal } from "@/components/Modals";
@@ -20,6 +21,7 @@ export default function Game() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { sendTransactionAsync } = useSendTransaction();
+  const { data: walletClient } = useWalletClient();
   const { t, tf, language, setLanguage, registerLanguageChange } = useTranslation();
   
   const inputRef = useRef<HTMLInputElement>(null);
@@ -440,17 +442,41 @@ export default function Game() {
 
     setIsSavingScore(true);
     try {
-      console.log("Preparing transaction:", { address, totalScore, sessionId });
+      console.log("Preparing transaction:", { address, totalScore, sessionId, hasWalletClient: !!walletClient });
       
-      // Send 0 ETH to self to create on-chain proof
-      // Score is stored in backend database
-      const hash = await sendTransactionAsync({
-        to: address as `0x${string}`,
-        value: BigInt(0),
-        chainId: 8453, // Base mainnet
-      });
+      let hash: string;
+      let wasSponsored = false;
+      
+      // Try sponsored transaction first (gasless for user)
+      if (walletClient) {
+        try {
+          const result = await sendSponsoredTransaction(
+            walletClient,
+            address as `0x${string}`,
+            BigInt(0)
+          );
+          hash = result.hash;
+          wasSponsored = result.sponsored;
+          console.log("Transaction sent:", { hash, sponsored: wasSponsored });
+        } catch (sponsorErr) {
+          console.warn("Sponsored TX failed, trying regular:", sponsorErr);
+          // Fallback to regular transaction
+          hash = await sendTransactionAsync({
+            to: address as `0x${string}`,
+            value: BigInt(0),
+            chainId: 8453,
+          });
+        }
+      } else {
+        // No wallet client, use regular transaction
+        hash = await sendTransactionAsync({
+          to: address as `0x${string}`,
+          value: BigInt(0),
+          chainId: 8453, // Base mainnet
+        });
+      }
 
-      console.log("Transaction hash:", hash);
+      console.log("Transaction hash:", hash, "Sponsored:", wasSponsored);
       const result = await completeGame(sessionId, hash, isTimeout);
 
       setGameCompleted(true);
@@ -529,7 +555,7 @@ export default function Game() {
     } finally {
       setIsSavingScore(false);
     }
-  }, [sessionId, isConnected, address, totalScore, sendTransactionAsync, toast, language, isPracticeMode, t]);
+  }, [sessionId, isConnected, address, totalScore, sendTransactionAsync, walletClient, toast, language, isPracticeMode, t]);
 
   const updateLetterStates = useCallback((guess: string, fb: TileFeedback[]) => {
     setLetterStates((prev) => {
