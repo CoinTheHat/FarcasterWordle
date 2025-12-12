@@ -1,10 +1,10 @@
 import { useLocation, Link } from "wouter";
 import { Gamepad2, Trophy, Shield } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { useTranslation } from "@/lib/i18n";
 
 export function BottomNav() {
   const [location] = useLocation();
-  const { t } = useI18n();
+  const { t } = useTranslation();
 
   const navItems = [
     { path: "/", icon: Gamepad2, label: t.navPlay, testId: "nav-play" },
