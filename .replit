@@ -40,8 +40,3 @@ waitForPort = 5000
 
 [agent]
 integrations = ["javascript_database:1.0.0"]
-
-[userenv]
-
-[userenv.shared]
-VITE_PAYMASTER_URL = "https://api.developer.coinbase.com/rpc/v1/base/9KEmFewu0fsFw1khdb8SEy9pfXzgHyS3"
