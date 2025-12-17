@@ -11,6 +11,7 @@ import Game from "@/pages/Game";
 import Leaderboard from "@/pages/Leaderboard";
 import Admin from "@/pages/Admin";
 import Verify from "@/pages/Verify";
+import Terms from "@/pages/Terms";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/leaderboard" component={Leaderboard} />
       <Route path="/verify" component={Verify} />
       <Route path="/admin" component={Admin} />
+      <Route path="/terms" component={Terms} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -27,7 +29,7 @@ function Router() {
 
 function AppContent() {
   const [location] = useLocation();
-  const showBottomNav = location !== "/admin";
+  const showBottomNav = location !== "/admin" && location !== "/terms";
   
   return (
     <>
