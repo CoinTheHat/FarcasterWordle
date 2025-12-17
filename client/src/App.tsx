@@ -1,4 +1,4 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
@@ -6,7 +6,6 @@ import { wagmiConfig } from "./lib/wagmi";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { I18nProvider } from "@/lib/i18n";
-import { BottomNav } from "@/components/BottomNav";
 import Game from "@/pages/Game";
 import Leaderboard from "@/pages/Leaderboard";
 import Admin from "@/pages/Admin";
@@ -28,16 +27,10 @@ function Router() {
 }
 
 function AppContent() {
-  const [location] = useLocation();
-  const showBottomNav = location !== "/admin" && location !== "/terms";
-  
   return (
     <>
       <Toaster />
-      <div className={showBottomNav ? "pb-20" : ""}>
-        <Router />
-      </div>
-      {showBottomNav && <BottomNav />}
+      <Router />
     </>
   );
 }
