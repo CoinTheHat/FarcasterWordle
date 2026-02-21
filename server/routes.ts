@@ -291,7 +291,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               
               // Start fresh daily game (not practice mode since they never played)
               const freshSessionId = generateSessionId();
-              const freshSolution = getDailyWord(language as Language, today);
+              const freshSolution = getWordOfTheDay(today, language as Language);
               
               const freshGame: ActiveGame = {
                 fid,
